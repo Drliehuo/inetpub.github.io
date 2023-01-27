@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>图片示例</title>
+	<meta name="description" content="图片示例">
+	<meta name="keywords" content="图片示例">
+	<meta name="author" content="烈火">
+	<link rel="stylesheet" href="https://s.inetpub.cn/css/style.css" integrity="sha384-IGW0aavuvcb/+a7KuDTTnUxRZdY/wrimhKnPV9rTxoVSXUFqvr1q71IIJhqq1P3k" crossorigin="anonymous">
+	<style>
+	* {
+	  box-sizing: border-box;
+	}
+	body {
+	  margin: 0;
+	}
+	/* 设置页眉的样式 */
+	.header {
+	  background-color: #f1f1f1;
+	  padding: 20px;
+	  text-align: center;
+	}
+	/* 设置顶部导航栏的样式 */
+	.topnav {
+	  overflow: hidden;
+	  background-color: #333;
+	}
+	/* 设置 topnav 链接的样式 */
+	.topnav a {
+	  float: left;
+	  display: block;
+	  color: #f2f2f2;
+	  text-align: center;
+	  padding: 14px 16px;
+	  text-decoration: none;
+	}
+	/* 改变鼠标悬停时的颜色 */
+	.topnav a:hover {
+	  background-color: #ddd;
+	  color: black;
+	}
+	/* 创建并排的三个非等列 */
+	.column {
+	  float: left;
+	  width: 33.33%;
+	  padding: 15px;
+	}
+	/* 清除列之后的浮动 */
+	.row:after {
+	  content: "";
+	  display: table;
+	  clear: both;
+	}
+	/* 响应式布局 - 创建堆叠而非并排的三列 */
+	@media screen and (max-width:600px) {
+	  .column {
+		width: 100%;
+	  }
+	}
+	.wrap {max-width:900px; margin:auto}
+	/* 设置页脚的样式 */
+	.footer {
+	  background-color: #f1f1f1;
+	  padding: 10px;
+	  text-align: center;
+	}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<h1>图片示例</h1>
+		<p>作者：烈火</p>
+	</div>
+	<div class="topnav">
+	<div class="wrap">
+		<a href="https://www.shota.vip/" title="正太网">正太网</a>
+		<a href="https://www.shota.vip/视频/index.html" title="视频">视频</a>
+		<a href="https://www.shota.vip/写真/index.html">写真</a>
+	</div>
+	</div>
+	<div class="wrap">
+		<p class="txt">昨日风景昨日香，一曲寒水江雪凉；今朝有酒今朝醉，管他冰寒与风霜。我最大的幸福就是看着我爱的人一个比一个幸福。闺蜜，兄弟，朋友，知己。请答应我，都要好好的，过好属于自己的生活。</p>
+		<p class="txt">图片示例延时加载方案来自<a href="https://www.w3docs.com/snippets/javascript/lazy-load-images-with-javascript.html" title="img lazy load plan">w3docs</a>，暂不支持IE浏览器。</p>
+		<script>
+		  document.addEventListener("DOMContentLoaded", function() {
+			let lazyloadImages;
+			if("IntersectionObserver" in window) {
+			  lazyloadImages = document.querySelectorAll(".lazyload");
+			  let imageObserver = new IntersectionObserver(function(entries, observer) {
+				entries.forEach(function(entry) {
+				  if(entry.isIntersecting) {
+					let image = entry.target;
+					image.src = image.dataset.src;
+					image.classList.remove("lazyload");
+					imageObserver.unobserve(image);
+				  }
+				});
+			  });
+			  lazyloadImages.forEach(function(image) {
+				imageObserver.observe(image);
+			  });
+			} else {
+			  let lazyloadThrottleTimeout;
+			  lazyloadImages = document.querySelectorAll(".lazyload");
+
+			  function lazyload() {
+				if(lazyloadThrottleTimeout) {
+				  clearTimeout(lazyloadThrottleTimeout);
+				}
+				lazyloadThrottleTimeout = setTimeout(function() {
+				  let scrollTop = window.pageYOffset;
+				  lazyloadImages.forEach(function(img) {
+					if(img.offsetTop < (window.innerHeight + scrollTop)) {
+					  img.src = img.dataset.src;
+					  img.classList.remove('lazyload');
+					}
+				  });
+				  if(lazyloadImages.length == 0) {
+					document.removeEventListener("scroll", lazyload);
+					window.removeEventListener("resize", lazyload);
+					window.removeEventListener("orientationChange", lazyload);
+				  }
+				}, 20);
+			  }
+			  document.addEventListener("scroll", lazyload);
+			  window.addEventListener("resize", lazyload);
+			  window.addEventListener("orientationChange", lazyload);
+			}
+		  })
+		</script>
+
+		<p><img src="https://csta.oss-cn-beijing.aliyuncs.com/upload/26339761.jpg" alt="描述" title="标题" width="720" height="405"></p>
+		<p><img src="https://csta.oss-cn-beijing.aliyuncs.com/upload/26339762.jpg" alt="描述" title="标题" width="720" height="405"></p>
+		<p><img src="https://csta.oss-cn-beijing.aliyuncs.com/upload/26339763.jpg" alt="描述" title="标题" width="720" height="405"></p>
+		<p><img class="lazyload" data-src="https://csta.oss-cn-beijing.aliyuncs.com/upload/26339764.jpg" alt="描述" title="标题" width="720" height="405"></p>
+		<p><img class="lazyload" data-src="https://csta.oss-cn-beijing.aliyuncs.com/upload/26339765.jpg" alt="描述" title="标题" width="720" height="405"></p>
+		<p class="dtr">Pubdate: 2023-1-25 15:30</p>
+	</div>
+	<div class="footer">
+		<p>© 2016-2023 正太网 Powered by Lighttp</p>
+	</div>
+</body>
+</html>
