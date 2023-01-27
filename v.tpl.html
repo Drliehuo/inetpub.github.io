@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>视频样例</title>
+	<meta name="description" content="JW Player 7">
+	<meta name="keywords" content="JW Player 7">
+	<meta name="author" content="烈火">
+	<link rel="stylesheet" href="https://s.inetpub.cn/css/style.css" integrity="sha384-IGW0aavuvcb/+a7KuDTTnUxRZdY/wrimhKnPV9rTxoVSXUFqvr1q71IIJhqq1P3k" crossorigin="anonymous">
+	<style>
+	* {
+	  box-sizing: border-box;
+	}
+
+	body {
+	  margin: 0;
+	}
+
+	/* 设置页眉的样式 */
+	.header {
+	  background-color: #f1f1f1;
+	  padding: 20px;
+	  text-align: center;
+	}
+
+	/* 设置顶部导航栏的样式 */
+	.topnav {
+	  overflow: hidden;
+	  background-color: #333;
+	}
+
+	/* 设置 topnav 链接的样式 */
+	.topnav a {
+	  float: left;
+	  display: block;
+	  color: #f2f2f2;
+	  text-align: center;
+	  padding: 14px 16px;
+	  text-decoration: none;
+	}
+
+	/* 改变鼠标悬停时的颜色 */
+	.topnav a:hover {
+	  background-color: #ddd;
+	  color: black;
+	}
+
+	/* 创建并排的三个非等列 */
+	.column {
+	  float: left;
+	  width: 33.33%;
+	  padding: 15px;
+	}
+
+	/* 清除列之后的浮动 */
+	.row:after {
+	  content: "";
+	  display: table;
+	  clear: both;
+	}
+
+	/* 响应式布局 - 创建堆叠而非并排的三列 */
+	@media screen and (max-width:600px) {
+	  .column {
+		width: 100%;
+	  }
+	}
+
+	.wrap {max-width:900px; margin:auto}
+
+	/* 设置页脚的样式 */
+	.footer {
+	  background-color: #f1f1f1;
+	  padding: 10px;
+	  text-align: center;
+	}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<h1>JW Player 7</h1>
+		<p>视频播放器样例</p>
+	</div>
+	<div class="topnav">
+	<div class="wrap">
+		<a href="https://www.shota.vip/" title="正太网">正太网</a>
+		<a href="https://www.shota.vip/视频/index.html" title="视频">视频</a>
+		<a href="https://www.shota.vip/写真/index.html">写真</a>
+	</div>
+	</div>
+	<div class="wrap">
+		<p class="txt">使用了javascript的异步加载模式，能在低速率的带宽模式下，让浏览器非阻塞式加载播放器。</p>
+		<script>
+			(function(){
+			var s=document.createElement("script");
+			s.type="text/javascript";
+			s.src="https://s.inetpub.cn/player/v/7.12.13/jwplayer.js";
+			document.body.appendChild(s);
+			})();
+		</script>
+		<script src="https://s.inetpub.cn/player/v/7.12.13/jwplayer.js"></script>
+		<script>jwplayer.key="dvt9vtPshC9vnfoIzpVpkJvakP+EMTg+usoIwaJ+O2pckap2"</script>
+        <div id="myElement"></div>
+	      <script>
+		    jwplayer("myElement").setup({
+			    "logo": {
+			    "file": "https://s.inetpub.cn/player/v/7.12.13/logo.png",
+			    "link": "https://www.jwplayer.com",
+			    "hide": "true",
+			    "position": "top-left"
+			},
+			"playlist": [{
+				"file": "https://csta.oss-cn-beijing.aliyuncs.com/upload/jwplayer7.mp4",
+				"image": "https://csta.oss-cn-beijing.aliyuncs.com/upload/jwplayer7.jpg",
+				"title": "JW Player 7",
+				"description": "sample",
+				"type": "mp4"
+			}],
+			//skin: {
+			//	url:"https://www.shota.vip/jwplayer/skins/six.css",
+			//	name: "six"
+			//},
+			"aspectratio": "16:9",
+			"width": "100%",
+			//"height": "720",
+			"preload": "metadata",
+			"mediaid": "xpGg66gT",
+			"volume": "100"
+		});
+	    </script>
+		<p class="dtr">Pubdate: 2023-1-27 14:37</p>
+	</div>
+	<div class="footer">
+		<p>© 2016-2023 正太网 Powered by Lighttp</p>
+	</div>
+</body>
+</html>
