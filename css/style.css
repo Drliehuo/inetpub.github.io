@@ -1,0 +1,26 @@
+@charset "utf-8";
+/* CSS Document */
+img{max-width:100%; height:auto; border:0}
+pre{margin:0 0 10px; padding:9.5px; font-family:Monaco, Consolas; line-height:18px; overflow-wrap:break-word; background-color:#F5F5F5; border-color:#CCCCCC; border-radius:4px; border-style:solid; border-width:1px; color:#333333; display:block; overflow:auto; overflow-y:scroll}
+a.blue:link{color:#365d95; text-decoration:none}
+a.blue:visited{color:#365d95; text-decoration:none}
+a.blue:hover{color:#365d95; text-decoration:underline}
+a.blue:active{color:#365d95; text-decoration:none}
+/* footer标签的链接颜色 */
+.footer a:link {color:#365d95; text-decoration:none}
+/* 已被访问的链接 */
+.footer a:visited {color:#365d95; text-decoration:none}
+/* 将鼠标悬停在链接上 */
+.footer a:hover {color:#365d95; text-decoration:underline}
+/* 被选择的链接 */
+.footer a:active {color:#365d95; text-decoration:none}
+.txt{text-indent:2em; line-height:32px; font-size:16px}
+.hide{display:none}
+.dtc{text-align:center}
+.dtl{text-align:left}
+.dtr{text-align:right}
+/* 内边距上右下左 */
+.dpb32{padding:0px 0px 32px 0px}
+.dpb64{padding:0px 0px 64px 0px}
+.dpb320{padding:0px 0px 320px 0px}
+.dpb640{padding:0px 0px 640px 0px}
