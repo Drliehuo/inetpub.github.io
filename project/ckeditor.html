@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ckeditor 4</title>
+    <meta name="description" content="ckeditor 4 一个基于web端的在线内容编辑器。">
+    <meta name="keywords" content="ckeditor 4">
+    <meta name="author" content="陈浩">
+    <link rel="stylesheet" href="https://s.inetpub.cn/bootstrap/v3/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://s.inetpub.cn/bootstrap/v3/dist/examaples/blog/blog.css" integrity="sha384-7FWg1pVbdFomJOLHyBF9JctGekJifTpSL8Yys1dN+E2/7qFXQDAqfgi+Ef4qg8Xv" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://s.inetpub.cn/css/style.css" integrity="sha384-IGW0aavuvcb/+a7KuDTTnUxRZdY/wrimhKnPV9rTxoVSXUFqvr1q71IIJhqq1P3k" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="blog-masthead">
+      <div class="container">
+        <script src="https://inetpub.cn/js/a_header.js"></script>
+      </div>
+    </div>
+    <div class="container">
+      <div class="blog-header">
+        <h1 class="blog-title">ckeditor 4</h1>
+        <p class="lead blog-description">一个基于web端的在线内容编辑器。</p>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 blog-main">
+          <div class="blog-post">
+            <h2 class="blog-post-title">项目更新</h2>
+            <p class="blog-post-meta"><a href="#15:50">2023-1-31</a> by <a href="#">Mr.Chen</a></p>
+            <p>CKEditor 4.19.1</p>
+            <hr>
+            <p>CKEditor 4 根据您选择的以下任何许可的条款获得许可：</p>
+            <p>GNU v2许可</p>
+			<blockquote>修复细节</blockquote>
+            <ul><li>#5125：固定： &nbsp;通过键盘 键删除禁用了 autoParagraphbackspace的小部件 会删除编辑器可编辑区域并使编辑器崩溃。</li>
+            <li>#5135：固定：如 文档中所述，checkbox.setValue 和 radio.setValue 方法不可链接。感谢 乔丹布拉德福德！</li>
+            <li>#5085：固定： 语言 插件删除标记外语文本的元素，如果该元素没有关于文本方向的信息。</li>
+            <li>#4284：固定： 表选择 合并具有行跨度的单元格会引发意外错误，并且不会创建撤消步骤。</li>
+            <li>#5184：固定： 编辑器占位符 插件会降低打字性能。</li>
+            <li>#5158：固定： CKEDITOR.tools#convertToPx() 如果从 DOM 中删除了辅助计算器元素，则会给出无效结果。</li>
+            <li>#5234：固定： &nbsp;Easy Image 不允许使用工具栏按钮上传图像文件。</li>
+            <li>#438 ：固定：无法通过键盘 从 工具栏导航到 元素 路径，反之亦然。</li>
+            <li>#4449：固定： dialog.validate#functions 错误地组合返回可选错误消息的函数，例如 dialog.validate.number 由于不必要的返回类型强制。</li>
+            <li>#4473：固定： &nbsp;dialog.validate 方法不接受参数值。该问题起源于 dialog.validate.functions 方法，该方法没有正确地将参数值传播到验证器。受影响的验证者：<br>
+            functions<br>
+            equals<br>
+            notEqual<br>
+            cssLength<br>
+            htmlLength<br>
+            inlineStyle</li>
+            <li>#5147：固定：&ldquo; 辅助功能帮助&rdquo; 对话框不包含有关在离开对话框时将焦点移回编辑区域的信息。</li>
+            <li>#5144：固定： 菜单按钮 和 面板按钮 在浏览器的辅助功能树中错误地指示其关联弹出菜单的打开状态。</li>
+            <li>#5022：固定： 查找和替换 不响应 Enter 键。</li></ul>
+            <blockquote>API 变更：</blockquote>
+            <ul><li>#5184：添加了 config.editorplaceholder_delay 配置选项，允许在更改编辑器内容时在切换占位符之前延迟占位符。</li>
+            <li>#5184：添加了 CKEDITOR.tools#debounce() 允许将传递的函数执行推迟到自上次调用以来经过给定毫秒数的函数。</li></ul>
+          </div><!-- /.blog-post -->
+        </div><!-- /.blog-main -->
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>ckeditor 4</h4>
+            <p>上一个版本 3.0</p>
+          </div>
+          <div class="sidebar-module">
+            <script src="https://inetpub.cn/js/project.js"></script>
+          </div>
+        </div><!-- /.blog-sidebar -->
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+    <footer class="blog-footer">
+      <script src="https://inetpub.cn/js/footer.js"></script>
+    </footer>
+    <script src="https://s.inetpub.cn/jquery/1.12.4/dist/jquery.min.js" integrity="sha384-hyrVW5ZCrmb5YyNrrCwarhJX/l+CkscefCAhdluEuif11RTZxdQ23z0sLvqRgxGC" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="https://s.inetpub.cn/jquery/1.12.4/dist/jquery.min.js"><\/script>')</script>
+    <script src="https://s.inetpub.cn/bootstrap/v3/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  </body>
+</html>
