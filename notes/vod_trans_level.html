@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>视频转码级别划分</title>
+    <meta name="description" content="H.264共定义了13个级别，1、2 、2.1、3、3.1、4、4.1、5、5.1、5.2、6、6.1、6.2。级别（Level）是用来约束分辨率、帧率和码率的。">
+    <meta name="keywords" content="视频,编码,级别,H264,H265">
+    <meta name="author" content="Dr.Liehuo">
+    <link rel="stylesheet" href="https://s.inetpub.cn/bootstrap/v3/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://s.inetpub.cn/bootstrap/v3/dist/examaples/blog/blog.css" integrity="sha384-7FWg1pVbdFomJOLHyBF9JctGekJifTpSL8Yys1dN+E2/7qFXQDAqfgi+Ef4qg8Xv" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://s.inetpub.cn/css/style.css" integrity="sha384-IGW0aavuvcb/+a7KuDTTnUxRZdY/wrimhKnPV9rTxoVSXUFqvr1q71IIJhqq1P3k" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="blog-masthead">
+      <div class="container">
+        <script src="https://inetpub.cn/js/n_header.js"></script>
+      </div>
+    </div>
+    <div class="container">
+      <div class="blog-header">
+        <h1 class="blog-title">Inetpub</h1>
+        <p class="lead blog-description">笔记</p>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 blog-main">
+          <div class="blog-post">
+            <h2 class="blog-post-title">视频转码级别划分</h2>
+            <p class="blog-post-meta">2023-2-5 by <a href="https://github.com/Drliehuo">Mr.Liehuo</a></p>
+            <p>H.264共定义了13个级别，1、2 、2.1、3、3.1、4、4.1、5、5.1、5.2、6、6.1、6.2。级别（Level）是用来约束分辨率、帧率和码率的。</p>
+            <p><img src="https://inetpub.cn/upload/video.jpg" alt="video" title="video" width="240" height="88"></p>
+            <hr>
+            <p><strong>H264等级的计算</strong></p>
+            <p>H.264共定义了13个级别，1、2 、2.1、3、3.1、4、4.1、5、5.1、5.2、6、6.1、6.2。级别（Level）是用来约束分辨率、帧率和码率的。</p>
+            <p><img src="https://i.inetpub.cn/upload/202302/wgnRXBZS3Vrj9x8B662cuc8R2935CWQP.png" alt="视频转码级别划分" title="视频转码级别划分" width="506" height="1361" /></p>
+            <p><strong>H264等级的计算</strong></p>
+            <p>frameMbs = Math.ceil(nwidth/16) * Math.ceil(nheight/16);// 计算每帧宏块数</p>
+            <p>secondMbs = frameMbs * nfps;// 计算每秒宏块数</p>
+            <p>DpbMbs = frameMbs * nref;// 计算DPB宏块数</p>
+            <p>最大存储帧数与DPB有关&mdash;&mdash;DPB：decoded picture buffer，解码图片缓存区。在做视频解码时，需要将最近的若干幅参考帧缓存起来，这个缓冲区就叫做DPB。所以最大存储帧数也是最大参考帧数（ref）。</p>
+            <p>当DPB中的图像达到了该level下最大尺寸，则DPB只能存放6帧图像。如果DPB中的图像小于该level下最大尺寸，则DPB至多能存放16帧图像（取决于图像尺寸）。</p>
+            <p>level还限制了每帧图像水平和垂直方向最大tile数量，以及每秒最大tile数。</p>
+            <p><strong>参数</strong></p>
+            <p>{Level:&quot;1&quot;, MaxDpbMbs:396, MaxSecondMbs:1485, MaxFrameMbs:99}</p>
+            <p>{Level:&quot;1.1&quot;, MaxDpbMbs:900, MaxSecondMbs:3000, MaxFrameMbs:396}</p>
+            <p>{Level:&quot;1.2&quot;, MaxDpbMbs:2376, MaxSecondMbs:6000, MaxFrameMbs:396}</p>
+            <p>{Level:&quot;1.3&quot;, MaxDpbMbs:2376, MaxSecondMbs:11880, MaxFrameMbs:396}</p>
+            <p>{Level:&quot;2&quot;, MaxDpbMbs:2376, MaxSecondMbs:11880, MaxFrameMbs:396}</p>
+            <p>{Level:&quot;2.1&quot;, MaxDpbMbs:4752, MaxSecondMbs:19800, MaxFrameMbs:792}</p>
+            <p>{Level:&quot;2.2&quot;, MaxDpbMbs:8100, MaxSecondMbs:20250, MaxFrameMbs:1620}</p>
+            <p>{Level:&quot;3&quot;, MaxDpbMbs:8100, MaxSecondMbs:40500, MaxFrameMbs:1620}</p>
+            <p>{Level:&quot;3.1&quot;, MaxDpbMbs:18000, MaxSecondMbs:108000, MaxFrameMbs:3600}</p>
+            <p>{Level:&quot;3.2&quot;, MaxDpbMbs:20480, MaxSecondMbs:216000, MaxFrameMbs:5120}</p>
+            <p>{Level:&quot;4&quot;, MaxDpbMbs:32768, MaxSecondMbs:245760, MaxFrameMbs:8192}</p>
+            <p>{Level:&quot;4.1&quot;, MaxDpbMbs:32768, MaxSecondMbs:245760, MaxFrameMbs:8192}</p>
+            <p>{Level:&quot;4.2&quot;, MaxDpbMbs:34816, MaxSecondMbs:522240, MaxFrameMbs:8704}</p>
+            <p>{Level:&quot;5&quot;, MaxDpbMbs:110400, MaxSecondMbs:589824, MaxFrameMbs:22080}</p>
+            <p>{Level:&quot;5.1&quot;, MaxDpbMbs:184320, MaxSecondMbs:983040, MaxFrameMbs:36864</p>
+            <p><strong>1280*720*60</strong></p>
+            <p>frame=80*45=3600，等级Level 3.1以上</p>
+            <p>sencondMbs=3600*60=216000，等级Level 3.2以上</p>
+            <p><strong>H265等级</strong></p>
+            <p>H265共定义了13个级别，1、2 、2.1、3、3.1、4、4.1、5、5.1、5.2、6、6.1、6.2。</p>
+            <p>Max Luma Picture Size(samples)表示每帧亮度分量的像素数。</p>
+            <p>Max Luma Sample Rate(samples/s)表示每秒的亮度像素数。</p>
+            <p><strong>等级计算</strong></p>
+            <p>samples=width*height</p>
+            <p>samples=samples*帧频</p>
+            <p>每个level下，图像的宽和高都要小于等于sqrt(8*samples)。</p>
+            <p>480P(832x480)视频，每帧亮度分量的像素数=832x480=399360，可知其level必须在3以上，如果帧率为60，每秒的亮度像素数=832x480x60=23961600，所有其level为3.1或以上。</p>
+            <p>720P（1280x720）视频，每帧亮度分量的像素数=1280x720=921600，可知其level必须在3.1以上。当level为4时，其帧率至少为66846720/921600=72.5。</p>
+            <p><strong>1280*720*60</strong></p>
+            <p>samples=1280*720=921600，等级Level 3.1以上</p>
+            <p>samples=921600*60=55296000，等级Level 4以上</p>
+            <p><strong>1920*1080*60</strong></p>
+            <p>samples=1920*1080=2073600，等级Level 4以上</p>
+            <p>samples=2073600*60=124416000，等级Level 4.1</p>
+          </div><!-- /.blog-post -->
+        </div><!-- /.blog-main -->
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>Tags</h4>
+            <p>视频技术</p>
+          </div>
+          <div class="sidebar-module">
+            <script src="https://inetpub.cn/js/project.js"></script>
+          </div>
+        </div><!-- /.blog-sidebar -->
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+    <footer class="blog-footer">
+      <script src="https://inetpub.cn/js/footer.js"></script>
+    </footer>
+    <script src="https://s.inetpub.cn/jquery/1.12.4/dist/jquery.min.js" integrity="sha384-hyrVW5ZCrmb5YyNrrCwarhJX/l+CkscefCAhdluEuif11RTZxdQ23z0sLvqRgxGC" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="https://s.inetpub.cn/jquery/1.12.4/dist/jquery.min.js"><\/script>')</script>
+    <script src="https://s.inetpub.cn/bootstrap/v3/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  </body>
+</html>
