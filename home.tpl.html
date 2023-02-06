@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>主页</title>
+        <meta name="description" content="描述">
+        <meta name="keywords" content="主页">
+        <meta name="author" content="Dr.liehuo">
+        <style>
+            *{box-sizing:border-box}
+            body{margin:0}
+            /* 设置页眉的样式 */
+           .header{background-color:#f1f1f1; padding:20px; text-align:center}
+            /* 设置顶部导航栏的样式 */
+           .topnav{overflow:hidden; background-color:#333}
+            /* 设置 topnav 链接的样式 */
+           .topnav a{float:left; display:block; color:#f2f2f2; text-align:center; padding:14px 16px; text-decoration:none}
+            /* 改变鼠标悬停时的颜色 */
+            .topnav a:hover {background-color:#000; color:white}
+            /* 创建并排的三个非等列 */
+            .column{float:left; width:33.33%; padding:15px}
+            /* 清除列之后的浮动 */
+            .row:after {content: ""; display:table; clear:both}
+            /* 响应式布局 - 创建堆叠而非并排的三列 */
+            @media screen and (max-width:600px){.column {width:100%;}}
+            /* 设置页脚的样式 */
+           .footer{background-color:#f1f1f1; padding:10px; text-align:center}
+            /* 自定义布局 */
+           .wrap {max-width:900px; margin:auto}
+           .active{background-color:#4CAF50}
+           .topimg{border:2px solid #CCCCCC}
+           .topimg:hover{border: 2px solid #777; opacity:0.8}
+       </style>
+       <link rel="stylesheet" href="https://inetpub.cn/css/style.css" integrity="sha384-GZAdq64+osJ3f0rPT2pL6ydS4DuITeTq55boi5oHrKTrMjRwOD3Wh9r4uzo8c6QT" crossorigin="anonymous">
+</head>
+<body>
+    <div class="header">
+        <h1>标题</h1>
+            <p>副标题或描述</p>
+    </div>
+    <div class="topnav">
+	    <div class="wrap">
+            <a href="https://www.shota.vip/" class="active" title="正太网">正太网</a>
+            <a href="https://www.shota.vip/视频/index.html" title="视频">视频</a>
+            <a href="https://www.shota.vip/写真/index.html" title="写真">写真</a>
+            <a href="https://www.shota.vip/散文/index.html" title="散文">散文</a>
+        </div>
+    </div><!--/顶部导航结束-->
+<div class="row">
+  <div class="wrap">
+    <div class="column">
+        <h2>雏菊</h2>
+            <img src="https://inetpub.cn/upload/h1.jpg" alt="雏菊" width="256" height="192">
+            <p>又名马兰头花、延命菊，春菊、太阳菊等。是菊科雏菊属植物的一种，多年生草本植物。高10厘米左右。雏菊原产于欧洲。原种被视为丛生的杂草，开花期在春季。雏菊在能够渡夏的寒冷地区可以进行分枝繁殖</p>
+    </div>
+    <div class="column">
+        <h2>郁金香</h2>
+            <img src="https://inetpub.cn/upload/h2.jpg" alt="郁金香" width="256" height="192">
+            <p>是百合科、郁金香属植物。叶3～5枚，条状披针形至卵状披针状，花单朵顶生，大型而艳丽，花被片红色或杂有白色和黄色，有时为白色或黄色，长5～7厘米，宽2～4厘米，6枚雄蕊等长，花丝无毛，无花柱</p>
+    </div>
+    <div class="column">
+        <h2>银莲花</h2>
+            <img src="https://inetpub.cn/upload/h3.jpg" alt="银莲花" width="256" height="192">
+            <p>银莲花属植物。多年生草本。基生叶4-8；叶片圆肾形，两面疏生柔毛或变无毛，3全裂，中央裂片宽菱形或菱状倒卵形，3裂近中部；叶柄疏被长柔毛或变无毛。</p>
+    </div>
+  </div><!--/wrap 结束-->
+</div><!--/row 结束-->
+<div class="dpb640"></div>
+<div class="footer">
+    <p>Powered by <a href="https://github.com/Drliehuo/lighttp" rel="nofollow">Lighttp</a></p>
+</div>
+</body>
+</html>
