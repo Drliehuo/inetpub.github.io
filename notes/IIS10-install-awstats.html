@@ -32,33 +32,33 @@
             <p>2、解压并运行安装程序 <strong>ActivePerl-5.22.3.2204-MSWin32-x86-64int-401627.exe</strong> 到C盘的默认目录。</p>
             <p>3、解压awstats的压缩包到 <strong>C:\Apps\awstats</strong> 目录。</p>
             <p>4、按住 <strong>Win键 + E</strong> 启动资源管理器，然后点击地址栏的 &gt; 符号，打开控制面板中的程序，启用或关闭 Windows 功能，勾选Internet Information Services还有里面包含的万维网服务 应用程序开发功能 CGI，安全性勾选基本身份验证，最后确定。</p>
-            <p><a href="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc1.png" target="_blank"><img alt="IIS" src="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc1.png" style="height:615px; width:744px" /></a></p>
+            <p><a href="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc1.png" target="_blank"><img alt="IIS" src="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc1.png" width="744" height="615" ></a></p>
             <p>5、打开开始菜单，输入IIS并启动管理界面，打开网站 <strong>Default Web Site</strong> ，处理程序映射，添加脚本映射。</p>
-            <p><a href="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc2.png" target="_blank"><img alt="IIS perl 脚本映射" src="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc2.png" style="height:606px; width:879px" /></a></p>
+            <p><a href="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc2.png" target="_blank"><img alt="IIS perl 脚本映射" src="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc2.png" width="879" height="606" ></a></p>
             <p>6、在 <strong>Default Web Site</strong> 目标点击右键菜单，添加虚拟目录，指向 <strong>C:\Apps\awstats\wwwroot</strong>，名称填写为 awstats。</p>
-            <p>7、打开awstats初始化程序 C:\Apps\awstats\tools\awstats_configure.pl。<br />
-            (1)输入 none 回车<br />
-            (2)输入 y 回车<br />
+            <p>7、打开awstats初始化程序 C:\Apps\awstats\tools\awstats_configure.pl。<br>
+            (1)输入 none 回车<br>
+            (2)输入 y 回车<br>
             (3)输入需要分析的域名，例如 www.inetpub.cn 回车两次，那么在 <strong>C:\Apps\awstats\wwwroot\cgi-bin</strong> 目录就生成了站点的配置文件，找到并打开，LogFile=的位置，修改为对应的网站日志路径即可。</p>
             <p>8、按照 awstats 的要求来设置 IIS 和 nginx 软件的日志输出格式</p>
             <p>(1) IIS 在站点属性中选择 W3C 扩展日志格式，依次勾选以下记录值并确定：</p>
-            <div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px">date<br />
-            time<br />
-            c-ip<br />
-            cs-username<br />
-            cs-method<br />
-            cs-uri-stem<br />
-            cs-uri-query<br />
-            sc-status<br />
-            sc-bytes<br />
-            cs-version<br />
-            cs(User-Agent)<br />
+            <div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px">date<br>
+            time<br>
+            c-ip<br>
+            cs-username<br>
+            cs-method<br>
+            cs-uri-stem<br>
+            cs-uri-query<br>
+            sc-status<br>
+            sc-bytes<br>
+            cs-version<br>
+            cs(User-Agent)<br>
             cs(Referer)</div>
             <p>(2) nginx 打开 nginx.conf 配置文件，在 http{ 值中加入以下代码</p>
-            <div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px">log_format wwwlogs &#39;$remote_addr &ndash; $remote_user [$time_local] &quot;$request&quot; &#39;<br />
-            &#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;<br />
+            <div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px">log_format wwwlogs &#39;$remote_addr &ndash; $remote_user [$time_local] &quot;$request&quot; &#39;<br>
+            &#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;<br>
             &#39;&quot;$http_user_agent&quot; $http_x_forwarded_for&#39;;</div>
-            <p>(2.1) 然后在站点配置文件的日志记录末尾加入 wwwlogs，例如<br />
+            <p>(2.1) 然后在站点配置文件的日志记录末尾加入 wwwlogs，例如<br>
             access_log /www/logs/www.inetpub.cn_access.log <span style="color:#c0392b"><strong>wwwlogs</strong></span>;</p>
           </div><!-- /.blog-post -->
         </div><!-- /.blog-main -->
