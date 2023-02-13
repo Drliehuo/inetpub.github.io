@@ -42,22 +42,22 @@
             (3)输入需要分析的域名，例如 www.inetpub.cn 回车两次，那么在 <strong>C:\Apps\awstats\wwwroot\cgi-bin</strong> 目录就生成了站点的配置文件，找到并打开，LogFile=的位置，修改为对应的网站日志路径即可。</p>
             <p>8、按照 awstats 的要求来设置 IIS 和 nginx 软件的日志输出格式</p>
             <p>(1) IIS 在站点属性中选择 W3C 扩展日志格式，依次勾选以下记录值并确定：</p>
-            <div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px">date<br>
-            time<br>
-            c-ip<br>
-            cs-username<br>
-            cs-method<br>
-            cs-uri-stem<br>
-            cs-uri-query<br>
-            sc-status<br>
-            sc-bytes<br>
-            cs-version<br>
-            cs(User-Agent)<br>
-            cs(Referer)</div>
+            <pre>date
+time
+c-ip
+cs-username
+cs-method
+cs-uri-stem
+cs-uri-query
+sc-status
+sc-bytes
+cs-version
+cs(User-Agent)
+cs(Referer)</pre>
             <p>(2) nginx 打开 nginx.conf 配置文件，在 http{ 值中加入以下代码</p>
-            <div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px">log_format wwwlogs &#39;$remote_addr &ndash; $remote_user [$time_local] &quot;$request&quot; &#39;<br>
-            &#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;<br>
-            &#39;&quot;$http_user_agent&quot; $http_x_forwarded_for&#39;;</div>
+            <pre>log_format wwwlogs &#39;$remote_addr &ndash; $remote_user [$time_local] &quot;$request&quot; &#39;
+&#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;
+&#39;&quot;$http_user_agent&quot; $http_x_forwarded_for&#39;;</pre>
             <p>(2.1) 然后在站点配置文件的日志记录末尾加入 wwwlogs，例如<br>
             access_log /www/logs/www.inetpub.cn_access.log <span style="color:#c0392b"><strong>wwwlogs</strong></span>;</p>
           </div><!-- /.blog-post -->
