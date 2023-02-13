@@ -36,10 +36,11 @@
             <p>5、打开开始菜单，输入IIS并启动管理界面，打开网站 <strong>Default Web Site</strong> ，处理程序映射，添加脚本映射。</p>
             <p><a href="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc2.png" target="_blank"><img alt="IIS perl 脚本映射" src="https://s.inetpub.cn/upload/202302/D24cV9mJxJSP94N2CH2T5Kc6Ur38jWc2.png" width="879" height="606" ></a></p>
             <p>6、在 <strong>Default Web Site</strong> 目标点击右键菜单，添加虚拟目录，指向 <strong>C:\Apps\awstats\wwwroot</strong>，名称填写为 awstats。</p>
-            <p>7、打开awstats初始化程序 C:\Apps\awstats\tools\awstats_configure.pl。<br>
-            (1)输入 none 回车<br>
-            (2)输入 y 回车<br>
-            (3)输入需要分析的域名，例如 www.inetpub.cn 回车两次，那么在 <strong>C:\Apps\awstats\wwwroot\cgi-bin</strong> 目录就生成了站点的配置文件，找到并打开，LogFile=的位置，修改为对应的网站日志路径即可。</p>
+            <p>7、打开awstats初始化程序。</p>
+            <code>C:\Apps\awstats\tools\awstats_configure.pl</code>
+            <p>(1)输入 none 回车</p>
+            <p>(2)输入 y 回车</p>
+            <p>(3)输入需要分析的域名，例如 www.inetpub.cn 回车两次，那么在 <strong>C:\Apps\awstats\wwwroot\cgi-bin</strong> 目录就生成了站点的配置文件，找到并打开，LogFile=的位置，修改为对应的网站日志路径即可。</p>
             <p>8、按照 awstats 的要求来设置 IIS 和 nginx 软件的日志输出格式</p>
             <p>(1) IIS 在站点属性中选择 W3C 扩展日志格式，依次勾选以下记录值并确定：</p>
             <pre>date
