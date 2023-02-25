@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>可道云kodcloud上线后被检测出木马</title>
+    <meta name="description" content="可道云kodcloud，是一个基于PHP开发的云盘文件分享系统，今天alpha team安全人员对其进行了检测。">
+    <meta name="keywords" content="可道云,kodcloud,安全测试">
+    <meta name="author" content="Dr.liehuo">
+    <link rel="stylesheet" href="https://s.inetpub.cn/bootstrap/v3/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://s.inetpub.cn/bootstrap/v3/dist/examaples/blog/blog.css" integrity="sha384-7FWg1pVbdFomJOLHyBF9JctGekJifTpSL8Yys1dN+E2/7qFXQDAqfgi+Ef4qg8Xv" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://s.inetpub.cn/css/style.css" integrity="sha384-IGW0aavuvcb/+a7KuDTTnUxRZdY/wrimhKnPV9rTxoVSXUFqvr1q71IIJhqq1P3k" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="blog-masthead">
+      <div class="container">
+        <script src="https://inetpub.cn/js/n_header.js"></script>
+      </div>
+    </div>
+    <div class="container">
+      <div class="blog-header">
+        <h1 class="blog-title">Inetpub</h1>
+        <p class="lead blog-description">笔记</p>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 blog-main">
+          <div class="blog-post">
+            <h2 class="blog-post-title">可道云kodcloud上线后被检测出木马</h2>
+            <p class="blog-post-meta">2023-2-25 by <a href="https://github.com/Drliehuo">Dr.liehuo</a></p>
+            <p class="txt lead">可道云kodcloud，是一个基于PHP开发的云盘文件分享系统，今天alpha team安全人员对其进行了检测。</p>
+            <hr>
+            <p>安装好了centos 7操作系统，并部署了宝塔控制面板，启动微步后把kodcloud可道云的源代码上传到了网站根目录中，进行手动检测，结果如下：</p>
+            <pre><code>/www/domain/testserver/public_html/plugins/fileThumb/lib/VideoResize.class.php
+/www/domain/testserver/public_html/plugins/officeViewer/controller/libreOffice/index.class.php
+/www/domain/testserver/public_html/plugins/fileThumb/app.php
+/www/domain/testserver/public_html/app/sdks/archiveLib/bin/data.bin</code></pre>
+            <p>测试系统: Centos 7.9</p>
+            <p>软件版本：kodbox.1.36</p>
+            <p>前三个文件中被微步判断为PHP命令执行类木马，最后一个为PHP加密混淆类木马，请站长斟酌后使用。</p>
+            <div class="dpb320"></div>
+          </div><!-- /.blog-post -->
+        </div><!-- /.blog-main -->
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>Tags</h4>
+            <p>可道云,kodcloud,安全测试</p>
+          </div>
+          <div class="sidebar-module">
+            <script src="https://inetpub.cn/js/project.js"></script>
+          </div>
+        </div><!-- /.blog-sidebar -->
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+    <footer class="blog-footer">
+      <script src="https://inetpub.cn/js/footer.js"></script>
+    </footer>
+    <script src="https://s.inetpub.cn/jquery/1.12.4/dist/jquery.min.js" integrity="sha384-hyrVW5ZCrmb5YyNrrCwarhJX/l+CkscefCAhdluEuif11RTZxdQ23z0sLvqRgxGC" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="https://s.inetpub.cn/jquery/1.12.4/dist/jquery.min.js"><\/script>')</script>
+    <script src="https://s.inetpub.cn/bootstrap/v3/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  </body>
+</html>
