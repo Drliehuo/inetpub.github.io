@@ -12,6 +12,8 @@ a.blue:active{color:#365d95; text-decoration:none}
 .footer a:hover {color:#365d95; text-decoration:underline}
 .footer a:active {color:#365d95; text-decoration:none}
 .txt{text-indent:2em; line-height:32px}
+.fwl{font-weight:lighter}
+.fwb{font-weight:bold}
 .hide{display:none}
 .dtc{text-align:center}
 .dtl{text-align:left}
@@ -20,4 +22,4 @@ a.blue:active{color:#365d95; text-decoration:none}
 .dpb64{padding:0px 0px 64px 0px}
 .dpb320{padding:0px 0px 320px 0px}
 .dpb640{padding:0px 0px 640px 0px}
-.footer{font-size:14px}
+.copy{font-size:14px}
