@@ -1,0 +1,41 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-size: 12px;
+  font-family: tahoma, arial, sans-serif;
+  line-height: 1.5;
+}
+.info {
+  background: #FFFBCC;
+  border: 1px solid #FFEC19;
+  color: #666;
+  line-height: 2;
+  margin-top: 12px;
+  text-indent: 6px;
+  font-size: 13px;
+}
+#page {
+  width: 90%;
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+h1 {
+  font-size: 20px;
+  border-bottom: 1px solid #ccc;
+  padding: 20px 0;
+}
+h3 {
+  font-size: 16px;
+  margin: 20px 0 4px;
+}
+h3 span {
+  color: #06c !important;
+}
+/*#edit_payPassword {
+  visibility: hidden;
+}*/
+#light-dialog, #light-dialog-shadow, #light-load {
+  display: none;
+}
