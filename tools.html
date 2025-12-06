@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器维护常用命令</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .commands {
+            padding: 20px;
+        }
+
+        .command-group {
+            margin-bottom: 25px;
+            border-left: 3px solid #3498db;
+            padding-left: 15px;
+        }
+
+        .command-group h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .command-item {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            position: relative;
+        }
+
+        .command-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .command-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .command-code {
+            flex: 1;
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 40px;
+            resize: none;
+            border: none;
+            width: 100%;
+        }
+
+        .command-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .copy-btn {
+            background-color: #61afef;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background-color: #4d87c1;
+        }
+
+        .copy-btn.copied {
+            background-color: #2ecc71;
+        }
+
+        .reset-btn {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .reset-btn:hover {
+            background-color: #bdbdbd;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 0;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .command-container {
+                flex-direction: column;
+            }
+
+            .command-actions {
+                justify-content: flex-end;
+            }
+
+            .btn {
+                padding: 5px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>服务器维护常用命令</h1>
+            <p class="subtitle">常用Linux命令集合，支持编辑和一键复制</p>
+        </header>
+
+        <div class="commands">
+            <div class="command-group">
+                <h2>Nginx 相关命令</h2>
+                
+                <div class="command-item">
+                    <div class="command-title">重启前端引擎</div>
+                    <div class="command-container">
+                        <textarea class="command-code">systemctl restart nginx</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'systemctl restart nginx')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">引擎状态</div>
+                    <div class="command-container">
+                        <textarea class="command-code">systemctl status nginx</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'systemctl status nginx')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">测试配置</div>
+                    <div class="command-container">
+                        <textarea class="command-code">nginx -t</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'nginx -t')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="command-group">
+                <h2>ACME 相关命令</h2>
+                
+                <div class="command-item">
+                    <div class="command-title">acme升级</div>
+                    <div class="command-container">
+                        <textarea class="command-code">acme.sh --upgrade</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'acme.sh --upgrade')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="command-group">
+                <h2>文件编辑命令</h2>
+                
+                <div class="command-item">
+                    <div class="command-title">向指定文件第一行插入代码</div>
+                    <div class="command-container">
+                        <textarea class="command-code">sed -i '1i allow 8.8.8.0/24;' fIP.conf</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'sed -i \'1i allow 8.8.8.0/24;\' fIP.conf')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">删除第一行代码</div>
+                    <div class="command-container">
+                        <textarea class="command-code">sed -i '1d' fIP.conf</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'sed -i \'1d\' fIP.conf')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">当前目录所有文件在第一行增加代码</div>
+                    <div class="command-container">
+                        <textarea class="command-code">for file in *; do
+  [ -f "$file" ] && sed -i '1i allow 182.246.40.27;' "$file"
+done</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'for file in *; do\n  [ -f \"$file\" ] &amp;&amp; sed -i \'1i allow 182.246.40.27;\' \"$file\"\ndone')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">当前目录所有文件删除第一行代码</div>
+                    <div class="command-container">
+                        <textarea class="command-code">for file in *; do
+  [ -f "$file" ] && sed -i '1d' "$file"
+done</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" onclick="resetCommand(this, 'for file in *; do\n  [ -f \"$file\" ] &amp;&amp; sed -i \'1d\' \"$file\"\ndone')">重置</button>
+                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            小工具结束 | 服务器维护常用命令
+        </footer>
+    </div>
+
+    <script>
+        // 复制命令到剪贴板
+        function copyCommand(button) {
+            const commandItem = button.closest('.command-item');
+            const textarea = commandItem.querySelector('.command-code');
+            
+            // 选中文本
+            textarea.select();
+            
+            try {
+                // 执行复制命令
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    // 复制成功反馈
+                    const originalText = button.textContent;
+                    button.textContent = '已复制!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('复制失败: ', err);
+                alert('复制失败，请手动选择文本复制');
+            }
+            
+            // 取消选中
+            window.getSelection().removeAllRanges();
+        }
+
+        // 重置命令为默认值
+        function resetCommand(button, defaultText) {
+            const commandItem = button.closest('.command-item');
+            const textarea = commandItem.querySelector('.command-code');
+            
+            // 替换HTML实体为实际字符
+            const parsedText = defaultText.replace(/&amp;/g, '&')
+                                         .replace(/&lt;/g, '<')
+                                         .replace(/&gt;/g, '>')
+                                         .replace(/&quot;/g, '"')
+                                         .replace(/&#39;/g, "'");
+            
+            textarea.value = parsedText;
+            
+            // 添加重置动画效果
+            const originalColor = textarea.style.backgroundColor;
+            textarea.style.backgroundColor = '#fff3cd';
+            setTimeout(() => {
+                textarea.style.backgroundColor = originalColor;
+            }, 500);
+        }
+    </script>
+</body>
+</html>
