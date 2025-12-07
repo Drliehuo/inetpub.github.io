@@ -68,6 +68,12 @@
             margin-bottom: 15px;
             border-left: 4px solid #3498db;
             position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .command-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .command-title {
@@ -80,34 +86,118 @@
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
+            position: relative;
         }
 
+        /* 代码和行号包装器 */
+        .code-wrapper {
+            display: flex;
+            width: 100%;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .code-wrapper:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 行号容器样式 */
+        .line-numbers {
+            background-color: #21252b;
+            color: #5c6370;
+            padding: 10px 8px;
+            border-radius: 4px 0 0 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            text-align: right;
+            user-select: none;
+            overflow: hidden;
+            min-width: 40px;
+            resize: none;
+            border: none;
+            white-space: pre;
+            border-right: 1px solid #3a3f4b;
+        }
+
+        /* 代码区域样式 */
         .command-code {
             flex: 1;
             background-color: #282c34;
             color: #abb2bf;
             padding: 10px;
-            border-radius: 4px;
+            border-radius: 0 4px 4px 0;
             font-family: 'Courier New', Courier, monospace;
-            min-height: 40px;
-            resize: none;
+            font-size: 13px;
+            line-height: 1.5;
             border: none;
             width: 100%;
+            resize: vertical;
+            min-height: 40px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            transition: all 0.3s;
+        }
+
+        /* 单行命令框样式 - 让代码和行号平行对齐 */
+        .command-code.single-line {
+            min-height: 40px;
+            height: 40px;
+            line-height: 20px; /* 让单行代码垂直居中 */
+            padding-top: 10px;
+            padding-bottom: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        /* 行号容器在单行时的样式 */
+        .single-line + .line-numbers,
+        .line-numbers.single-line-mode {
+            min-height: 40px;
+            height: 40px;
+            line-height: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            overflow: hidden;
+        }
+
+        /* 多行命令框样式 */
+        .command-code.multi-line {
+            min-height: 80px;
+        }
+
+        /* 当代码框获得焦点时的样式 */
+        .command-code:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(97, 175, 239, 0.3);
+            background-color: #2c313a;
         }
 
         .command-actions {
             display: flex;
-            gap: 5px;
-            margin-top: 5px;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .btn {
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.8rem;
             transition: all 0.3s;
             border: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .btn i {
+            font-size: 0.9rem;
         }
 
         .copy-btn {
@@ -117,10 +207,13 @@
 
         .copy-btn:hover {
             background-color: #4d87c1;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .copy-btn.copied {
             background-color: #2ecc71;
+            transform: scale(0.95);
         }
 
         .reset-btn {
@@ -130,6 +223,8 @@
 
         .reset-btn:hover {
             background-color: #bdbdbd;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         footer {
@@ -139,6 +234,38 @@
             color: white;
             font-size: 0.8rem;
         }
+
+        /* 美化滚动条 */
+        .command-code::-webkit-scrollbar,
+        .line-numbers::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .command-code::-webkit-scrollbar-track,
+        .line-numbers::-webkit-scrollbar-track {
+            background: #1e2227;
+            border-radius: 4px;
+        }
+
+        .command-code::-webkit-scrollbar-thumb,
+        .line-numbers::-webkit-scrollbar-thumb {
+            background: #3e4451;
+            border-radius: 4px;
+        }
+
+        .command-code::-webkit-scrollbar-thumb:hover,
+        .line-numbers::-webkit-scrollbar-thumb:hover {
+            background: #4d5360;
+        }
+
+        /* 单行代码时的滚动条隐藏 */
+        .command-code.single-line::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 添加图标字体 */
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
         @media (max-width: 480px) {
             body {
@@ -153,17 +280,85 @@
                 font-size: 1.5rem;
             }
 
+            .code-wrapper {
+                flex-direction: column;
+            }
+            
+            .line-numbers {
+                width: 100%;
+                border-radius: 4px 4px 0 0;
+                text-align: left;
+                padding: 5px 10px;
+                min-height: 30px;
+                overflow-x: auto;
+                white-space: nowrap;
+                border-right: none;
+                border-bottom: 1px solid #3a3f4b;
+            }
+            
+            .command-code {
+                border-radius: 0 0 4px 4px;
+            }
+            
+            .line-numbers::-webkit-scrollbar {
+                height: 3px;
+            }
+            
+            .command-code.multi-line {
+                min-height: 60px;
+            }
+
             .command-container {
                 flex-direction: column;
             }
 
             .command-actions {
                 justify-content: flex-end;
+                flex-wrap: wrap;
             }
 
             .btn {
-                padding: 5px 15px;
+                padding: 6px 10px;
+                font-size: 0.75rem;
             }
+
+            .command-code.single-line {
+                min-height: 35px;
+                height: 35px;
+                line-height: 18px;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+            
+            .single-line + .line-numbers,
+            .line-numbers.single-line-mode {
+                min-height: 35px;
+                height: 35px;
+                line-height: 18px;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+        }
+
+        /* 添加代码高亮效果 */
+        .command-code .comment {
+            color: #7f848e;
+        }
+        
+        .command-code .keyword {
+            color: #c678dd;
+        }
+        
+        .command-code .string {
+            color: #98c379;
+        }
+        
+        .command-code .function {
+            color: #61afef;
+        }
+        
+        .command-code .number {
+            color: #d19a66;
         }
     </style>
 </head>
@@ -184,8 +379,12 @@
                         <textarea class="command-code">systemctl restart nginx</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'systemctl restart nginx')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="systemctl restart nginx">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
                 
@@ -195,8 +394,12 @@
                         <textarea class="command-code">systemctl status nginx</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'systemctl status nginx')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="systemctl status nginx">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
                 
@@ -206,8 +409,12 @@
                         <textarea class="command-code">nginx -t</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'nginx -t')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="nginx -t">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
             </div>
@@ -221,8 +428,12 @@
                         <textarea class="command-code">acme.sh --upgrade</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'acme.sh --upgrade')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="acme.sh --upgrade">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
             </div>
@@ -236,8 +447,57 @@
                         <textarea class="command-code">cd /www/server/panel/vhost/rule</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'cd /www/server/panel/vhost/rule')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="cd /www/server/panel/vhost/rule">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">规则目录列表</div>
+                    <div class="command-container">
+                        <textarea class="command-code">ls -la /www/server/panel/vhost/rule</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" data-default="ls -la /www/server/panel/vhost/rule">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">规则目录统计</div>
+                    <div class="command-container">
+                        <textarea class="command-code">ls /www/server/panel/vhost/rule | wc -l</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" data-default="ls /www/server/panel/vhost/rule | wc -l">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="command-item">
+                    <div class="command-title">查找特定规则文件</div>
+                    <div class="command-container">
+                        <textarea class="command-code">find /www/server/panel/vhost/rule -name "*.conf"</textarea>
+                    </div>
+                    <div class="command-actions">
+                        <button class="btn reset-btn" data-default='find /www/server/panel/vhost/rule -name "*.conf"'>
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
             </div>
@@ -251,8 +511,12 @@
                         <textarea class="command-code">sed -i '1i allow 8.8.8.0/24;' fIP.conf</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'sed -i \'1i allow 8.8.8.0/24;\' fIP.conf')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="sed -i '1i allow 8.8.8.0/24;' fIP.conf">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
                 
@@ -262,8 +526,12 @@
                         <textarea class="command-code">sed -i '1d' fIP.conf</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'sed -i \'1d\' fIP.conf')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="sed -i '1d' fIP.conf">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
                 
@@ -275,8 +543,12 @@
 done</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'for file in *; do\n  [ -f \"$file\" ] &amp;&amp; sed -i \'1i allow 182.246.40.27;\' \"$file\"\ndone')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="for file in *; do\n  [ -f \"$file\" ] && sed -i '1i allow 182.246.40.27;' \"$file\"\ndone">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
                 
@@ -288,8 +560,12 @@ done</textarea>
 done</textarea>
                     </div>
                     <div class="command-actions">
-                        <button class="btn reset-btn" onclick="resetCommand(this, 'for file in *; do\n  [ -f \"$file\" ] &amp;&amp; sed -i \'1d\' \"$file\"\ndone')">重置</button>
-                        <button class="btn copy-btn" onclick="copyCommand(this)">复制</button>
+                        <button class="btn reset-btn" data-default="for file in *; do\n  [ -f \"$file\" ] && sed -i '1d' \"$file\"\ndone">
+                            <i class="fas fa-undo-alt"></i> 重置
+                        </button>
+                        <button class="btn copy-btn">
+                            <i class="far fa-copy"></i> 复制
+                        </button>
                     </div>
                 </div>
             </div>
@@ -301,25 +577,171 @@ done</textarea>
     </div>
 
     <script>
+        // 初始化函数 - 设置所有命令框的初始状态
+        function initializeCodeAreas() {
+            const textareas = document.querySelectorAll('.command-code');
+            textareas.forEach(textarea => {
+                // 为每个命令框包装行号容器
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-wrapper';
+                
+                // 创建行号元素
+                const lineNumbers = document.createElement('textarea');
+                lineNumbers.className = 'line-numbers';
+                lineNumbers.readOnly = true;
+                
+                // 重新包装
+                textarea.parentNode.insertBefore(wrapper, textarea);
+                wrapper.appendChild(lineNumbers);
+                wrapper.appendChild(textarea);
+                
+                // 获取原始文本内容
+                const originalText = textarea.value;
+                textarea.dataset.original = originalText;
+                
+                // 更新行号和高度
+                updateCodeArea(textarea);
+                
+                // 添加输入事件监听，实时更新行号
+                textarea.addEventListener('input', function() {
+                    updateCodeArea(this);
+                });
+                
+                // 添加手动调整大小后的更新
+                textarea.addEventListener('mouseup', function() {
+                    const lineNumbers = this.parentElement.querySelector('.line-numbers');
+                    if (lineNumbers) {
+                        lineNumbers.style.height = this.style.height;
+                    }
+                });
+                
+                // 添加焦点效果
+                textarea.addEventListener('focus', function() {
+                    this.parentElement.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
+                });
+                
+                textarea.addEventListener('blur', function() {
+                    this.parentElement.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                });
+            });
+        }
+
+        // 更新命令框行号和高度
+        function updateCodeArea(textarea) {
+            // 正确计算行数
+            const text = textarea.value;
+            let lines;
+            
+            // 处理不同的换行符
+            if (text.includes('\r\n')) {
+                lines = text.split('\r\n').length;
+            } else if (text.includes('\n')) {
+                lines = text.split('\n').length;
+            } else {
+                lines = 1;
+            }
+            
+            // 如果文本以换行符结尾，需要额外增加一行
+            if (text.endsWith('\n') || text.endsWith('\r\n')) {
+                lines++;
+            }
+            
+            // 设置合适的类 - 单行代码特殊处理
+            textarea.classList.remove('single-line', 'multi-line');
+            const lineNumbers = textarea.parentElement.querySelector('.line-numbers');
+            
+            if (lines <= 2) {
+                textarea.classList.add('single-line');
+                // 单行模式：固定高度，让代码垂直居中
+                textarea.style.height = '40px';
+                textarea.style.paddingTop = '10px';
+                textarea.style.paddingBottom = '10px';
+                textarea.style.lineHeight = '20px';
+                textarea.style.overflow = 'hidden';
+                textarea.style.whiteSpace = 'nowrap';
+                textarea.style.textOverflow = 'ellipsis';
+                
+                // 行号容器也要同样处理
+                if (lineNumbers) {
+                    lineNumbers.classList.add('single-line-mode');
+                    lineNumbers.style.height = '40px';
+                    lineNumbers.style.paddingTop = '10px';
+                    lineNumbers.style.paddingBottom = '10px';
+                    lineNumbers.style.lineHeight = '20px';
+                    lineNumbers.style.overflow = 'hidden';
+                }
+            } else {
+                textarea.classList.add('multi-line');
+                // 多行模式：根据内容调整高度
+                const lineHeight = 22;
+                const minHeight = 80;
+                const maxHeight = 400;
+                const calculatedHeight = Math.min(Math.max(lines * lineHeight, minHeight), maxHeight);
+                textarea.style.height = calculatedHeight + 'px';
+                
+                // 重置多行模式的样式
+                textarea.style.paddingTop = '10px';
+                textarea.style.paddingBottom = '10px';
+                textarea.style.lineHeight = '1.5';
+                textarea.style.overflowY = 'auto';
+                textarea.style.whiteSpace = 'pre-wrap';
+                textarea.style.textOverflow = 'clip';
+                
+                // 行号容器也要同样处理
+                if (lineNumbers) {
+                    lineNumbers.classList.remove('single-line-mode');
+                    lineNumbers.style.height = calculatedHeight + 'px';
+                    lineNumbers.style.paddingTop = '10px';
+                    lineNumbers.style.paddingBottom = '10px';
+                    lineNumbers.style.lineHeight = '1.5';
+                    lineNumbers.style.overflowY = 'auto';
+                }
+            }
+            
+            // 更新行号显示
+            if (lineNumbers) {
+                let numbers = '';
+                for (let i = 1; i <= lines; i++) {
+                    numbers += i + '\n';
+                }
+                lineNumbers.value = numbers;
+                
+                // 确保行号高度与代码高度一致
+                lineNumbers.style.height = textarea.style.height;
+            }
+            
+            // 添加简单的语法高亮（可选功能）
+            highlightSyntax(textarea);
+        }
+
+        // 简单的语法高亮函数
+        function highlightSyntax(textarea) {
+            // 这里可以添加简单的语法高亮逻辑
+            // 由于是纯CSS/JS实现，这里只是一个示例
+            // 在实际使用中，可以考虑使用专门的代码高亮库
+        }
+
         // 复制命令到剪贴板
-        function copyCommand(button) {
+        function copyCommand(event) {
+            const button = event.currentTarget;
             const commandItem = button.closest('.command-item');
             const textarea = commandItem.querySelector('.command-code');
             
             // 选中文本
             textarea.select();
+            textarea.setSelectionRange(0, 99999);
             
             try {
                 // 执行复制命令
                 const successful = document.execCommand('copy');
                 if (successful) {
                     // 复制成功反馈
-                    const originalText = button.textContent;
-                    button.textContent = '已复制!';
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i> 已复制';
                     button.classList.add('copied');
                     
                     setTimeout(() => {
-                        button.textContent = originalText;
+                        button.innerHTML = originalText;
                         button.classList.remove('copied');
                     }, 2000);
                 }
@@ -333,26 +755,67 @@ done</textarea>
         }
 
         // 重置命令为默认值
-        function resetCommand(button, defaultText) {
+        function resetCommand(event) {
+            const button = event.currentTarget;
             const commandItem = button.closest('.command-item');
             const textarea = commandItem.querySelector('.command-code');
+            const defaultText = button.dataset.default;
             
-            // 替换HTML实体为实际字符
-            const parsedText = defaultText.replace(/&amp;/g, '&')
-                                         .replace(/&lt;/g, '<')
-                                         .replace(/&gt;/g, '>')
-                                         .replace(/&quot;/g, '"')
-                                         .replace(/&#39;/g, "'");
+            if (!defaultText) {
+                console.error('未找到默认文本');
+                return;
+            }
+            
+            // 正确处理换行符和转义字符
+            const parsedText = defaultText
+                .replace(/\\n/g, '\n')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'");
             
             textarea.value = parsedText;
             
+            // 更新行号和高度
+            updateCodeArea(textarea);
+            
             // 添加重置动画效果
-            const originalColor = textarea.style.backgroundColor;
-            textarea.style.backgroundColor = '#fff3cd';
+            const originalTransform = button.style.transform;
+            button.style.transform = 'scale(0.95)';
             setTimeout(() => {
-                textarea.style.backgroundColor = originalColor;
-            }, 500);
+                button.style.transform = originalTransform;
+            }, 200);
         }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化所有命令框
+            initializeCodeAreas();
+            
+            // 为所有复制按钮添加事件监听
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', copyCommand);
+            });
+            
+            // 为所有重置按钮添加事件监听
+            document.querySelectorAll('.reset-btn').forEach(button => {
+                button.addEventListener('click', resetCommand);
+            });
+            
+            // 添加键盘快捷键支持
+            document.addEventListener('keydown', function(event) {
+                // Ctrl/Cmd + C 复制
+                if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+                    const activeElement = document.activeElement;
+                    if (activeElement && activeElement.classList.contains('command-code')) {
+                        event.preventDefault();
+                        const copyBtn = activeElement.closest('.command-item').querySelector('.copy-btn');
+                        copyBtn.click();
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
