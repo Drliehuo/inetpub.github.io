@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>服务器维护常用命令</title>
+    <title>服务器常用维护命令</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -11,810 +12,584 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #1a2a3a 0%, #0d1825 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
             padding: 20px;
         }
-
+        
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4dabf7, #339af0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0aec0;
             max-width: 800px;
             margin: 0 auto;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            line-height: 1.6;
+        }
+        
+        .commands-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1200px) {
+            .commands-container {
+                grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .commands-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        .command-card {
+            background: rgba(30, 41, 59, 0.85);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
             overflow: hidden;
         }
-
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
+        
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
         }
-
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+        
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .subtitle {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .commands {
-            padding: 20px;
-        }
-
-        .command-group {
-            margin-bottom: 25px;
-            border-left: 3px solid #3498db;
-            padding-left: 15px;
-        }
-
-        .command-group h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-
-        .command-item {
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3498db;
-            position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .command-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
+        
         .command-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #2c3e50;
-        }
-
-        .command-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        /* 代码和行号包装器 */
-        .code-wrapper {
-            display: flex;
-            width: 100%;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-        }
-
-        .code-wrapper:hover {
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
-
-        /* 行号容器样式 */
-        .line-numbers {
-            background-color: #21252b;
-            color: #5c6370;
-            padding: 10px 8px;
-            border-radius: 4px 0 0 4px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            line-height: 1.5;
-            text-align: right;
-            user-select: none;
-            overflow: hidden;
-            min-width: 40px;
-            resize: none;
-            border: none;
-            white-space: pre;
-            border-right: 1px solid #3a3f4b;
-        }
-
-        /* 代码区域样式 */
-        .command-code {
-            flex: 1;
-            background-color: #282c34;
-            color: #abb2bf;
-            padding: 10px;
-            border-radius: 0 4px 4px 0;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            line-height: 1.5;
-            border: none;
-            width: 100%;
-            resize: vertical;
-            min-height: 40px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            transition: all 0.3s;
-        }
-
-        /* 单行命令框样式 - 让代码和行号平行对齐 */
-        .command-code.single-line {
-            min-height: 40px;
-            height: 40px;
-            line-height: 20px; /* 让单行代码垂直居中 */
-            padding-top: 10px;
-            padding-bottom: 10px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        /* 行号容器在单行时的样式 */
-        .single-line + .line-numbers,
-        .line-numbers.single-line-mode {
-            min-height: 40px;
-            height: 40px;
-            line-height: 20px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            overflow: hidden;
-        }
-
-        /* 多行命令框样式 */
-        .command-code.multi-line {
-            min-height: 80px;
-        }
-
-        /* 当代码框获得焦点时的样式 */
-        .command-code:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(97, 175, 239, 0.3);
-            background-color: #2c313a;
-        }
-
-        .command-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s;
-            border: none;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #63b3ed;
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-weight: 500;
+            gap: 10px;
         }
-
-        .btn i {
-            font-size: 0.9rem;
+        
+        .command-title i {
+            font-size: 1.2rem;
         }
-
-        .copy-btn {
-            background-color: #61afef;
-            color: white;
+        
+        .command-category {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.2);
+            color: #63b3ed;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 10px;
         }
-
-        .copy-btn:hover {
-            background-color: #4d87c1;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        
+        .command-actions {
+            display: flex;
+            gap: 10px;
         }
-
-        .copy-btn.copied {
-            background-color: #2ecc71;
-            transform: scale(0.95);
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
         }
-
-        .reset-btn {
-            background-color: #e0e0e0;
-            color: #333;
+        
+        .btn-edit {
+            background: rgba(59, 130, 246, 0.15);
+            color: #63b3ed;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
-
-        .reset-btn:hover {
-            background-color: #bdbdbd;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        
+        .btn-edit:hover {
+            background: rgba(59, 130, 246, 0.25);
         }
-
-        footer {
-            text-align: center;
+        
+        .btn-copy {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-copy:hover {
+            background: rgba(16, 185, 129, 0.25);
+        }
+        
+        .btn-reset {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .btn-reset:hover {
+            background: rgba(245, 158, 11, 0.25);
+        }
+        
+        .command-content {
+            margin-bottom: 20px;
+        }
+        
+        .command-text {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 8px;
+            padding: 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #cbd5e0;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 80px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+        }
+        
+        .command-editor {
+            width: 100%;
+            min-height: 120px;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 8px;
             padding: 15px;
-            background-color: #2c3e50;
-            color: white;
-            font-size: 0.8rem;
-        }
-
-        /* 美化滚动条 */
-        .command-code::-webkit-scrollbar,
-        .line-numbers::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .command-code::-webkit-scrollbar-track,
-        .line-numbers::-webkit-scrollbar-track {
-            background: #1e2227;
-            border-radius: 4px;
-        }
-
-        .command-code::-webkit-scrollbar-thumb,
-        .line-numbers::-webkit-scrollbar-thumb {
-            background: #3e4451;
-            border-radius: 4px;
-        }
-
-        .command-code::-webkit-scrollbar-thumb:hover,
-        .line-numbers::-webkit-scrollbar-thumb:hover {
-            background: #4d5360;
-        }
-
-        /* 单行代码时的滚动条隐藏 */
-        .command-code.single-line::-webkit-scrollbar {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #cbd5e0;
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            resize: vertical;
             display: none;
         }
-
-        /* 添加图标字体 */
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                border-radius: 0;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .code-wrapper {
-                flex-direction: column;
-            }
-            
-            .line-numbers {
-                width: 100%;
-                border-radius: 4px 4px 0 0;
-                text-align: left;
-                padding: 5px 10px;
-                min-height: 30px;
-                overflow-x: auto;
-                white-space: nowrap;
-                border-right: none;
-                border-bottom: 1px solid #3a3f4b;
-            }
-            
-            .command-code {
-                border-radius: 0 0 4px 4px;
-            }
-            
-            .line-numbers::-webkit-scrollbar {
-                height: 3px;
-            }
-            
-            .command-code.multi-line {
-                min-height: 60px;
-            }
-
-            .command-container {
-                flex-direction: column;
-            }
-
-            .command-actions {
-                justify-content: flex-end;
-                flex-wrap: wrap;
-            }
-
-            .btn {
-                padding: 6px 10px;
-                font-size: 0.75rem;
-            }
-
-            .command-code.single-line {
-                min-height: 35px;
-                height: 35px;
-                line-height: 18px;
-                padding-top: 8px;
-                padding-bottom: 8px;
-            }
-            
-            .single-line + .line-numbers,
-            .line-numbers.single-line-mode {
-                min-height: 35px;
-                height: 35px;
-                line-height: 18px;
-                padding-top: 8px;
-                padding-bottom: 8px;
-            }
-        }
-
-        /* 添加代码高亮效果 */
-        .command-code .comment {
-            color: #7f848e;
+        
+        .editor-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+            display: none;
         }
         
-        .command-code .keyword {
-            color: #c678dd;
+        .btn-save {
+            background: rgba(59, 130, 246, 0.2);
+            color: #63b3ed;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
         
-        .command-code .string {
-            color: #98c379;
+        .btn-cancel {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
         
-        .command-code .function {
-            color: #61afef;
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
         }
         
-        .command-code .number {
-            color: #d19a66;
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: rgba(239, 68, 68, 0.9);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+        
+        .usage-tips {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .usage-tips h3 {
+            margin-bottom: 10px;
+            color: #63b3ed;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .usage-tips ul {
+            padding-left: 20px;
+        }
+        
+        .usage-tips li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #63b3ed;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>服务器维护常用命令</h1>
-            <p class="subtitle">常用Linux命令集合，支持编辑和一键复制</p>
+            <h1><i class="fas fa-server"></i> 服务器常用维护命令</h1>
+            <p class="subtitle">一个便捷的服务器维护命令管理工具。您可以直接编辑命令内容，然后一键复制到剪贴板。所有命令已按类别分组，便于快速查找和使用。</p>
         </header>
-
-        <div class="commands">
-            <div class="command-group">
-                <h2>Nginx 相关命令</h2>
-                
-                <div class="command-item">
-                    <div class="command-title">重启前端引擎</div>
-                    <div class="command-container">
-                        <textarea class="command-code">systemctl restart nginx</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="systemctl restart nginx">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">引擎状态</div>
-                    <div class="command-container">
-                        <textarea class="command-code">systemctl status nginx</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="systemctl status nginx">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">测试配置</div>
-                    <div class="command-container">
-                        <textarea class="command-code">nginx -t</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="nginx -t">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
+        
+        <main>
+            <div class="commands-container" id="commandsContainer">
+                <!-- 命令卡片将通过JavaScript动态生成 -->
             </div>
-
-            <div class="command-group">
-                <h2>ACME 相关命令</h2>
-                
-                <div class="command-item">
-                    <div class="command-title">acme升级</div>
-                    <div class="command-container">
-                        <textarea class="command-code">acme.sh --upgrade</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="acme.sh --upgrade">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
+            
+            <div class="usage-tips">
+                <h3><i class="fas fa-lightbulb"></i> 使用提示</h3>
+                <ul>
+                    <li>点击<span style="color:#63b3ed;">"编辑"</span>按钮可以修改命令内容</li>
+                    <li>点击<span style="color:#34d399;">"复制"</span>按钮可以将命令复制到剪贴板</li>
+                    <li>如果您修改了命令但想恢复原样，点击<span style="color:#fbbf24;">"重置"</span>按钮</li>
+                    <li>在编辑模式下，您可以对命令进行任意修改，然后保存更改</li>
+                    <li>所有命令都支持多行编辑，适合复杂命令的调整</li>
+                </ul>
             </div>
-
-            <div class="command-group">
-                <h2>规则目录操作</h2>
-                
-                <div class="command-item">
-                    <div class="command-title">进入规则目录</div>
-                    <div class="command-container">
-                        <textarea class="command-code">cd /www/server/panel/vhost/rule</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="cd /www/server/panel/vhost/rule">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">规则目录列表</div>
-                    <div class="command-container">
-                        <textarea class="command-code">ls -la /www/server/panel/vhost/rule</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="ls -la /www/server/panel/vhost/rule">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">规则目录统计</div>
-                    <div class="command-container">
-                        <textarea class="command-code">ls /www/server/panel/vhost/rule | wc -l</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="ls /www/server/panel/vhost/rule | wc -l">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">查找特定规则文件</div>
-                    <div class="command-container">
-                        <textarea class="command-code">find /www/server/panel/vhost/rule -name "*.conf"</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default='find /www/server/panel/vhost/rule -name "*.conf"'>
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="command-group">
-                <h2>文件编辑命令</h2>
-                
-                <div class="command-item">
-                    <div class="command-title">向指定文件第一行插入代码</div>
-                    <div class="command-container">
-                        <textarea class="command-code">sed -i '1i allow 8.8.8.0/24;' fIP.conf</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="sed -i '1i allow 8.8.8.0/24;' fIP.conf">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">删除第一行代码</div>
-                    <div class="command-container">
-                        <textarea class="command-code">sed -i '1d' fIP.conf</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="sed -i '1d' fIP.conf">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">当前目录所有文件在第一行增加代码</div>
-                    <div class="command-container">
-                        <textarea class="command-code">for file in *; do
-  [ -f "$file" ] && sed -i '1i allow 182.246.40.27;' "$file"
-done</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="for file in *; do\n  [ -f \"$file\" ] && sed -i '1i allow 182.246.40.27;' \"$file\"\ndone">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="command-item">
-                    <div class="command-title">当前目录所有文件删除第一行代码</div>
-                    <div class="command-container">
-                        <textarea class="command-code">for file in *; do
-  [ -f "$file" ] && sed -i '1d' "$file"
-done</textarea>
-                    </div>
-                    <div class="command-actions">
-                        <button class="btn reset-btn" data-default="for file in *; do\n  [ -f \"$file\" ] && sed -i '1d' \"$file\"\ndone">
-                            <i class="fas fa-undo-alt"></i> 重置
-                        </button>
-                        <button class="btn copy-btn">
-                            <i class="far fa-copy"></i> 复制
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        </main>
+        
         <footer>
-            小工具结束 | 服务器维护常用命令
+            <p>服务器维护命令工具 &copy; 2023 | 专为系统管理员设计</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">注意：使用命令前请确保您了解命令的作用，避免对服务器造成意外影响。</p>
         </footer>
+        
+        <div class="notification" id="notification">
+            <i class="fas fa-check-circle"></i>
+            <span>命令已成功复制到剪贴板！</span>
+        </div>
     </div>
 
     <script>
-        // 初始化函数 - 设置所有命令框的初始状态
-        function initializeCodeAreas() {
-            const textareas = document.querySelectorAll('.command-code');
-            textareas.forEach(textarea => {
-                // 为每个命令框包装行号容器
-                const wrapper = document.createElement('div');
-                wrapper.className = 'code-wrapper';
-                
-                // 创建行号元素
-                const lineNumbers = document.createElement('textarea');
-                lineNumbers.className = 'line-numbers';
-                lineNumbers.readOnly = true;
-                
-                // 重新包装
-                textarea.parentNode.insertBefore(wrapper, textarea);
-                wrapper.appendChild(lineNumbers);
-                wrapper.appendChild(textarea);
-                
-                // 获取原始文本内容
-                const originalText = textarea.value;
-                textarea.dataset.original = originalText;
-                
-                // 更新行号和高度
-                updateCodeArea(textarea);
-                
-                // 添加输入事件监听，实时更新行号
-                textarea.addEventListener('input', function() {
-                    updateCodeArea(this);
-                });
-                
-                // 添加手动调整大小后的更新
-                textarea.addEventListener('mouseup', function() {
-                    const lineNumbers = this.parentElement.querySelector('.line-numbers');
-                    if (lineNumbers) {
-                        lineNumbers.style.height = this.style.height;
-                    }
-                });
-                
-                // 添加焦点效果
-                textarea.addEventListener('focus', function() {
-                    this.parentElement.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
-                });
-                
-                textarea.addEventListener('blur', function() {
-                    this.parentElement.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                });
-            });
-        }
+        // 命令数据
+        const commands = [
+            {
+                id: 1,
+                title: "重启前端引擎",
+                command: "systemctl restart nginx",
+                category: "服务管理",
+                icon: "fas fa-redo"
+            },
+            {
+                id: 2,
+                title: "引擎状态",
+                command: "systemctl status nginx",
+                category: "服务管理",
+                icon: "fas fa-info-circle"
+            },
+            {
+                id: 3,
+                title: "测试配置",
+                command: "nginx -t",
+                category: "配置检查",
+                icon: "fas fa-vial"
+            },
+            {
+                id: 4,
+                title: "ACME 升级",
+                command: "acme.sh --upgrade",
+                category: "ACME 相关",
+                icon: "fas fa-arrow-up"
+            },
+            {
+                id: 5,
+                title: "进入规则目录",
+                command: "cd /www/server/panel/vhost/rule",
+                category: "规则目录操作",
+                icon: "fas fa-folder-open"
+            },
+            {
+                id: 6,
+                title: "规则目录列表",
+                command: "ls -la /www/server/panel/vhost/rule",
+                category: "规则目录操作",
+                icon: "fas fa-list"
+            },
+            {
+                id: 7,
+                title: "规则目录统计",
+                command: "ls /www/server/panel/vhost/rule | wc -l",
+                category: "规则目录操作",
+                icon: "fas fa-calculator"
+            },
+            {
+                id: 8,
+                title: "查找特定规则文件",
+                command: 'find /www/server/panel/vhost/rule -name "*.conf"',
+                category: "规则目录操作",
+                icon: "fas fa-search"
+            },
+            {
+                id: 9,
+                title: "向指定文件第一行插入代码",
+                command: "sed -i '1i allow 8.8.8.0/24;' fIP.conf",
+                category: "文件编辑",
+                icon: "fas fa-edit"
+            },
+            {
+                id: 10,
+                title: "删除第一行代码",
+                command: "sed -i '1d' fIP.conf",
+                category: "文件编辑",
+                icon: "fas fa-trash-alt"
+            },
+            {
+                id: 11,
+                title: "当前目录所有文件在第一行增加代码",
+                command: `for file in *; do
+  [ -f "$file" ] && sed -i '1i allow 182.246.40.27;' "$file"
+done`,
+                category: "文件编辑",
+                icon: "fas fa-file-code"
+            },
+            {
+                id: 12,
+                title: "当前目录所有文件删除第一行代码",
+                command: `for file in *; do
+  [ -f "$file" ] && sed -i '1d' "$file"
+done`,
+                category: "文件编辑",
+                icon: "fas fa-trash"
+            }
+        ];
 
-        // 更新命令框行号和高度
-        function updateCodeArea(textarea) {
-            // 正确计算行数
-            const text = textarea.value;
-            let lines;
-            
-            // 处理不同的换行符
-            if (text.includes('\r\n')) {
-                lines = text.split('\r\n').length;
-            } else if (text.includes('\n')) {
-                lines = text.split('\n').length;
-            } else {
-                lines = 1;
-            }
-            
-            // 如果文本以换行符结尾，需要额外增加一行
-            if (text.endsWith('\n') || text.endsWith('\r\n')) {
-                lines++;
-            }
-            
-            // 设置合适的类 - 单行代码特殊处理
-            textarea.classList.remove('single-line', 'multi-line');
-            const lineNumbers = textarea.parentElement.querySelector('.line-numbers');
-            
-            if (lines <= 2) {
-                textarea.classList.add('single-line');
-                // 单行模式：固定高度，让代码垂直居中
-                textarea.style.height = '40px';
-                textarea.style.paddingTop = '10px';
-                textarea.style.paddingBottom = '10px';
-                textarea.style.lineHeight = '20px';
-                textarea.style.overflow = 'hidden';
-                textarea.style.whiteSpace = 'nowrap';
-                textarea.style.textOverflow = 'ellipsis';
-                
-                // 行号容器也要同样处理
-                if (lineNumbers) {
-                    lineNumbers.classList.add('single-line-mode');
-                    lineNumbers.style.height = '40px';
-                    lineNumbers.style.paddingTop = '10px';
-                    lineNumbers.style.paddingBottom = '10px';
-                    lineNumbers.style.lineHeight = '20px';
-                    lineNumbers.style.overflow = 'hidden';
-                }
-            } else {
-                textarea.classList.add('multi-line');
-                // 多行模式：根据内容调整高度
-                const lineHeight = 22;
-                const minHeight = 80;
-                const maxHeight = 400;
-                const calculatedHeight = Math.min(Math.max(lines * lineHeight, minHeight), maxHeight);
-                textarea.style.height = calculatedHeight + 'px';
-                
-                // 重置多行模式的样式
-                textarea.style.paddingTop = '10px';
-                textarea.style.paddingBottom = '10px';
-                textarea.style.lineHeight = '1.5';
-                textarea.style.overflowY = 'auto';
-                textarea.style.whiteSpace = 'pre-wrap';
-                textarea.style.textOverflow = 'clip';
-                
-                // 行号容器也要同样处理
-                if (lineNumbers) {
-                    lineNumbers.classList.remove('single-line-mode');
-                    lineNumbers.style.height = calculatedHeight + 'px';
-                    lineNumbers.style.paddingTop = '10px';
-                    lineNumbers.style.paddingBottom = '10px';
-                    lineNumbers.style.lineHeight = '1.5';
-                    lineNumbers.style.overflowY = 'auto';
-                }
-            }
-            
-            // 更新行号显示
-            if (lineNumbers) {
-                let numbers = '';
-                for (let i = 1; i <= lines; i++) {
-                    numbers += i + '\n';
-                }
-                lineNumbers.value = numbers;
-                
-                // 确保行号高度与代码高度一致
-                lineNumbers.style.height = textarea.style.height;
-            }
-            
-            // 添加简单的语法高亮（可选功能）
-            highlightSyntax(textarea);
-        }
-
-        // 简单的语法高亮函数
-        function highlightSyntax(textarea) {
-            // 这里可以添加简单的语法高亮逻辑
-            // 由于是纯CSS/JS实现，这里只是一个示例
-            // 在实际使用中，可以考虑使用专门的代码高亮库
-        }
-
-        // 复制命令到剪贴板
-        function copyCommand(event) {
-            const button = event.currentTarget;
-            const commandItem = button.closest('.command-item');
-            const textarea = commandItem.querySelector('.command-code');
-            
-            // 选中文本
-            textarea.select();
-            textarea.setSelectionRange(0, 99999);
-            
-            try {
-                // 执行复制命令
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    // 复制成功反馈
-                    const originalText = button.innerHTML;
-                    button.innerHTML = '<i class="fas fa-check"></i> 已复制';
-                    button.classList.add('copied');
-                    
-                    setTimeout(() => {
-                        button.innerHTML = originalText;
-                        button.classList.remove('copied');
-                    }, 2000);
-                }
-            } catch (err) {
-                console.error('复制失败: ', err);
-                alert('复制失败，请手动选择文本复制');
-            }
-            
-            // 取消选中
-            window.getSelection().removeAllRanges();
-        }
-
-        // 重置命令为默认值
-        function resetCommand(event) {
-            const button = event.currentTarget;
-            const commandItem = button.closest('.command-item');
-            const textarea = commandItem.querySelector('.command-code');
-            const defaultText = button.dataset.default;
-            
-            if (!defaultText) {
-                console.error('未找到默认文本');
-                return;
-            }
-            
-            // 正确处理换行符和转义字符
-            const parsedText = defaultText
-                .replace(/\\n/g, '\n')
-                .replace(/&amp;/g, '&')
-                .replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-                .replace(/&quot;/g, '"')
-                .replace(/&#39;/g, "'");
-            
-            textarea.value = parsedText;
-            
-            // 更新行号和高度
-            updateCodeArea(textarea);
-            
-            // 添加重置动画效果
-            const originalTransform = button.style.transform;
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                button.style.transform = originalTransform;
-            }, 200);
-        }
-
-        // 页面加载完成后初始化
+        // 初始化应用
         document.addEventListener('DOMContentLoaded', function() {
-            // 初始化所有命令框
-            initializeCodeAreas();
+            const commandsContainer = document.getElementById('commandsContainer');
+            const notification = document.getElementById('notification');
             
-            // 为所有复制按钮添加事件监听
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', copyCommand);
+            // 生成命令卡片
+            commands.forEach(cmd => {
+                const commandCard = createCommandCard(cmd);
+                commandsContainer.appendChild(commandCard);
             });
             
-            // 为所有重置按钮添加事件监听
-            document.querySelectorAll('.reset-btn').forEach(button => {
-                button.addEventListener('click', resetCommand);
-            });
+            // 创建命令卡片
+            function createCommandCard(cmd) {
+                const card = document.createElement('div');
+                card.className = 'command-card';
+                card.dataset.id = cmd.id;
+                
+                // 生成卡片HTML
+                card.innerHTML = `
+                    <div class="command-header">
+                        <div>
+                            <div class="command-title">
+                                <i class="${cmd.icon}"></i>
+                                <span>${cmd.title}</span>
+                                <span class="command-category">${cmd.category}</span>
+                            </div>
+                        </div>
+                        <div class="command-actions">
+                            <button class="btn btn-edit" onclick="editCommand(${cmd.id})">
+                                <i class="fas fa-edit"></i> 编辑
+                            </button>
+                            <button class="btn btn-copy" onclick="copyCommand(${cmd.id})">
+                                <i class="fas fa-copy"></i> 复制
+                            </button>
+                            <button class="btn btn-reset" onclick="resetCommand(${cmd.id})">
+                                <i class="fas fa-undo"></i> 重置
+                            </button>
+                        </div>
+                    </div>
+                    <div class="command-content">
+                        <div class="command-text" id="command-text-${cmd.id}">${escapeHtml(cmd.command)}</div>
+                        <textarea class="command-editor" id="command-editor-${cmd.id}">${escapeHtml(cmd.command)}</textarea>
+                        <div class="editor-actions" id="editor-actions-${cmd.id}">
+                            <button class="btn btn-cancel" onclick="cancelEdit(${cmd.id})">
+                                <i class="fas fa-times"></i> 取消
+                            </button>
+                            <button class="btn btn-save" onclick="saveCommand(${cmd.id})">
+                                <i class="fas fa-check"></i> 保存
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                return card;
+            }
             
-            // 添加键盘快捷键支持
-            document.addEventListener('keydown', function(event) {
-                // Ctrl/Cmd + C 复制
-                if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
-                    const activeElement = document.activeElement;
-                    if (activeElement && activeElement.classList.contains('command-code')) {
-                        event.preventDefault();
-                        const copyBtn = activeElement.closest('.command-item').querySelector('.copy-btn');
-                        copyBtn.click();
-                    }
+            // 转义HTML特殊字符
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // 显示通知
+            window.showNotification = function(message, isError = false) {
+                const notification = document.getElementById('notification');
+                const icon = notification.querySelector('i');
+                const text = notification.querySelector('span');
+                
+                text.textContent = message;
+                
+                if (isError) {
+                    notification.classList.add('error');
+                    icon.className = 'fas fa-exclamation-circle';
+                } else {
+                    notification.classList.remove('error');
+                    icon.className = 'fas fa-check-circle';
                 }
-            });
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            };
+            
+            // 复制命令
+            window.copyCommand = function(id) {
+                const commandText = document.getElementById(`command-text-${id}`);
+                const textToCopy = commandText.textContent;
+                
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showNotification('命令已成功复制到剪贴板！');
+                }).catch(err => {
+                    console.error('复制失败: ', err);
+                    showNotification('复制失败，请手动复制命令', true);
+                });
+            };
+            
+            // 编辑命令
+            window.editCommand = function(id) {
+                const commandText = document.getElementById(`command-text-${id}`);
+                const commandEditor = document.getElementById(`command-editor-${id}`);
+                const editorActions = document.getElementById(`editor-actions-${id}`);
+                
+                commandText.style.display = 'none';
+                commandEditor.style.display = 'block';
+                editorActions.style.display = 'flex';
+                
+                commandEditor.focus();
+            };
+            
+            // 保存命令
+            window.saveCommand = function(id) {
+                const commandText = document.getElementById(`command-text-${id}`);
+                const commandEditor = document.getElementById(`command-editor-${id}`);
+                const editorActions = document.getElementById(`editor-actions-${id}`);
+                const originalCommand = commands.find(cmd => cmd.id === id).command;
+                
+                const newCommand = commandEditor.value.trim();
+                
+                if (newCommand === '') {
+                    showNotification('命令不能为空', true);
+                    return;
+                }
+                
+                commandText.textContent = newCommand;
+                commandText.style.display = 'block';
+                commandEditor.style.display = 'none';
+                editorActions.style.display = 'none';
+                
+                showNotification('命令已成功修改！');
+            };
+            
+            // 取消编辑
+            window.cancelEdit = function(id) {
+                const commandText = document.getElementById(`command-text-${id}`);
+                const commandEditor = document.getElementById(`command-editor-${id}`);
+                const editorActions = document.getElementById(`editor-actions-${id}`);
+                const originalCommand = commands.find(cmd => cmd.id === id).command;
+                
+                commandEditor.value = originalCommand;
+                commandText.style.display = 'block';
+                commandEditor.style.display = 'none';
+                editorActions.style.display = 'none';
+                
+                showNotification('已取消编辑', true);
+            };
+            
+            // 重置命令
+            window.resetCommand = function(id) {
+                const commandText = document.getElementById(`command-text-${id}`);
+                const commandEditor = document.getElementById(`command-editor-${id}`);
+                const originalCommand = commands.find(cmd => cmd.id === id).command;
+                
+                commandText.textContent = originalCommand;
+                commandEditor.value = originalCommand;
+                
+                showNotification('命令已重置为原始内容');
+            };
         });
     </script>
 </body>
