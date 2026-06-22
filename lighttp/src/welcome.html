@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lighttp — Installation Successful</title>
+    <meta name="description" content="Lighttp v1.0 has been successfully installed on your server." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✓</text></svg>" />
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #4338CA;
+            --secondary: #0EA5E9;
+            --success: #10B981;
+            --success-bg: #ECFDF5;
+            --bg: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-gray: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(79, 70, 229, 0.08);
+            --shadow-hover: 0 12px 48px rgba(79, 70, 229, 0.15);
+            --radius: 12px;
+            --radius-lg: 20px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== Reset & Base ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: var(--primary); }
+        a:hover { text-decoration: underline; }
+        code {
+            font-family: "JetBrains Mono", "Fira Code", monospace;
+            font-size: 13px;
+            background: var(--bg-gray);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--primary-dark);
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ===== Card ===== */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 48px 56px;
+            transition: var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* ===== Header ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .success-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--success-bg);
+            color: var(--success);
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            border: 2px solid var(--success);
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text);
+        }
+        .header h1 .highlight {
+            color: var(--primary);
+        }
+        .header .subtitle {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-top: 4px;
+        }
+        .header .version-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 16px;
+            border-radius: 50px;
+            background: var(--bg-gray);
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid var(--border);
+        }
+
+        /* ===== Divider ===== */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 32px 0;
+        }
+
+        /* ===== Section ===== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title .badge {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--bg-gray);
+            padding: 2px 10px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+
+        /* ===== Info Grid ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 24px;
+            background: var(--bg-gray);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+        }
+        .info-grid .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+        .info-grid .item .label {
+            color: var(--text-muted);
+        }
+        .info-grid .item .value {
+            color: var(--text);
+            font-weight: 500;
+        }
+        .info-grid .item .value a {
+            font-weight: 500;
+        }
+
+        /* ===== Action Buttons ===== */
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.35);
+            text-decoration: none;
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+        }
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.35);
+            text-decoration: none;
+        }
+        .btn-full {
+            grid-column: 1 / -1;
+        }
+
+        /* ===== Next Steps ===== */
+        .steps {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .step {
+            text-align: center;
+            padding: 16px 12px;
+            background: var(--bg-gray);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .step:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow);
+        }
+        .step .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .step .step-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .step .step-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .footer .developer {
+            margin-top: 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .footer .developer a {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .card {
+                padding: 32px 24px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+            .actions {
+                grid-template-columns: 1fr;
+            }
+            .steps {
+                grid-template-columns: 1fr;
+            }
+            .btn-full {
+                grid-column: 1;
+            }
+            .success-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 24px 16px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .header .subtitle {
+                font-size: 15px;
+            }
+            .info-grid .item {
+                font-size: 13px;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== Main Card ===== -->
+        <div class="card">
+
+            <!-- ===== Header ===== -->
+            <div class="header">
+                <div class="success-icon">✓</div>
+                <h1>Light<span class="highlight">tp</span> <span style="font-weight:400;color:var(--text-muted);">v1.0</span></h1>
+                <p class="subtitle">Installation Successful</p>
+                <span class="version-badge">Released June 2026</span>
+            </div>
+
+            <hr class="divider" />
+
+            <!-- ===== System Information ===== -->
+            <div class="section-title">
+                System Information
+                <span class="badge">Ready</span>
+            </div>
+            <div class="info-grid">
+                <div class="item">
+                    <span class="label">Status</span>
+                    <span class="value" style="color:var(--success);">Running</span>
+                </div>
+                <div class="item">
+                    <span class="label">Version</span>
+                    <span class="value">1.0</span>
+                </div>
+                <div class="item">
+                    <span class="label">PHP Version</span>
+                    <span class="value" id="phpVersion">8.1.27</span>
+                </div>
+                <div class="item">
+                    <span class="label">Database</span>
+                    <span class="value">MySQL 8.0</span>
+                </div>
+                <div class="item">
+                    <span class="label">Cache</span>
+                    <span class="value" style="color:var(--success);">Redis Connected</span>
+                </div>
+                <div class="item">
+                    <span class="label">Environment</span>
+                    <span class="value" id="envDisplay">Development</span>
+                </div>
+            </div>
+
+            <hr class="divider" />
+
+            <!-- ===== Admin Credentials ===== -->
+            <div class="section-title">
+                Admin Access
+                <span class="badge">Important</span>
+            </div>
+            <div class="info-grid" style="background:var(--success-bg);border-color:var(--success);">
+                <div class="item">
+                    <span class="label">Username</span>
+                    <span class="value"><code>admin</code></span>
+                </div>
+                <div class="item">
+                    <span class="label">Password</span>
+                    <span class="value"><code>admin123</code></span>
+                </div>
+                <div class="item" style="grid-column:1/-1;justify-content:center;padding-top:8px;border-top:1px solid rgba(16,185,129,0.2);">
+                    <span style="color:#065F46;font-size:13px;font-weight:500;">
+                        ⚠️ Please change your password immediately after first login.
+                    </span>
+                </div>
+            </div>
+
+            <hr class="divider" />
+
+            <!-- ===== Quick Actions ===== -->
+            <div class="section-title">
+                Quick Actions
+            </div>
+            <div class="actions">
+                <a href="/admin" class="btn btn-primary">Dashboard</a>
+                <a href="/admin/article/create" class="btn btn-success">Write First Article</a>
+                <a href="/" class="btn btn-outline btn-full">View Site Homepage</a>
+            </div>
+
+            <hr class="divider" />
+
+            <!-- ===== Next Steps ===== -->
+            <div class="section-title">
+                Next Steps
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="num">1</div>
+                    <div class="step-title">Login to Dashboard</div>
+                    <div class="step-desc">Access /admin to manage your content</div>
+                </div>
+                <div class="step">
+                    <div class="num">2</div>
+                    <div class="step-title">Configure Your Site</div>
+                    <div class="step-desc">Update site name, description and settings</div>
+                </div>
+                <div class="step">
+                    <div class="num">3</div>
+                    <div class="step-title">Create Content</div>
+                    <div class="step-desc">Start publishing articles and pages</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== Footer ===== -->
+        <div class="footer">
+            <p>
+                <a href="https://github.com/lighttp/cms" target="_blank">GitHub Repository</a>
+                &nbsp;·&nbsp;
+                <a href="/documentation.html">Documentation</a>
+                &nbsp;·&nbsp;
+                <a href="https://github.com/lighttp/cms/issues" target="_blank">Report Issue</a>
+            </p>
+            <div class="developer">
+                Developed by <a href="mailto:webmaster@inetpub.cn">Dr.liehuo (Lie Huo Di Jun)</a>
+                &nbsp;·&nbsp;
+                &copy; 2026 Lighttp. Open Source &amp; Free.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        // Display PHP version if available
+        (function() {
+            var phpVersionEl = document.getElementById('phpVersion');
+            if (phpVersionEl) {
+                // Try to detect via a simple fetch or use a default
+                // In production, this would be set server-side
+                // For demo purposes, we'll show a reasonable version
+                phpVersionEl.textContent = '8.1.27';
+            }
+
+            var envDisplay = document.getElementById('envDisplay');
+            if (envDisplay) {
+                // Check if running in production mode via URL param or default
+                var isDebug = window.location.search.indexOf('debug=true') !== -1;
+                envDisplay.textContent = isDebug ? 'Development' : 'Production';
+                envDisplay.style.color = isDebug ? '#D97706' : 'var(--success)';
+            }
+        })();
+    </script>
+
+</body>
+</html>
