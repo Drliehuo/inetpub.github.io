@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lighttp v1.0 — System Documentation</title>
+    <meta name="description" content="Lighttp v1.0 — Complete system documentation and user manual for the lightweight PHP CMS." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #4338CA;
+            --secondary: #0EA5E9;
+            --accent: #F59E0B;
+            --bg: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-gray: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(79, 70, 229, 0.08);
+            --shadow-hover: 0 12px 48px rgba(79, 70, 229, 0.15);
+            --radius: 12px;
+            --radius-lg: 20px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== Reset & Base ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: var(--primary); }
+        a:hover { text-decoration: underline; }
+        code {
+            font-family: "JetBrains Mono", "Fira Code", monospace;
+            font-size: 13px;
+            background: var(--bg-gray);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--primary-dark);
+        }
+        pre {
+            background: var(--text);
+            color: #E8E8F0;
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: "JetBrains Mono", "Fira Code", monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+        pre .comment { color: #94A3B8; font-style: italic; }
+        pre .keyword { color: #818CF8; font-weight: 600; }
+        pre .string { color: #34D399; }
+        pre .function { color: #F59E0B; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--bg-gray);
+            font-weight: 600;
+            color: var(--text);
+        }
+        tr:last-child td { border-bottom: none; }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== Header ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 14px 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .logo .bolt {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            background: var(--primary);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 700;
+        }
+        .logo .highlight {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .nav-cta {
+            background: var(--primary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+        }
+
+        /* ===== Mobile Menu ===== */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 28px;
+            height: 2.5px;
+            background: var(--text);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ===== Hero ===== */
+        .hero {
+            padding: 120px 0 60px;
+            background: linear-gradient(180deg, #EEF2FF 0%, #FFFFFF 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .hero h1 {
+            font-size: 44px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+        .hero h1 .highlight {
+            color: var(--primary);
+        }
+        .hero .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .hero .meta {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+        .hero .meta span {
+            margin-right: 24px;
+        }
+        .hero .meta a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .hero .meta a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== TOC ===== */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 40px;
+            margin: 40px 0;
+            box-shadow: var(--shadow);
+        }
+        .toc h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px 32px;
+        }
+        .toc-grid a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0;
+            display: block;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+        }
+        .toc-grid a:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        /* ===== Content ===== */
+        .doc-section {
+            padding: 60px 0 40px;
+            border-bottom: 1px solid var(--border);
+        }
+        .doc-section:last-of-type {
+            border-bottom: none;
+        }
+        .doc-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .doc-section h2 .highlight {
+            color: var(--primary);
+        }
+        .doc-section .section-sub {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+        .doc-section h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .doc-section h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+        .doc-section p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .doc-section ul, .doc-section ol {
+            color: var(--text-secondary);
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        .doc-section li {
+            margin-bottom: 6px;
+        }
+
+        /* ===== Note Box ===== */
+        .note {
+            background: #EFF6FF;
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin: 20px 0;
+        }
+        .note strong {
+            color: var(--primary-dark);
+        }
+        .note.warning {
+            background: #FFFBEB;
+            border-left-color: var(--accent);
+        }
+        .note.warning strong {
+            color: #D97706;
+        }
+        .note.danger {
+            background: #FEF2F2;
+            border-left-color: #EF4444;
+        }
+        .note.danger strong {
+            color: #DC2626;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0 32px;
+            margin-top: 20px;
+            background: var(--bg-card);
+        }
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        footer .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        footer .brand .bolt {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 6px;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 700;
+        }
+        footer .brand .highlight { color: var(--primary); }
+        footer .copyright {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        footer .developer {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        footer .developer a {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        footer .developer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: var(--bg-card);
+                flex-direction: column;
+                justify-content: center;
+                padding: 40px;
+                gap: 20px;
+                transition: var(--transition);
+                border-left: 1px solid var(--border);
+                box-shadow: var(--shadow-hover);
+            }
+            .nav-links.open {
+                right: 0;
+            }
+            .menu-toggle {
+                display: flex;
+                z-index: 101;
+            }
+            .hero h1 {
+                font-size: 30px;
+            }
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
+            .doc-section h2 {
+                font-size: 26px;
+            }
+            .doc-section h3 {
+                font-size: 20px;
+            }
+            footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            .hero h1 {
+                font-size: 24px;
+            }
+            .hero .meta span {
+                display: block;
+                margin-bottom: 4px;
+            }
+            pre {
+                font-size: 12px;
+                padding: 14px 16px;
+            }
+            table {
+                font-size: 13px;
+            }
+            th, td {
+                padding: 8px 10px;
+            }
+            .toc {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Header ===== -->
+    <header id="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <span class="bolt">L</span>
+                <span>Light<span class="highlight">tp</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#configuration">Configuration</a></li>
+                <li><a href="#api">API</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank" class="nav-cta">GitHub</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+        <div class="container">
+            <p class="subtitle">System Documentation</p>
+            <h1>Lighttp <span class="highlight">v1.0</span></h1>
+            <p style="color: var(--text-secondary); font-size: 18px; max-width: 600px;">
+                Lightweight PHP CMS — Fast, Secure, Elegant
+            </p>
+            <div class="meta">
+                <span>Version: 1.0</span>
+                <span>Release: June 2026</span>
+                <span>License: MIT</span>
+                <span>Developer: <a href="mailto:webmaster@inetpub.cn">Dr.liehuo</a></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Main Content ===== -->
+    <div class="container">
+
+        <!-- ===== TOC ===== -->
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <div class="toc-grid">
+                <a href="#introduction">1. Introduction</a>
+                <a href="#system-requirements">2. System Requirements</a>
+                <a href="#installation">3. Installation Guide</a>
+                <a href="#directory-structure">4. Directory Structure</a>
+                <a href="#configuration">5. Configuration</a>
+                <a href="#database-setup">6. Database Setup</a>
+                <a href="#admin-dashboard">7. Admin Dashboard</a>
+                <a href="#content-management">8. Content Management</a>
+                <a href="#user-management">9. User Management</a>
+                <a href="#cache-system">10. Cache System</a>
+                <a href="#security">11. Security Features</a>
+                <a href="#api">12. API Reference</a>
+                <a href="#troubleshooting">13. Troubleshooting</a>
+                <a href="#support">14. Support &amp; Contact</a>
+            </div>
+        </div>
+
+        <!-- ===== Section 1: Introduction ===== -->
+        <section class="doc-section" id="introduction">
+            <h2>1. <span class="highlight">Introduction</span></h2>
+            <p class="section-sub">Welcome to Lighttp — the lightweight content management system.</p>
+
+            <p><strong>Lighttp</strong> is a high-performance, secure, and elegant CMS built with PHP, MySQL, and Redis. It is designed for developers and content creators who value speed, code quality, and simplicity.</p>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Blazing Fast Performance</strong> — Redis-powered caching delivers sub-100ms page loads</li>
+                <li><strong>Secure by Default</strong> — PDO prepared statements, password hashing, CSRF protection</li>
+                <li><strong>Clean MVC Architecture</strong> — Maintainable and scalable code structure</li>
+                <li><strong>SEO Friendly</strong> — Custom slugs, meta tags, and sitemap support</li>
+                <li><strong>Responsive Design</strong> — Works seamlessly on all devices</li>
+                <li><strong>Lightweight Core</strong> — Under 200KB core, no unnecessary dependencies</li>
+                <li><strong>Open Source</strong> — MIT licensed, free to use and modify</li>
+            </ul>
+
+            <div class="note">
+                <strong>Quick Start:</strong> Deploy Lighttp in under 5 minutes with the Composer installer.
+            </div>
+        </section>
+
+        <!-- ===== Section 2: System Requirements ===== -->
+        <section class="doc-section" id="system-requirements">
+            <h2>2. <span class="highlight">System Requirements</span></h2>
+
+            <h3>Minimum Requirements</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Version</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Web Server</td><td>Nginx 1.18+ / Apache 2.4+</td></tr>
+                    <tr><td>PHP</td><td>7.4, 8.0, 8.1, 8.2, 8.3</td></tr>
+                    <tr><td>MySQL</td><td>5.7+ / MariaDB 10.3+</td></tr>
+                    <tr><td>Redis</td><td>5.0+</td></tr>
+                    <tr><td>Memory</td><td>512MB minimum, 1GB recommended</td></tr>
+                    <tr><td>Disk Space</td><td>100MB minimum</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Required PHP Extensions</h3>
+            <ul>
+                <li><code>php-mysql</code> — PDO MySQL driver</li>
+                <li><code>php-redis</code> — Redis extension</li>
+                <li><code>php-mbstring</code> — Multibyte string support</li>
+                <li><code>php-json</code> — JSON handling</li>
+                <li><code>php-curl</code> — HTTP requests (recommended)</li>
+                <li><code>php-gd</code> — Image processing (optional)</li>
+                <li><code>php-opcache</code> — Performance optimization</li>
+            </ul>
+
+            <h3>Verify PHP Extensions</h3>
+            <pre><span class="comment"># Check installed PHP extensions</span>
+php -m | grep -E "mysql|redis|mbstring|json|curl"</pre>
+        </section>
+
+        <!-- ===== Section 3: Installation ===== -->
+        <section class="doc-section" id="installation">
+            <h2>3. <span class="highlight">Installation Guide</span></h2>
+
+            <h3>Quick Installation (Recommended)</h3>
+            <pre><span class="comment"># Step 1: Create project via Composer</span>
+composer create-project lighttp/cms my-site
+
+<span class="comment"># Step 2: Navigate to project directory</span>
+<span class="keyword">cd</span> my-site
+
+<span class="comment"># Step 3: Run installation script</span>
+<span class="keyword">php</span> lighttp install
+
+<span class="comment"># Step 4: Follow interactive prompts</span>
+<span class="comment"># - Enter database credentials</span>
+<span class="comment"># - Set admin username and password</span>
+<span class="comment"># - Configure Redis settings</span>
+
+<span class="comment"># Step 5: Start development server</span>
+<span class="keyword">php</span> -S localhost:8080 -t public</pre>
+
+            <h3>Manual Installation</h3>
+            <pre><span class="comment"># Step 1: Clone the source code</span>
+git clone https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src my-site
+<span class="keyword">cd</span> my-site
+
+<span class="comment"># Step 2: Install dependencies</span>
+composer install --no-dev
+
+<span class="comment"># Step 3: Configure environment</span>
+<span class="keyword">cp</span> .env.example .env
+<span class="keyword">nano</span> .env  <span class="comment"># Edit database and Redis settings</span>
+
+<span class="comment"># Step 4: Run database migration</span>
+<span class="keyword">php</span> lighttp migrate
+
+<span class="comment"># Step 5: Create admin user</span>
+<span class="keyword">php</span> lighttp user:create admin admin@example.com password123
+
+<span class="comment"># Step 6: Set file permissions</span>
+chmod -R 755 var/
+chmod -R 755 public/uploads/</pre>
+
+            <h3>Web Server Configuration</h3>
+            <h4>Nginx</h4>
+            <pre>server {
+    listen 80;
+    server_name your-domain.com;
+    root /var/www/lighttp/public;
+    index index.php;
+
+    location / {
+        try_files <span class="string">$uri</span> <span class="string">$uri/</span> /index.php?<span class="string">$query_string</span>;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME <span class="string">$document_root$fastcgi_script_name</span>;
+    }
+}</pre>
+
+            <h4>Apache</h4>
+            <pre>&lt;VirtualHost *:80&gt;
+    ServerName your-domain.com
+    DocumentRoot /var/www/lighttp/public
+    &lt;Directory /var/www/lighttp/public&gt;
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</pre>
+
+            <div class="note warning">
+                <strong>Important:</strong> For production environments, always set <code>APP_DEBUG=false</code> in your .env file.
+            </div>
+        </section>
+
+        <!-- ===== Section 4: Directory Structure ===== -->
+        <section class="doc-section" id="directory-structure">
+            <h2>4. <span class="highlight">Directory Structure</span></h2>
+
+            <p>Lighttp follows a clean and organized directory structure:</p>
+
+            <pre>/
+├── app/
+│   ├── core/           <span class="comment"># Core framework classes</span>
+│   │   ├── Application.php
+│   │   ├── Database.php
+│   │   └── RedisCache.php
+│   ├── controllers/    <span class="comment"># Application controllers</span>
+│   │   ├── HomeController.php
+│   │   ├── AdminController.php
+│   │   └── AuthController.php
+│   ├── models/         <span class="comment"># Data models</span>
+│   │   ├── Article.php
+│   │   ├── Category.php
+│   │   └── User.php
+│   ├── config/         <span class="comment"># Configuration files</span>
+│   │   └── config.php
+│   └── routes.php      <span class="comment"># Route definitions</span>
+├── public/             <span class="comment"># Web root directory</span>
+│   ├── index.php       <span class="comment"># Entry point</span>
+│   ├── .htaccess       <span class="comment"># Apache rewrite rules</span>
+│   ├── css/            <span class="comment"># Stylesheets</span>
+│   ├── js/             <span class="comment"># JavaScript files</span>
+│   └── uploads/        <span class="comment"># User uploaded files</span>
+├── var/                <span class="comment"># Runtime data</span>
+│   ├── cache/          <span class="comment"># Cache storage</span>
+│   ├── logs/           <span class="comment"># Application logs</span>
+│   └── sessions/       <span class="comment"># Session storage</span>
+├── .env                <span class="comment"># Environment configuration</span>
+└── composer.json       <span class="comment"># Composer dependencies</span></pre>
+        </section>
+
+        <!-- ===== Section 5: Configuration ===== -->
+        <section class="doc-section" id="configuration">
+            <h2>5. <span class="highlight">Configuration</span></h2>
+
+            <p>All configuration is managed through the <code>.env</code> file and <code>app/config/config.php</code>.</p>
+
+            <h3>Environment Variables (.env)</h3>
+            <pre><span class="comment"># Database Configuration</span>
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=lighttp
+DB_USER=root
+DB_PASS=your_password
+
+<span class="comment"># Redis Configuration</span>
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DATABASE=0
+
+<span class="comment"># Application Settings</span>
+APP_NAME=Lighttp
+APP_DEBUG=true
+APP_TIMEZONE=Asia/Shanghai
+APP_PER_PAGE=10</pre>
+
+            <h3>Application Config (config.php)</h3>
+            <pre><span class="keyword">return</span> [
+    <span class="string">'database'</span> => [
+        <span class="string">'host'</span> => env(<span class="string">'DB_HOST'</span>, <span class="string">'localhost'</span>),
+        <span class="string">'port'</span> => env(<span class="string">'DB_PORT'</span>, 3306),
+        <span class="string">'database'</span> => env(<span class="string">'DB_NAME'</span>, <span class="string">'lighttp'</span>),
+        <span class="string">'username'</span> => env(<span class="string">'DB_USER'</span>, <span class="string">'root'</span>),
+        <span class="string">'password'</span> => env(<span class="string">'DB_PASS'</span>, <span class="string">''</span>),
+        <span class="string">'charset'</span> => <span class="string">'utf8mb4'</span>,
+    ],
+    <span class="string">'cache'</span> => [
+        <span class="string">'enabled'</span> => <span class="keyword">true</span>,
+        <span class="string">'host'</span> => env(<span class="string">'REDIS_HOST'</span>, <span class="string">'127.0.0.1'</span>),
+        <span class="string">'port'</span> => env(<span class="string">'REDIS_PORT'</span>, 6379),
+        <span class="string">'prefix'</span> => <span class="string">'lighttp:'</span>,
+        <span class="string">'default_ttl'</span> => 3600,
+    ],
+    <span class="string">'app'</span> => [
+        <span class="string">'name'</span> => env(<span class="string">'APP_NAME'</span>, <span class="string">'Lighttp'</span>),
+        <span class="string">'debug'</span> => env(<span class="string">'APP_DEBUG'</span>, <span class="keyword">false</span>),
+        <span class="string">'timezone'</span> => env(<span class="string">'APP_TIMEZONE'</span>, <span class="string">'UTC'</span>),
+        <span class="string">'per_page'</span> => env(<span class="string">'APP_PER_PAGE'</span>, 10),
+    ],
+];</pre>
+
+            <div class="note">
+                <strong>Tip:</strong> Use the <code>env()</code> helper function to access environment variables throughout your application.
+            </div>
+        </section>
+
+        <!-- ===== Section 6: Database Setup ===== -->
+        <section class="doc-section" id="database-setup">
+            <h2>6. <span class="highlight">Database Setup</span></h2>
+
+            <p>Lighttp uses MySQL/MariaDB with PDO for database operations. The system includes 12 core tables:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Table</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>articles</code></td><td>Content articles and posts</td></tr>
+                    <tr><td><code>categories</code></td><td>Content categories</td></tr>
+                    <tr><td><code>users</code></td><td>User accounts</td></tr>
+                    <tr><td><code>comments</code></td><td>User comments</td></tr>
+                    <tr><td><code>pages</code></td><td>Static pages</td></tr>
+                    <tr><td><code>links</code></td><td>Friend links</td></tr>
+                    <tr><td><code>settings</code></td><td>System settings</td></tr>
+                    <tr><td><code>cache</code></td><td>Database cache (fallback)</td></tr>
+                    <tr><td><code>logs</code></td><td>Audit logs</td></tr>
+                    <tr><td><code>sessions</code></td><td>User sessions</td></tr>
+                    <tr><td><code>tags</code></td><td>Content tags</td></tr>
+                    <tr><td><code>article_tags</code></td><td>Article-tag relationships</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Run Migrations</h3>
+            <pre><span class="comment"># Run all migrations</span>
+<span class="keyword">php</span> lighttp migrate
+
+<span class="comment"># Rollback last migration</span>
+<span class="keyword">php</span> lighttp migrate:rollback
+
+<span class="comment"># Check migration status</span>
+<span class="keyword">php</span> lighttp migrate:status</pre>
+
+            <div class="note warning">
+                <strong>Warning:</strong> Always backup your database before running migrations in production.
+            </div>
+        </section>
+
+        <!-- ===== Section 7: Admin Dashboard ===== -->
+        <section class="doc-section" id="admin-dashboard">
+            <h2>7. <span class="highlight">Admin Dashboard</span></h2>
+
+            <p>The admin dashboard provides a comprehensive interface for managing your content and system settings.</p>
+
+            <h3>Accessing the Dashboard</h3>
+            <pre>https://your-domain.com/admin</pre>
+
+            <h3>Default Admin Credentials</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Username</td><td><code>admin</code></td></tr>
+                    <tr><td>Password</td><td><code>admin123</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="note danger">
+                <strong>Critical:</strong> Change the default password immediately after first login!
+            </div>
+
+            <h3>Dashboard Sections</h3>
+            <ul>
+                <li><strong>Dashboard</strong> — Key metrics and system overview</li>
+                <li><strong>Articles</strong> — Create, edit, delete, and manage articles</li>
+                <li><strong>Categories</strong> — Organize content with categories</li>
+                <li><strong>Users</strong> — Manage user accounts and roles</li>
+                <li><strong>Settings</strong> — System-wide configuration</li>
+                <li><strong>Cache</strong> — Clear Redis cache</li>
+            </ul>
+        </section>
+
+        <!-- ===== Section 8: Content Management ===== -->
+        <section class="doc-section" id="content-management">
+            <h2>8. <span class="highlight">Content Management</span></h2>
+
+            <h3>8.1 Articles</h3>
+            <p>Articles are the primary content type in Lighttp. Each article includes:</p>
+            <ul>
+                <li><strong>Title</strong> — The article headline</li>
+                <li><strong>Slug</strong> — URL-friendly identifier (auto-generated)</li>
+                <li><strong>Content</strong> — Main article body</li>
+                <li><strong>Excerpt</strong> — Short summary</li>
+                <li><strong>Category</strong> — Content classification</li>
+                <li><strong>Status</strong> — Draft, Published, Pending Review</li>
+                <li><strong>Meta Data</strong> — SEO title, description, keywords</li>
+            </ul>
+
+            <h4>Creating an Article</h4>
+            <pre><span class="comment"># Via command line</span>
+<span class="keyword">php</span> lighttp article:create "My First Article" --content="Full content here" --category=1
+
+<span class="comment"># Via web interface</span>
+<span class="comment"># Navigate to /admin/article/create</span></pre>
+
+            <h3>8.2 Categories</h3>
+            <p>Categories help organize articles. Features include:</p>
+            <ul>
+                <li>Hierarchical structure (parent-child)</li>
+                <li>Custom slugs for SEO</li>
+                <li>Sort order control</li>
+                <li>Hide/show toggle</li>
+            </ul>
+
+            <h3>8.3 Pages</h3>
+            <p>Static pages for content like About, Contact, and Privacy Policy.</p>
+            <ul>
+                <li>Independent from article system</li>
+                <li>Custom templates support</li>
+                <li>Navigation menu integration</li>
+            </ul>
+        </section>
+
+        <!-- ===== Section 9: User Management ===== -->
+        <section class="doc-section" id="user-management">
+            <h2>9. <span class="highlight">User Management</span></h2>
+
+            <p>Lighttp includes a complete user management system with role-based permissions.</p>
+
+            <h3>User Roles</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Permissions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>admin</code></td><td>Full system access, user management, settings</td></tr>
+                    <tr><td><code>editor</code></td><td>Create and manage all content</td></tr>
+                    <tr><td><code>author</code></td><td>Create and manage own content</td></tr>
+                    <tr><td><code>subscriber</code></td><td>Read-only access</td></tr>
+                </tbody>
+            </table>
+
+            <h3>User Commands</h3>
+            <pre><span class="comment"># Create a new user</span>
+<span class="keyword">php</span> lighttp user:create username email password
+
+<span class="comment"># Change user password</span>
+<span class="keyword">php</span> lighttp user:password username newpassword
+
+<span class="comment"># List all users</span>
+<span class="keyword">php</span> lighttp user:list
+
+<span class="comment"># Delete a user</span>
+<span class="keyword">php</span> lighttp user:delete username</pre>
+        </section>
+
+        <!-- ===== Section 10: Cache System ===== -->
+        <section class="doc-section" id="cache-system">
+            <h2>10. <span class="highlight">Cache System</span></h2>
+
+            <p>Lighttp uses Redis for powerful multi-level caching.</p>
+
+            <h3>Cache Levels</h3>
+            <ul>
+                <li><strong>Page Cache</strong> — Full HTML page caching (60s TTL)</li>
+                <li><strong>Data Cache</strong> — Query result caching (5-300s TTL)</li>
+                <li><strong>Session Cache</strong> — User session storage (optional)</li>
+            </ul>
+
+            <h3>Cache Commands</h3>
+            <pre><span class="comment"># Clear all cache</span>
+<span class="keyword">php</span> lighttp cache:clear
+
+<span class="comment"># Clear page cache only</span>
+<span class="keyword">php</span> lighttp cache:clear --type=page
+
+<span class="comment"># Clear data cache only</span>
+<span class="keyword">php</span> lighttp cache:clear --type=data
+
+<span class="comment"># Check cache status</span>
+<span class="keyword">php</span> lighttp cache:status</pre>
+
+            <h3>Cache Configuration</h3>
+            <pre><span class="keyword">return</span> [
+    <span class="string">'cache'</span> => [
+        <span class="string">'enabled'</span> => <span class="keyword">true</span>,
+        <span class="string">'host'</span> => <span class="string">'127.0.0.1'</span>,
+        <span class="string">'port'</span> => 6379,
+        <span class="string">'prefix'</span> => <span class="string">'lighttp:'</span>,
+        <span class="string">'default_ttl'</span> => 3600,  <span class="comment">// 1 hour</span>
+    ],
+];</pre>
+
+            <div class="note">
+                <strong>Performance Tip:</strong> Redis caching can reduce database queries by up to 90% and improve response times by 10x.
+            </div>
+        </section>
+
+        <!-- ===== Section 11: Security ===== -->
+        <section class="doc-section" id="security">
+            <h2>11. <span class="highlight">Security Features</span></h2>
+
+            <p>Lighttp implements multiple security layers to protect your content and users.</p>
+
+            <h3>Security Measures</h3>
+            <ul>
+                <li><strong>SQL Injection Prevention</strong> — PDO prepared statements</li>
+                <li><strong>Password Security</strong> — bcrypt hashing with salt</li>
+                <li><strong>CSRF Protection</strong> — Token-based form validation</li>
+                <li><strong>XSS Prevention</strong> — Auto-escaping of output</li>
+                <li><strong>Session Security</strong> — Secure session handling with rotation</li>
+                <li><strong>Input Validation</strong> — Filter and sanitize all user input</li>
+                <li><strong>Rate Limiting</strong> — Prevent brute force attacks</li>
+            </ul>
+
+            <h3>Security Best Practices</h3>
+            <pre><span class="comment"># Always set APP_DEBUG=false in production</span>
+APP_DEBUG=false
+
+<span class="comment"># Use strong passwords (min 12 characters, mixed case)</span>
+<span class="comment"># Keep system and PHP updated</span>
+<span class="comment"># Use HTTPS/SSL in production</span>
+<span class="comment"># Regularly backup database</span>
+<span class="comment"># Monitor access logs</span></pre>
+
+            <div class="note danger">
+                <strong>Security Warning:</strong> Never expose sensitive configuration files (.env, config.php) to the public web.
+            </div>
+        </section>
+
+        <!-- ===== Section 12: API ===== -->
+        <section class="doc-section" id="api">
+            <h2>12. <span class="highlight">API Reference</span></h2>
+
+            <p>Lighttp provides a RESTful API for content management and integration.</p>
+
+            <h3>API Endpoints</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>GET</td><td><code>/api/articles</code></td><td>List all articles</td></tr>
+                    <tr><td>GET</td><td><code>/api/articles/{id}</code></td><td>Get article by ID</td></tr>
+                    <tr><td>POST</td><td><code>/api/articles</code></td><td>Create new article</td></tr>
+                    <tr><td>PUT</td><td><code>/api/articles/{id}</code></td><td>Update article</td></tr>
+                    <tr><td>DELETE</td><td><code>/api/articles/{id}</code></td><td>Delete article</td></tr>
+                    <tr><td>GET</td><td><code>/api/categories</code></td><td>List all categories</td></tr>
+                    <tr><td>GET</td><td><code>/api/users</code></td><td>List users (admin only)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Authentication</h3>
+            <p>API uses Bearer token authentication:</p>
+            <pre><span class="comment"># Example request</span>
+curl -X GET https://your-domain.com/api/articles \
+    -H <span class="string">"Authorization: Bearer your_api_token"</span></pre>
+
+            <h3>Response Format</h3>
+            <pre>{
+    <span class="string">"status"</span>: <span class="string">"success"</span>,
+    <span class="string">"data"</span>: {
+        <span class="string">"id"</span>: 1,
+        <span class="string">"title"</span>: <span class="string">"Sample Article"</span>,
+        <span class="string">"content"</span>: <span class="string">"Full article content..."</span>,
+        <span class="string">"created_at"</span>: <span class="string">"2026-06-22 10:00:00"</span>
+    }
+}</pre>
+        </section>
+
+        <!-- ===== Section 13: Troubleshooting ===== -->
+        <section class="doc-section" id="troubleshooting">
+            <h2>13. <span class="highlight">Troubleshooting</span></h2>
+
+            <h3>Common Issues</h3>
+
+            <h4>Error: Database connection failed</h4>
+            <ul>
+                <li>Verify MySQL/MariaDB is running: <code>sudo systemctl status mysql</code></li>
+                <li>Check credentials in <code>.env</code> file</li>
+                <li>Test connection: <code>mysql -u user -p -h host</code></li>
+            </ul>
+
+            <h4>Error: Redis connection failed</h4>
+            <ul>
+                <li>Verify Redis is running: <code>redis-cli ping</code></li>
+                <li>Check Redis configuration in <code>.env</code></li>
+                <li>Ensure Redis extension is installed: <code>php -m | grep redis</code></li>
+            </ul>
+
+            <h4>Error: 404 Not Found</h4>
+            <ul>
+                <li>Check web server configuration (Nginx/Apache)</li>
+                <li>Verify <code>public/</code> is set as document root</li>
+                <li>Check <code>.htaccess</code> or Nginx rewrite rules</li>
+            </ul>
+
+            <h4>Error: Permission denied</h4>
+            <ul>
+                <li>Set correct permissions: <code>chown -R www-data:www-data var/</code></li>
+                <li>Set correct file modes: <code>chmod -R 755 var/</code></li>
+                <li>For sessions: <code>chmod -R 777 var/sessions/</code></li>
+            </ul>
+
+            <h4>Error: Class not found</h4>
+            <ul>
+                <li>Run Composer autoload: <code>composer dump-autoload</code></li>
+                <li>Check namespace declarations in PHP files</li>
+            </ul>
+
+            <div class="note">
+                <strong>Logs:</strong> Check <code>var/logs/</code> directory for detailed error information.
+            </div>
+        </section>
+
+        <!-- ===== Section 14: Support ===== -->
+        <section class="doc-section" id="support">
+            <h2>14. <span class="highlight">Support &amp; Contact</span></h2>
+
+            <h3>Getting Help</h3>
+            <ul>
+                <li><strong>GitHub Issues</strong> — <a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank">Report bugs and request features</a></li>
+                <li><strong>Documentation</strong> — <a href="https://lighttp.dev/docs" target="_blank">Full documentation portal</a></li>
+                <li><strong>Community</strong> — <a href="https://discord.gg/lighttp" target="_blank">Join our Discord community</a></li>
+            </ul>
+
+            <h3>Developer Information</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Developer</td><td>Dr.liehuo (烈火帝君)</td></tr>
+                    <tr><td>Email</td><td><a href="mailto:webmaster@inetpub.cn">webmaster@inetpub.cn</a></td></tr>
+                    <tr><td>License</td><td>MIT Open Source</td></tr>
+                    <tr><td>Repository</td><td><a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src">https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src</a></td></tr>
+                </tbody>
+            </table>
+
+            <h3>Contributing</h3>
+            <p>We welcome contributions from the community! Please read our contributing guidelines before submitting pull requests.</p>
+            <ul>
+                <li>Fork the repository</li>
+                <li>Create a feature branch</li>
+                <li>Submit a pull request</li>
+            </ul>
+
+            <div class="note">
+                <strong>Thank You!</strong> Lighttp is built with passion and dedication. We appreciate your support and feedback.
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <div class="container">
+            <div class="brand">
+                <span class="bolt">L</span>
+                <span>Light<span class="highlight">tp</span></span>
+                <span style="font-weight:400;color:var(--text-muted);font-size:13px;">v1.0</span>
+            </div>
+            <div class="developer">
+                Developed by <a href="mailto:webmaster@inetpub.cn">Dr.liehuo (烈火帝君)</a>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Lighttp. Open Source &amp; Free.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        // Header scroll effect
+        var header = document.getElementById('header');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 20) {
+                header.style.boxShadow = '0 4px 30px rgba(0,0,0,0.06)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Mobile menu toggle
+        var menuToggle = document.getElementById('menuToggle');
+        var navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', function() {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    var headerHeight = 70;
+                    var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

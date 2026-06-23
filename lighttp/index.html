@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lighttp — 轻量级 PHP CMS 系统</title>
+    <meta name="description" content="Lighttp 是一款基于 PHP + MySQL + Redis 的轻量级内容管理系统，极速、安全、优雅。" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #4338CA;
+            --secondary: #0EA5E9;
+            --accent: #F59E0B;
+            --bg: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-gray: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(79, 70, 229, 0.08);
+            --shadow-hover: 0 12px 48px rgba(79, 70, 229, 0.15);
+            --radius: 12px;
+            --radius-lg: 20px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== Reset & Base ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== Button ===== */
+        .btn {
+            display: inline-block;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.35);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .btn-sm {
+            padding: 10px 24px;
+            font-size: 14px;
+        }
+
+        /* ===== Header / Nav ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 0;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid transparent;
+        }
+        header.scrolled {
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .logo .bolt {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 10px;
+            font-size: 18px;
+            color: #fff;
+            font-weight: 700;
+        }
+        .logo .highlight {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-cta {
+            background: var(--primary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+        }
+        .nav-cta::after { display: none !important; }
+
+        /* ===== Mobile Menu Toggle ===== */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 28px;
+            height: 2.5px;
+            background: var(--text);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            background: linear-gradient(180deg, #EEF2FF 0%, #FFFFFF 100%);
+        }
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            background: rgba(79, 70, 229, 0.10);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border: 1px solid rgba(79, 70, 229, 0.15);
+        }
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        .hero h1 .highlight {
+            color: var(--primary);
+        }
+        .hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 480px;
+            margin-bottom: 32px;
+            line-height: 1.8;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+        .hero-stats .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .hero-stats .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* ===== Hero Visual ===== */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-visual .code-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-hover);
+        }
+        .hero-visual .code-block .line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .hero-visual .code-block .line .number {
+            color: var(--text-muted);
+            font-size: 12px;
+            width: 24px;
+            text-align: right;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .hero-visual .code-block .line .keyword { color: var(--primary); font-weight: 600; }
+        .hero-visual .code-block .line .string { color: var(--secondary); }
+        .hero-visual .code-block .line .comment { color: var(--text-muted); font-style: italic; }
+        .hero-visual .code-block .line .function { color: #D97706; }
+
+        /* ===== Section Titles ===== */
+        .section {
+            padding: 100px 0;
+        }
+        .section-label {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            background: rgba(79, 70, 229, 0.08);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+        .section-title .highlight {
+            color: var(--primary);
+        }
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 18px;
+            max-width: 560px;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-header .section-subtitle {
+            margin: 0 auto;
+        }
+
+        /* ===== Features Grid ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            transition: var(--transition);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-hover);
+        }
+        .feature-card .icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: block;
+            color: var(--primary);
+        }
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ===== Tech Stack ===== */
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            min-width: 100px;
+            transition: var(--transition);
+        }
+        .tech-item:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .tech-item .tech-icon {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .tech-item .tech-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* ===== Testimonials ===== */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: var(--transition);
+        }
+        .testimonial-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow);
+        }
+        .testimonial-card .stars {
+            color: #F59E0B;
+            font-size: 16px;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .testimonial-card blockquote {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .testimonial-card .author .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #fff;
+            font-size: 16px;
+        }
+        .testimonial-card .author .name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+        .testimonial-card .author .role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ===== CTA Section ===== */
+        .cta-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 80px 60px;
+            text-align: center;
+            margin-top: 40px;
+            box-shadow: var(--shadow);
+        }
+        .cta-section h2 {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .cta-section h2 .highlight {
+            color: var(--primary);
+        }
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 48px 0 32px;
+            margin-top: 40px;
+            background: var(--bg-card);
+        }
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        footer .footer-brand .bolt {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 700;
+        }
+        footer .footer-brand .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+        }
+        footer .footer-brand .brand-name .highlight {
+            color: var(--primary);
+        }
+        footer .footer-brand .version {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-gray);
+            padding: 2px 12px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+        footer .footer-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+        footer .footer-links a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        footer .footer-links a:hover {
+            color: var(--primary);
+        }
+        footer .footer-info {
+            text-align: right;
+        }
+        footer .footer-info .copyright {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        footer .footer-info .developer {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        footer .footer-info .developer a {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        footer .footer-info .developer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero p { margin: 0 auto 32px; }
+            .hero-buttons { justify-content: center; }
+            .hero-stats { justify-content: center; }
+            .hero-visual .code-block { max-width: 100%; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .section-title { font-size: 32px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: var(--bg-card);
+                flex-direction: column;
+                justify-content: center;
+                padding: 40px;
+                gap: 24px;
+                transition: var(--transition);
+                border-left: 1px solid var(--border);
+                box-shadow: var(--shadow-hover);
+            }
+            .nav-links.open {
+                right: 0;
+            }
+            .menu-toggle {
+                display: flex;
+                z-index: 101;
+            }
+            .hero h1 { font-size: 36px; }
+            .hero { padding: 100px 0 60px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .section { padding: 60px 0; }
+            .section-title { font-size: 28px; }
+            .cta-section { padding: 40px 24px; }
+            .cta-section h2 { font-size: 28px; }
+            .hero-stats { gap: 24px; flex-wrap: wrap; }
+            footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            footer .footer-info {
+                text-align: center;
+            }
+            .tech-stack { gap: 12px; }
+            .tech-item { padding: 12px 20px; min-width: 70px; }
+            .tech-item .tech-icon { font-size: 24px; }
+            .tech-item .tech-name { font-size: 11px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 28px; }
+            .hero-buttons .btn { width: 100%; text-align: center; }
+            .container { padding: 0 16px; }
+            .hero-visual .code-block { padding: 16px; }
+            .hero-visual .code-block .line { font-size: 11px; gap: 8px; }
+            .hero-visual .code-block .line .number { width: 18px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Header ===== -->
+    <header id="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <span class="bolt">L</span>
+                <span>Light<span class="highlight">tp</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#tech">Tech Stack</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank">GitHub</a></li>
+                <li><a href="https://www.inetpub.cn/lighttp/documentation.html" class="nav-cta">Dashboard</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== Hero Section ===== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-badge">v1.0 Released</span>
+                <h1>
+                    Fast. Elegant. Modern.<br />
+                    <span class="highlight">Content Management</span>
+                </h1>
+                <p>
+                    Lighttp is a lightweight CMS built with <strong>PHP + MySQL + Redis</strong>.
+                    Designed for speed, security, and developer happiness.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#features" class="btn btn-primary">Explore Features</a>
+                    <a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank" class="btn btn-outline">View on GitHub</a>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="stat-number">&lt; 100ms</div>
+                        <div class="stat-label">Page Response</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Database Tables</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Open Source</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="code-block">
+                    <div class="line"><span class="number">1</span><span class="comment">// Lighttp Quick Start</span></div>
+                    <div class="line"><span class="number">2</span><span class="keyword">composer</span> create-project lighttp/cms my-site</div>
+                    <div class="line"><span class="number">3</span><span class="keyword">cd</span> my-site</div>
+                    <div class="line"><span class="number">4</span><span class="keyword">php</span> lighttp install</div>
+                    <div class="line"><span class="number">5</span></div>
+                    <div class="line"><span class="number">6</span><span class="comment">// Configure database</span></div>
+                    <div class="line"><span class="number">7</span>DB_HOST=<span class="string">"localhost"</span></div>
+                    <div class="line"><span class="number">8</span>DB_NAME=<span class="string">"lighttp"</span></div>
+                    <div class="line"><span class="number">9</span></div>
+                    <div class="line"><span class="number">10</span><span class="comment">// Start development server</span></div>
+                    <div class="line"><span class="number">11</span><span class="function">php</span> -S localhost:8080 -t public</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Features Section ===== -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Features</span>
+                <h2 class="section-title">
+                    Built for <span class="highlight">Modern Developers</span>
+                </h2>
+                <p class="section-subtitle">
+                    Lighttp provides a complete and elegant solution for content management.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="icon">Z</span>
+                    <h3>Lightning Fast</h3>
+                    <p>Redis-powered multi-level caching delivers page loads under 100ms, reducing database queries by 90%.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">S</span>
+                    <h3>Secure by Design</h3>
+                    <p>PDO prepared statements prevent SQL injection, with password hashing and CSRF protection built in.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">A</span>
+                    <h3>Elegant Architecture</h3>
+                    <p>Clean MVC design pattern with PSR standards compliance for maintainable and scalable code.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">O</span>
+                    <h3>SEO Optimized</h3>
+                    <p>Custom URL slugs, meta tags, and sitemap generation for better search engine visibility.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">R</span>
+                    <h3>Responsive Design</h3>
+                    <p>Perfectly adapts to PC, tablet, and mobile devices for content management on the go.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">L</span>
+                    <h3>Lightweight Core</h3>
+                    <p>Under 200KB core codebase with no unnecessary dependencies, minimal server resource usage.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Tech Stack ===== -->
+    <section class="section" id="tech" style="padding-top: 0;">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Tech Stack</span>
+                <h2 class="section-title">
+                    Powered by <span class="highlight">Modern Technologies</span>
+                </h2>
+                <p class="section-subtitle">
+                    Built on a mature and stable technology stack for performance and productivity.
+                </p>
+            </div>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <span class="tech-icon">PHP</span>
+                    <span class="tech-name">PHP 8.x</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">SQL</span>
+                    <span class="tech-name">MySQL 5.7+</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">RD</span>
+                    <span class="tech-name">Redis 5.0+</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">NG</span>
+                    <span class="tech-name">Nginx</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">CP</span>
+                    <span class="tech-name">Composer</span>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">PD</span>
+                    <span class="tech-name">PDO</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Testimonials ===== -->
+    <section class="section" id="testimonials" style="padding-top: 0;">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Testimonials</span>
+                <h2 class="section-title">
+                    What the <span class="highlight">Community Says</span>
+                </h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">* * * * *</div>
+                    <blockquote>"Lighttp is the most elegant lightweight CMS I have ever used. Clean code, great docs, and super fast deployment."</blockquote>
+                    <div class="author">
+                        <div class="avatar">Z</div>
+                        <div>
+                            <div class="name">Zhang Wei</div>
+                            <div class="role">Full-stack Developer, Beijing</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">* * * * *</div>
+                    <blockquote>"The Redis caching strategy is outstanding. Our website runs 10x faster after migrating to Lighttp."</blockquote>
+                    <div class="author">
+                        <div class="avatar">L</div>
+                        <div>
+                            <div class="name">Li Na</div>
+                            <div class="role">Tech Lead, Shanghai</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">* * * * *</div>
+                    <blockquote>"Open source, free, and high performance. Lighttp makes CMS selection for small to medium projects so simple."</blockquote>
+                    <div class="author">
+                        <div class="avatar">W</div>
+                        <div>
+                            <div class="name">Wang Tao</div>
+                            <div class="role">Independent Developer, Shenzhen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA Section ===== -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="cta-section">
+                <h2>Ready to <span class="highlight">Get Started</span>?</h2>
+                <p>Experience Lighttp v1.0 and begin your journey of fast, elegant content management.</p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank" class="btn btn-primary">View on GitHub</a>
+                    <a href="https://www.inetpub.cn/lighttp/documentation.html" class="btn btn-outline">Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <div class="container">
+            <div class="footer-brand">
+                <span class="bolt">L</span>
+                <span class="brand-name">Light<span class="highlight">tp</span></span>
+                <span class="version">v1.0</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#tech">Tech Stack</a></li>
+                <li><a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank">GitHub</a></li>
+                <li><a href="https://www.inetpub.cn/lighttp/documentation.html">Dashboard</a></li>
+            </ul>
+            <div class="footer-info">
+                <div class="copyright">&copy; 2026 Lighttp. Open Source &amp; Free.</div>
+                <div class="developer">
+                    Developed by <a href="mailto:webmaster@inetpub.cn">Dr.liehuo (烈火帝君)</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        // Header scroll effect
+        var header = document.getElementById('header');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        var menuToggle = document.getElementById('menuToggle');
+        var navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', function() {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+
+        // Close menu on link click (mobile)
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    var headerHeight = header.offsetHeight;
+                    var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
