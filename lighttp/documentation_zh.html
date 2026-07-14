@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lighttp 使用说明书 — 从入门到精通</title>
+    <meta name="description" content="Lighttp v1.0 完整使用说明书，涵盖安装、后台管理、内容发布、系统配置等所有操作指南。" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>" />
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #4338CA;
+            --secondary: #0EA5E9;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --bg: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-gray: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(79, 70, 229, 0.08);
+            --shadow-hover: 0 12px 48px rgba(79, 70, 229, 0.15);
+            --radius: 12px;
+            --radius-lg: 20px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== Reset & Base ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: var(--primary); }
+        a:hover { text-decoration: underline; }
+        code {
+            font-family: "JetBrains Mono", "Fira Code", "SF Mono", monospace;
+            font-size: 13px;
+            background: var(--bg-gray);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--primary-dark);
+        }
+        pre {
+            background: #1E293B;
+            color: #E2E8F0;
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: "JetBrains Mono", "Fira Code", monospace;
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 16px 0;
+        }
+        pre .comment { color: #94A3B8; font-style: italic; }
+        pre .keyword { color: #818CF8; font-weight: 600; }
+        pre .string { color: #34D399; }
+        pre .function { color: #F59E0B; }
+        pre .number { color: #F472B6; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--bg-gray);
+            font-weight: 600;
+            color: var(--text);
+        }
+        tr:last-child td { border-bottom: none; }
+        img {
+            max-width: 100%;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin: 16px 0;
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== Header ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 14px 0;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .logo .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            background: var(--primary);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 700;
+        }
+        .logo .highlight {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .nav-cta {
+            background: var(--primary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+        }
+
+        /* ===== Mobile Menu ===== */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 28px;
+            height: 2.5px;
+            background: var(--text);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ===== Hero ===== */
+        .hero {
+            padding: 110px 0 50px;
+            background: linear-gradient(180deg, #EEF2FF 0%, #FFFFFF 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .hero h1 {
+            font-size: 40px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+        .hero h1 .highlight {
+            color: var(--primary);
+        }
+        .hero .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .hero .meta {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+        .hero .meta span {
+            margin-right: 24px;
+        }
+
+        /* ===== TOC ===== */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 40px;
+            margin: 40px 0;
+            box-shadow: var(--shadow);
+        }
+        .toc h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px 32px;
+        }
+        .toc-grid a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0;
+            display: block;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+        }
+        .toc-grid a:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        /* ===== Sections ===== */
+        .doc-section {
+            padding: 50px 0 40px;
+            border-bottom: 1px solid var(--border);
+        }
+        .doc-section:last-of-type {
+            border-bottom: none;
+            padding-bottom: 20px;
+        }
+        .doc-section h2 {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .doc-section h2 .highlight {
+            color: var(--primary);
+        }
+        .doc-section .section-sub {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+        .doc-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .doc-section h4 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+        .doc-section p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .doc-section ul, .doc-section ol {
+            color: var(--text-secondary);
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        .doc-section li {
+            margin-bottom: 6px;
+        }
+        .doc-section .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .doc-section .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* ===== Note Boxes ===== */
+        .note {
+            background: #EFF6FF;
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin: 20px 0;
+        }
+        .note strong {
+            color: var(--primary-dark);
+        }
+        .note.success {
+            background: #ECFDF5;
+            border-left-color: var(--success);
+        }
+        .note.success strong {
+            color: #065F46;
+        }
+        .note.warning {
+            background: #FFFBEB;
+            border-left-color: var(--warning);
+        }
+        .note.warning strong {
+            color: #D97706;
+        }
+        .note.danger {
+            background: #FEF2F2;
+            border-left-color: var(--danger);
+        }
+        .note.danger strong {
+            color: #DC2626;
+        }
+        .note.info {
+            background: #F0F9FF;
+            border-left-color: var(--secondary);
+        }
+        .note.info strong {
+            color: #0369A1;
+        }
+
+        /* ===== Badge ===== */
+        .badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-primary { background: #EEF2FF; color: var(--primary); }
+        .badge-success { background: #ECFDF5; color: var(--success); }
+        .badge-warning { background: #FFFBEB; color: var(--warning); }
+        .badge-danger { background: #FEF2F2; color: var(--danger); }
+        .badge-info { background: #F0F9FF; color: var(--secondary); }
+
+        /* ===== Screenshot Placeholder ===== */
+        .screenshot-placeholder {
+            background: var(--bg-gray);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .screenshot-placeholder .icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 0;
+            margin-top: 20px;
+            background: var(--bg-card);
+        }
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        footer .brand {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        footer .brand .highlight { color: var(--primary); }
+        footer .copyright {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        footer .developer {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        footer .developer a {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: var(--bg-card);
+                flex-direction: column;
+                justify-content: center;
+                padding: 40px;
+                gap: 20px;
+                transition: var(--transition);
+                border-left: 1px solid var(--border);
+                box-shadow: var(--shadow-hover);
+            }
+            .nav-links.open {
+                right: 0;
+            }
+            .menu-toggle {
+                display: flex;
+                z-index: 101;
+            }
+            .hero h1 { font-size: 28px; }
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
+            .doc-section h2 { font-size: 24px; }
+            .doc-section h3 { font-size: 18px; }
+            pre { font-size: 12px; padding: 14px 16px; }
+            table { font-size: 13px; }
+            th, td { padding: 8px 10px; }
+            .toc { padding: 20px; }
+            footer .container { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 16px; }
+            .hero h1 { font-size: 22px; }
+            .hero .meta span { display: block; margin-bottom: 4px; }
+            .doc-section { padding: 30px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Header ===== -->
+    <header id="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <span class="icon">L</span>
+                <span>Light<span class="highlight">tp</span></span>
+                <span style="font-weight:400;color:var(--text-muted);font-size:14px;">使用说明书</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#getting-started">快速开始</a></li>
+                <li><a href="#admin-guide">后台管理</a></li>
+                <li><a href="#content-creation">内容创作</a></li>
+                <li><a href="#faq">常见问题</a></li>
+                <li><a href="https://www.inetpub.cn/lighttp/documentation.html" class="nav-cta">技术文档</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+        <div class="container">
+            <p class="subtitle">📖 用户使用指南</p>
+            <h1>Lighttp <span class="highlight">使用说明书</span></h1>
+            <p style="color: var(--text-secondary); font-size: 18px; max-width: 600px;">
+                从安装部署到日常管理，一份文档搞定所有操作
+            </p>
+            <div class="meta">
+                <span>版本: v1.0</span>
+                <span>更新: 2026年7月</span>
+                <span>适用对象: 网站管理员 · 内容编辑 · 普通用户</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Main Content ===== -->
+    <div class="container">
+
+        <!-- ===== TOC ===== -->
+        <div class="toc">
+            <h2>📋 目录</h2>
+            <div class="toc-grid">
+                <a href="#getting-started">1. 快速开始</a>
+                <a href="#login">2. 登录与账户</a>
+                <a href="#admin-dashboard">3. 后台仪表盘</a>
+                <a href="#article-management">4. 文章管理</a>
+                <a href="#category-management">5. 分类管理</a>
+                <a href="#user-management">6. 用户管理</a>
+                <a href="#system-settings">7. 系统设置</a>
+                <a href="#cache-management">8. 缓存管理</a>
+                <a href="#frontend-guide">9. 前台使用</a>
+                <a href="#faq">10. 常见问题</a>
+            </div>
+        </div>
+
+        <!-- ===== Section 1: 快速开始 ===== -->
+        <section class="doc-section" id="getting-started">
+            <h2>1. <span class="highlight">快速开始</span></h2>
+            <p class="section-sub">5 分钟即可完成 Lighttp 的安装和首次登录。</p>
+
+            <h3>1.1 系统要求</h3>
+            <table>
+                <thead>
+                    <tr><th>组件</th><th>要求版本</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Web 服务器</td><td>Nginx 1.18+ / Apache 2.4+</td></tr>
+                    <tr><td>PHP</td><td>7.4 ~ 8.3</td></tr>
+                    <tr><td>MySQL / MariaDB</td><td>5.7+ / 10.3+</td></tr>
+                    <tr><td>Redis</td><td>5.0+</td></tr>
+                </tbody>
+            </table>
+
+            <h3>1.2 安装步骤</h3>
+            <div class="step-item">
+                <span class="step-number">1</span>
+                <div><strong>上传文件</strong> — 将 Lighttp 所有文件上传到服务器的网站根目录（如 <code>/var/www/html/</code> 或 <code>public_html/</code>）。</div>
+            </div>
+            <div class="step-item">
+                <span class="step-number">2</span>
+                <div><strong>创建数据库</strong> — 在 MySQL 中创建一个新数据库（如 <code>lighttp_db</code>），字符集选择 <code>utf8mb4</code>。</div>
+            </div>
+            <div class="step-item">
+                <span class="step-number">3</span>
+                <div><strong>配置数据库</strong> — 编辑 <code>src/app/config/config.php</code>，填写正确的数据库连接信息：</div>
+            </div>
+            <pre>'database' => [
+    'host' => 'localhost',
+    'port' => 3306,
+    'database' => 'lighttp_db',    <span class="comment">// 你的数据库名</span>
+    'username' => 'your_user',     <span class="comment">// 数据库用户名</span>
+    'password' => 'your_password', <span class="comment">// 数据库密码</span>
+    'charset' => 'utf8mb4',
+],</pre>
+            <div class="step-item">
+                <span class="step-number">4</span>
+                <div><strong>导入数据表</strong> — 在 phpMyAdmin 或命令行中导入 <code>install.sql</code> 文件：</div>
+            </div>
+            <pre><span class="keyword">mysql</span> -u your_user -p lighttp_db &lt; install.sql</pre>
+            <div class="step-item">
+                <span class="step-number">5</span>
+                <div><strong>设置网站根目录</strong> — 将 Web 服务器的 DocumentRoot 指向 <code>public/</code> 文件夹。</div>
+            </div>
+            <div class="step-item">
+                <span class="step-number">6</span>
+                <div><strong>访问网站</strong> — 在浏览器中打开你的域名，看到欢迎页面即表示安装成功！</div>
+            </div>
+
+            <div class="note success">
+                <strong>✅ 安装完成！</strong> 默认管理员账号：<code>admin</code> / 密码：<code>admin123</code>。请立即登录后台修改密码！
+            </div>
+
+            <div class="note warning">
+                <strong>⚠️ 安全提示：</strong> 安装完成后，建议删除 <code>install.php</code> 和 <code>install.sql</code> 文件，防止被恶意利用。
+            </div>
+        </section>
+
+        <!-- ===== Section 2: 登录与账户 ===== -->
+        <section class="doc-section" id="login">
+            <h2>2. <span class="highlight">登录与账户</span></h2>
+
+            <h3>2.1 登录后台</h3>
+            <ol>
+                <li>在浏览器中访问 <code>http://你的域名/admin</code></li>
+                <li>输入用户名和密码</li>
+                <li>点击「登录」按钮</li>
+            </ol>
+
+            <div class="screenshot-placeholder">
+                <span class="icon">🔐</span>
+                登录页面示意图<br />
+                <span style="font-size:13px;">（实际界面以部署后为准）</span>
+            </div>
+
+            <h3>2.2 修改密码</h3>
+            <ol>
+                <li>登录后台后，点击右上角用户名</li>
+                <li>选择「修改密码」选项</li>
+                <li>输入旧密码和新密码（至少6位）</li>
+                <li>点击「保存」</li>
+            </ol>
+
+            <div class="note danger">
+                <strong>🔴 重要：</strong> 首次登录后请立即修改默认密码（admin/admin123），防止账号被盗。
+            </div>
+
+            <h3>2.3 用户角色说明</h3>
+            <table>
+                <thead>
+                    <tr><th>角色</th><th>权限说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge badge-danger">管理员</span></td><td>全部权限：用户管理、系统设置、所有内容管理</td></tr>
+                    <tr><td><span class="badge badge-warning">编辑</span></td><td>内容管理：创建/编辑/删除所有文章和分类</td></tr>
+                    <tr><td><span class="badge badge-info">作者</span></td><td>仅管理自己的文章</td></tr>
+                    <tr><td><span class="badge badge-primary">订阅者</span></td><td>仅浏览，无管理权限</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ===== Section 3: 后台仪表盘 ===== -->
+        <section class="doc-section" id="admin-dashboard">
+            <h2>3. <span class="highlight">后台仪表盘</span></h2>
+            <p class="section-sub">登录后首先看到的就是仪表盘，这里是整个管理系统的核心入口。</p>
+
+            <h3>3.1 数据概览</h3>
+            <p>仪表盘顶部显示四个关键数据卡片：</p>
+            <ul>
+                <li><strong>📄 文章</strong> — 已发布文章总数</li>
+                <li><strong>📂 分类</strong> — 全部分类数量</li>
+                <li><strong>💬 评论</strong> — 已通过审核的评论数</li>
+                <li><strong>👤 用户</strong> — 注册用户总数</li>
+            </ul>
+
+            <h3>3.2 快捷入口</h3>
+            <p>仪表盘下方提供五个快捷功能卡片：</p>
+            <ul>
+                <li><strong>📄 文章管理</strong> — 进入文章列表</li>
+                <li><strong>📂 分类管理</strong> — 管理分类</li>
+                <li><strong>👤 用户管理</strong> — 查看用户列表</li>
+                <li><strong>⚙️ 系统设置</strong> — 修改网站配置</li>
+                <li><strong>🗑️ 清空缓存</strong> — 一键清除 Redis 缓存</li>
+            </ul>
+
+            <div class="note info">
+                <strong>💡 提示：</strong> 仪表盘中的统计数据会实时更新，方便你随时了解网站运营状况。
+            </div>
+        </section>
+
+        <!-- ===== Section 4: 文章管理 ===== -->
+        <section class="doc-section" id="article-management">
+            <h2>4. <span class="highlight">文章管理</span></h2>
+            <p class="section-sub">文章是网站的核心内容，Lighttp 提供了完整的文章管理功能。</p>
+
+            <h3>4.1 文章列表</h3>
+            <p>在 <code>/admin/articles</code> 页面，你可以看到所有文章的列表，包含以下信息：</p>
+            <ul>
+                <li><strong>ID</strong> — 文章唯一编号</li>
+                <li><strong>标题</strong> — 文章标题（点击可查看）</li>
+                <li><strong>分类</strong> — 所属分类名称</li>
+                <li><strong>状态</strong> — 草稿 / 已发布 / 待审核</li>
+                <li><strong>发布时间</strong> — 创建日期</li>
+                <li><strong>操作</strong> — 查看、编辑、删除</li>
+            </ul>
+
+            <h3>4.2 新建文章</h3>
+            <ol>
+                <li>点击「➕ 新建文章」按钮</li>
+                <li>填写以下内容：
+                    <ul>
+                        <li><strong>标题</strong>（必填）— 文章标题</li>
+                        <li><strong>摘要</strong>（选填）— 文章简短介绍，显示在列表页</li>
+                        <li><strong>分类</strong>（选填）— 选择所属分类</li>
+                        <li><strong>内容</strong>（必填）— 文章正文，支持 HTML 标签</li>
+                        <li><strong>状态</strong> — 草稿 / 已发布 / 待审核</li>
+                        <li><strong>置顶</strong> — 勾选后文章将显示在列表顶部</li>
+                        <li><strong>推荐</strong> — 勾选后文章将显示「推荐」标记</li>
+                    </ul>
+                </li>
+                <li>点击「发布文章」按钮</li>
+            </ol>
+
+            <div class="note success">
+                <strong>✨ 提示：</strong> 发布文章后，前台首页会立即显示最新文章。如果启用了 Redis 缓存，可能需要清空缓存才能看到更新。
+            </div>
+
+            <h3>4.3 编辑文章</h3>
+            <p>在文章列表中点击「编辑」按钮，即可修改文章的所有信息。修改后点击「更新文章」保存。</p>
+
+            <h3>4.4 删除文章</h3>
+            <p>点击「删除」按钮，系统会弹出确认对话框，确认后文章将被永久删除（不可恢复）。</p>
+
+            <div class="note danger">
+                <strong>⚠️ 注意：</strong> 删除操作不可撤销，请谨慎操作。建议先将要删除的文章改为「草稿」状态。
+            </div>
+
+            <h3>4.5 文章状态说明</h3>
+            <table>
+                <thead>
+                    <tr><th>状态</th><th>含义</th><th>前台是否可见</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge badge-warning">草稿</span></td><td>正在撰写中，未完成</td><td>❌ 不可见</td></tr>
+                    <tr><td><span class="badge badge-success">已发布</span></td><td>已完成并公开发布</td><td>✅ 可见</td></tr>
+                    <tr><td><span class="badge badge-info">待审核</span></td><td>等待管理员审核</td><td>❌ 不可见</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ===== Section 5: 分类管理 ===== -->
+        <section class="doc-section" id="category-management">
+            <h2>5. <span class="highlight">分类管理</span></h2>
+            <p class="section-sub">分类帮助你将文章组织成不同的主题，方便读者浏览。</p>
+
+            <h3>5.1 分类列表</h3>
+            <p>在 <code>/admin/categories</code> 页面，你可以看到所有分类：</p>
+            <ul>
+                <li><strong>ID</strong> — 分类编号</li>
+                <li><strong>名称</strong> — 分类显示名称</li>
+                <li><strong>别名</strong> — URL 中使用的友好名称（如 <code>/category/tech</code>）</li>
+                <li><strong>描述</strong> — 分类简短介绍</li>
+                <li><strong>操作</strong> — 编辑、删除</li>
+            </ul>
+
+            <h3>5.2 新建分类</h3>
+            <ol>
+                <li>点击「➕ 新建分类」按钮</li>
+                <li>填写以下内容：
+                    <ul>
+                        <li><strong>分类名称</strong>（必填）— 如「技术」「生活」</li>
+                        <li><strong>URL 别名</strong>（选填）— 如 <code>tech</code>，留空自动生成</li>
+                        <li><strong>描述</strong>（选填）— 分类的简短说明</li>
+                    </ul>
+                </li>
+                <li>点击「创建分类」按钮</li>
+            </ol>
+
+            <div class="note info">
+                <strong>💡 提示：</strong> URL 别名建议使用英文小写字母和连字符，如 <code>web-development</code>，有利于 SEO。
+            </div>
+
+            <h3>5.3 编辑和删除分类</h3>
+            <ul>
+                <li><strong>编辑</strong> — 点击「编辑」修改分类信息</li>
+                <li><strong>删除</strong> — 点击「删除」并确认，该分类下的文章不会被删除，但会变为「未分类」状态</li>
+            </ul>
+        </section>
+
+        <!-- ===== Section 6: 用户管理 ===== -->
+        <section class="doc-section" id="user-management">
+            <h2>6. <span class="highlight">用户管理</span></h2>
+            <p class="section-sub">查看和管理所有注册用户的信息。</p>
+
+            <h3>6.1 用户列表</h3>
+            <p>在 <code>/admin/users</code> 页面，你可以查看所有用户：</p>
+            <ul>
+                <li><strong>ID</strong> — 用户编号</li>
+                <li><strong>用户名</strong> — 登录用户名</li>
+                <li><strong>邮箱</strong> — 注册邮箱</li>
+                <li><strong>角色</strong> — 管理员 / 编辑 / 作者 / 订阅者</li>
+                <li><strong>状态</strong> — 启用 / 禁用 / 待验证</li>
+                <li><strong>注册时间</strong> — 账号创建日期</li>
+            </ul>
+
+            <div class="note warning">
+                <strong>⚠️ 注意：</strong> 当前版本暂不支持在后台直接创建或编辑用户，如有需要请通过数据库操作或命令行工具管理用户。
+            </div>
+        </section>
+
+        <!-- ===== Section 7: 系统设置 ===== -->
+        <section class="doc-section" id="system-settings">
+            <h2>7. <span class="highlight">系统设置</span></h2>
+            <p class="section-sub">配置网站的基本信息和显示参数。</p>
+
+            <h3>7.1 可配置项</h3>
+            <table>
+                <thead>
+                    <tr><th>配置项</th><th>说明</th><th>示例</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>网站名称</strong></td><td>显示在网站标题和页脚</td><td>「我的CMS系统」</td></tr>
+                    <tr><td><strong>网站描述</strong></td><td>SEO 描述，显示在搜索结果中</td><td>「基于PHP+MySQL+Redis的CMS系统」</td></tr>
+                    <tr><td><strong>每页数量</strong></td><td>列表页每页显示的文章数</td><td>「10」</td></tr>
+                </tbody>
+            </table>
+
+            <h3>7.2 修改设置</h3>
+            <ol>
+                <li>进入 <code>/admin/settings</code> 页面</li>
+                <li>修改你想要调整的配置项</li>
+                <li>点击「保存设置」按钮</li>
+            </ol>
+
+            <div class="note success">
+                <strong>✅ 保存成功：</strong> 修改后的设置会立即生效，网站名称和描述会更新到前台页面。
+            </div>
+        </section>
+
+        <!-- ===== Section 8: 缓存管理 ===== -->
+        <section class="doc-section" id="cache-management">
+            <h2>8. <span class="highlight">缓存管理</span></h2>
+            <p class="section-sub">Lighttp 使用 Redis 缓存来提升网站性能，你可以通过后台管理缓存。</p>
+
+            <h3>8.1 缓存机制说明</h3>
+            <ul>
+                <li><strong>页面缓存</strong> — 将完整的 HTML 页面缓存 60 秒，大幅提升访问速度</li>
+                <li><strong>数据缓存</strong> — 缓存首页文章列表和分类数据 300 秒</li>
+                <li><strong>缓存命中</strong> — 当用户访问时，系统会优先返回缓存内容</li>
+                <li><strong>缓存失效</strong> — 新增/修改/删除文章或分类时，相关缓存会自动清除</li>
+            </ul>
+
+            <h3>8.2 手动清空缓存</h3>
+            <p>当发现网站内容没有及时更新时，可以手动清空缓存：</p>
+            <ol>
+                <li>在仪表盘点击「🗑️ 清空缓存」按钮</li>
+                <li>系统会弹出确认对话框，点击「确定」</li>
+                <li>所有 Redis 缓存将被清除，网站内容会重新从数据库加载</li>
+            </ol>
+
+            <div class="note info">
+                <strong>💡 提示：</strong> 清空缓存后首次访问页面可能会稍慢（因为需要重新生成缓存），之后访问会恢复正常速度。
+            </div>
+
+            <div class="note warning">
+                <strong>⚠️ 注意：</strong> 如果 Redis 服务未启动或连接失败，缓存功能将自动禁用，网站仍可正常运行（但速度会变慢）。
+            </div>
+        </section>
+
+        <!-- ===== Section 9: 前台使用 ===== -->
+        <section class="doc-section" id="frontend-guide">
+            <h2>9. <span class="highlight">前台使用</span></h2>
+            <p class="section-sub">了解访客如何浏览和交互你的网站。</p>
+
+            <h3>9.1 首页</h3>
+            <p>网站首页（<code>/</code>）展示：</p>
+            <ul>
+                <li><strong>导航菜单</strong> — 显示所有分类，登录/注册入口</li>
+                <li><strong>最新文章列表</strong> — 按发布时间倒序显示，置顶文章优先</li>
+                <li><strong>管理快捷栏</strong> — 登录后可见，提供快速管理入口</li>
+                <li><strong>页脚</strong> — 显示版权信息和系统名称</li>
+            </ul>
+
+            <h3>9.2 文章详情页</h3>
+            <p>点击文章标题进入详情页（<code>/article/{id}</code>），展示：</p>
+            <ul>
+                <li>文章标题和完整内容</li>
+                <li>发布时间、分类、作者、浏览次数</li>
+                <li>「返回首页」链接</li>
+                <li>「编辑」和「管理」链接（登录后可见）</li>
+            </ul>
+
+            <h3>9.3 分类页面</h3>
+            <p>点击导航栏的分类名称进入分类页（<code>/category/{slug}</code>），展示该分类下的所有文章列表。</p>
+
+            <h3>9.4 用户注册与登录</h3>
+            <ul>
+                <li><strong>注册</strong> — 访问 <code>/register</code>，填写用户名、邮箱、密码</li>
+                <li><strong>登录</strong> — 访问 <code>/login</code>，输入用户名和密码</li>
+                <li><strong>登出</strong> — 点击导航栏的「退出」按钮</li>
+            </ul>
+
+            <div class="note success">
+                <strong>🎉 恭喜！</strong> 你已经掌握了 Lighttp 的所有基本操作。现在开始创建你的内容吧！
+            </div>
+        </section>
+
+        <!-- ===== Section 10: 常见问题 ===== -->
+        <section class="doc-section" id="faq">
+            <h2>10. <span class="highlight">常见问题</span></h2>
+
+            <h3>Q1: 登录后台显示「用户名或密码错误」怎么办？</h3>
+            <ul>
+                <li>确认用户名和密码是否正确（默认 admin/admin123）</li>
+                <li>检查数据库 <code>users</code> 表中是否有该用户</li>
+                <li>如果忘记密码，可以通过数据库直接修改：使用 <code>password_hash('新密码', PASSWORD_DEFAULT)</code> 生成新密码</li>
+            </ul>
+
+            <h3>Q2: 文章发布后前台看不到？</h3>
+            <ul>
+                <li>确认文章状态是否为「已发布」（草稿和待审核状态前台不可见）</li>
+                <li>尝试清空 Redis 缓存（后台 → 清空缓存）</li>
+                <li>检查浏览器是否使用了强缓存（按 Ctrl+F5 强制刷新）</li>
+            </ul>
+
+            <h3>Q3: Redis 连接失败怎么办？</h3>
+            <ul>
+                <li>确认 Redis 服务是否正常运行：<code>redis-cli ping</code></li>
+                <li>检查 <code>config.php</code> 中的 Redis 配置（host、port、password）</li>
+                <li>如果 Redis 不可用，系统会自动降级，网站仍可运行（性能会下降）</li>
+            </ul>
+
+            <h3>Q4: 如何修改网站 Logo 和样式？</h3>
+            <ul>
+                <li>Logo 图片可以放在 <code>public/images/</code> 目录下</li>
+                <li>修改 <code>public/css/</code> 中的样式文件</li>
+                <li>建议在 <code>app/controllers/HomeController.php</code> 中修改前端 HTML 结构</li>
+            </ul>
+
+            <h3>Q5: 网站访问出现 404 错误？</h3>
+            <ul>
+                <li>检查 Web 服务器配置，确保 DocumentRoot 指向 <code>public/</code> 目录</li>
+                <li>检查 <code>.htaccess</code>（Apache）或 Nginx 的 rewrite 规则</li>
+                <li>确认路由是否在 <code>routes.php</code> 中正确定义</li>
+            </ul>
+
+            <h3>Q6: 如何备份网站数据？</h3>
+            <ul>
+                <li><strong>数据库备份：</strong> 使用 phpMyAdmin 导出 SQL 文件，或执行 <code>mysqldump -u user -p lighttp_db > backup.sql</code></li>
+                <li><strong>文件备份：</strong> 打包整个 Lighttp 目录，重点备份 <code>public/uploads/</code> 中的用户上传文件</li>
+            </ul>
+
+            <h3>Q7: 如何升级 Lighttp 到新版本？</h3>
+            <ul>
+                <li>备份现有网站文件和数据库</li>
+                <li>下载最新版本代码，覆盖旧文件（注意保留自定义修改）</li>
+                <li>检查 <code>install.sql</code> 中是否有新增数据表，如有则执行增量 SQL</li>
+                <li>清除缓存，测试网站功能是否正常</li>
+            </ul>
+
+            <h3>Q8: 遇到其他问题如何寻求帮助？</h3>
+            <ul>
+                <li>查看 <a href="https://www.inetpub.cn/lighttp/documentation.html" target="_blank">技术文档</a> 获取更详细的技术信息</li>
+                <li>在 GitHub 上提交 <a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank">Issue</a></li>
+                <li>联系开发者：<a href="mailto:webmaster@inetpub.cn">webmaster@inetpub.cn</a></li>
+            </ul>
+        </section>
+
+        <!-- ===== 结语 ===== -->
+        <section class="doc-section" style="border-bottom: none; padding-bottom: 20px;">
+            <div class="note success" style="text-align:center;padding:32px;">
+                <p style="font-size:20px;font-weight:700;margin-bottom:8px;">🎊 使用愉快！</p>
+                <p style="color:var(--text-secondary);font-size:16px;">
+                    Lighttp v1.0 让内容管理变得简单而高效。<br />
+                    如果有任何建议或反馈，欢迎随时联系我们。
+                </p>
+                <p style="margin-top:12px;font-size:14px;color:var(--text-muted);">
+                    📧 webmaster@inetpub.cn &nbsp;·&nbsp; 📦 v1.0 &nbsp;·&nbsp; 📅 2026年7月
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <div class="container">
+            <div class="brand">
+                Light<span class="highlight">tp</span>
+                <span style="font-weight:400;color:var(--text-muted);font-size:13px;">使用说明书 v1.0</span>
+            </div>
+            <div class="developer">
+                开发者 <a href="mailto:webmaster@inetpub.cn">Dr.liehuo (烈火帝君)</a>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Lighttp. 开源 &amp; 免费.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        // Header scroll shadow
+        var header = document.getElementById('header');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 10) {
+                header.style.boxShadow = '0 4px 30px rgba(0,0,0,0.06)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Mobile menu
+        var menuToggle = document.getElementById('menuToggle');
+        var navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', function() {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    var headerHeight = 70;
+                    var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
