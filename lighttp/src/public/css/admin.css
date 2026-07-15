@@ -1,0 +1,42 @@
+/* Lighttp v1.0.2 - Admin Styles */
+.admin-header { background: var(--white); border-bottom: 3px solid var(--black); padding: 12px 0; }
+.admin-header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.admin-header .brand { font-weight: 700; font-size: 1.125rem; color: var(--black); }
+.admin-header .brand a { border-bottom: none; }
+.admin-header .brand a:hover { border-bottom: none; }
+.admin-header .user-info { font-size: 0.875rem; color: var(--gray-700); }
+.admin-header .user-info a { color: var(--gray-700); border-bottom: 2px solid transparent; padding-bottom: 2px; margin-left: 12px; }
+.admin-header .user-info a:hover { color: var(--black); border-bottom-color: var(--black); text-decoration: none; }
+
+.admin-content { padding: 24px 0; }
+.admin-content .page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; border-bottom: 2px solid var(--black); padding-bottom: 8px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.stat-card { border: 2px solid var(--black); padding: 20px; text-align: center; background: var(--white); }
+.stat-card .number { font-size: 2rem; font-weight: 700; color: var(--black); display: block; }
+.stat-card .label { font-size: 0.813rem; color: var(--gray-500); margin-top: 4px; }
+
+.admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.admin-card { border: 2px solid var(--black); padding: 24px; text-align: center; background: var(--white); transition: var(--transition); }
+.admin-card:hover { background: var(--gray-25); }
+.admin-card .icon { font-size: 1.5rem; display: block; margin-bottom: 8px; color: var(--black); }
+.admin-card .name { font-weight: 600; font-size: 0.875rem; color: var(--black); }
+
+.admin-form { max-width: 700px; margin: 0 auto; }
+.admin-form .form-group { margin-bottom: 16px; }
+.admin-form .form-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-content .page-title { font-size: 1.25rem; }
+  .admin-header .container { flex-direction: column; align-items: stretch; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .admin-grid { grid-template-columns: 1fr; }
+  .stat-card .number { font-size: 1.5rem; }
+  .admin-form .form-actions { flex-direction: column; }
+  .admin-form .form-actions .btn { width: 100%; text-align: center; }
+}
