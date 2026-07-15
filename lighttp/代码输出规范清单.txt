@@ -1,0 +1,191 @@
+Lighttp 项目代码输出规范清单 v1.1
+📋 规范版本：v1.1
+生效日期：2026年7月15日
+更新内容：新增 CSS 单行格式规范
+1. CSS 与 JS 本地化规范
+1.1 禁止使用第三方 CDN 资源
+❌ 禁止	✅ 允许
+<script src="https://cdn.jsdelivr.net/...">	<script src="/js/app.js">
+<link rel="stylesheet" href="https://cdn...">	<link rel="stylesheet" href="/css/style.css">
+@import url('https://fonts.googleapis.com/...')	使用系统字体栈
+任何第三方在线资源	所有资源存放于项目 public/css/ 或 public/js/ 目录
+1.2 例外情况
+以下情况可破例使用第三方资源（需在代码中标注说明）：
+
+图标字体 — 可使用 Font Awesome 等（但建议使用 Unicode/emoji 替代）
+
+富文本编辑器 — 如需集成 TinyMCE 等，需用户明确要求
+
+图表库 — 如需集成 ECharts 等，需用户明确要求
+
+2. W3C 开发标准规范
+2.1 HTML 标准
+要求	说明
+DOCTYPE	必须声明 <!DOCTYPE html>
+字符编码	必须声明 <meta charset="UTF-8">
+视口设置	必须声明 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+语义化标签	使用 <header>、<nav>、<main>、<article>、<section>、<footer> 等
+img 标签	必须包含 alt 属性
+a 标签	必须包含 href 属性
+表单控件	必须包含 <label> 并正确关联 for / id
+属性规范	属性值必须使用双引号包裹
+标签闭合	所有标签必须正确闭合
+2.2 CSS 标准
+要求	说明
+选择器命名	使用 BEM 或语义化命名（如 .article-card、.nav-link）
+注释规范	重要模块添加注释说明
+单位使用	优先使用 rem / em，避免 px（边框除外）
+颜色使用	使用 CSS 变量（var(--primary)）便于主题切换
+2.3 CSS 格式规范（v1.1 新增）
+所有 CSS 规则必须保持单行格式：
+
+css
+/* ✅ 正确 — 单行格式 */
+.site-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: var(--spacing-md) 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+
+.logo { font-size: 1.5rem; font-weight: 800; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: var(--spacing-sm); }
+
+.article-card { background: var(--bg-card); border-radius: var(--radius); padding: var(--spacing-lg); margin-bottom: var(--spacing-md); box-shadow: var(--shadow); transition: var(--transition); }
+css
+/* ❌ 错误 — 多行格式（禁止） */
+.site-header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: var(--spacing-md) 0;
+}
+2.4 JavaScript 标准
+要求	说明
+严格模式	使用 "use strict";
+变量声明	使用 const / let，禁止使用 var
+分号使用	语句末尾必须加分号
+事件绑定	使用 addEventListener()，禁止行内事件（onclick）
+注释规范	复杂逻辑添加注释说明
+3. CSS 内联禁止规范
+3.1 禁止使用 <style> 内联
+html
+<!-- ❌ 错误 -->
+<head>
+    <style>
+        .foo { color: red; }
+    </style>
+</head>
+
+<!-- ✅ 正确 -->
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+3.2 禁止使用 style 属性
+html
+<!-- ❌ 错误 -->
+<div style="padding:10px;color:red;">内容</div>
+<div style="display:flex;gap:20px;">内容</div>
+
+<!-- ✅ 正确 -->
+<div class="content-box">内容</div>
+<div class="flex-container">内容</div>
+3.3 允许的例外情况（极少数）
+以下场景允许内联样式（需在代码中标注说明）：
+
+动态计算的尺寸（如 JS 动态设置宽高）
+
+邮件模板（邮件客户端对 CSS 支持有限）
+
+第三方组件集成（需用户明确要求）
+
+4. 代码文件组织结构
+4.1 CSS 文件
+text
+public/css/
+├── style.css       # 全局样式（首页、通用）
+├── admin.css       # 后台管理样式
+├── auth.css        # 登录/注册页面样式
+├── article.css     # 文章详情页样式
+└── responsive.css  # 响应式适配
+4.2 JavaScript 文件
+text
+public/js/
+├── app.js          # 全局通用 JS
+├── admin.js        # 后台管理 JS
+├── auth.js         # 登录/注册 JS
+├── article.js      # 文章页面 JS
+└── preview.js      # 预览功能 JS
+5. 代码自检清单（输出前检查）
+在输出任何代码前，必须确认以下项目：
+
+HTML 自检
+<!DOCTYPE html> 已声明
+
+<meta charset="UTF-8"> 已声明
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 已声明
+
+所有 img 都有 alt 属性
+
+所有 a 都有 href 属性
+
+所有表单控件都有对应的 <label>
+
+未使用 <style> 内联标签
+
+未使用 style="" 属性
+
+未使用第三方 CDN 资源
+
+CSS 自检
+所有样式定义在独立的 .css 文件中
+
+所有 CSS 规则为单行格式（每条规则仅一行）
+
+使用语义化类名
+
+已添加必要的注释
+
+未使用 !important（极特殊情况除外）
+
+使用 CSS 变量管理颜色和间距
+
+JavaScript 自检
+使用了 "use strict";
+
+使用 const / let，未使用 var
+
+使用 addEventListener()，未使用行内事件
+
+未使用第三方 CDN 资源
+
+6. 规范违规处理
+违规次数	处理方式
+第 1 次	自检发现后自动修正
+第 2 次	输出时附加违规说明
+第 3 次	暂停输出，请求用户确认
+7. CSS 单行格式示例
+正确示例
+css
+/* ===== Header ===== */
+.site-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: var(--spacing-md) 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+
+.logo { font-size: 1.5rem; font-weight: 800; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: var(--spacing-sm); }
+
+.nav-links { display: flex; align-items: center; gap: var(--spacing-lg); list-style: none; flex-wrap: wrap; }
+
+.nav-links a { color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; transition: var(--transition); }
+
+/* ===== Article Card ===== */
+.article-card { background: var(--bg-card); border-radius: var(--radius); padding: var(--spacing-lg); margin-bottom: var(--spacing-md); box-shadow: var(--shadow); transition: var(--transition); }
+
+.article-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+.article-card h2 { margin: 0 0 var(--spacing-sm) 0; font-size: 1.25rem; }
+
+.article-card h2 a { color: var(--text); text-decoration: none; }
+
+.article-card h2 a:hover { color: var(--primary); }
+
+.meta { color: var(--text-muted); font-size: 0.875rem; margin-bottom: var(--spacing-sm); }
+
+.meta span { margin-right: var(--spacing-md); }
+
+.excerpt { color: var(--text-secondary); line-height: 1.6; }
+本规范自 2026年7月15日起生效，所有 Lighttp 项目代码输出均需遵守此规范。
+
+✅ 已记录。后续所有 CSS 代码将严格采用单行格式输出。
