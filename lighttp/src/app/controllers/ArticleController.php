@@ -34,13 +34,6 @@ class ArticleController extends BaseController
                 .back:hover { text-decoration: underline; }
                 .admin-links { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
                 .admin-links a { margin-right: 15px; color: #666; text-decoration: none; }
-                /* ===== 额外样式，优化HTML内容展示 ===== */
-                .content img { max-width: 100%; height: auto; border-radius: 4px; }
-                .content table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-                .content table th, .content table td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-                .content table th { background: #f5f7fa; }
-                .content blockquote { border-left: 4px solid #3498db; margin: 16px 0; padding: 8px 20px; background: #f8f9fa; color: #555; }
-                .content hr { border: none; border-top: 2px solid #eee; margin: 24px 0; }
             </style>
         </head>
         <body>
@@ -52,8 +45,7 @@ class ArticleController extends BaseController
                     <span>👤 ' . htmlspecialchars($article['author_name'] ?? '未知') . '</span>
                     <span>👁️ ' . ($article['views'] ?? 0) . ' 次浏览</span>
                 </div>
-                <!-- ===== 关键修改：直接输出内容，不转义 ===== -->
-                <div class="content">' . ($article['content'] ?? '') . '</div>
+                <div class="content">' . nl2br(htmlspecialchars($article['content'] ?? '')) . '</div>
                 <a href="/" class="back">← 返回首页</a>
                 <div class="admin-links">
                     <a href="/admin/article/edit/' . $article['id'] . '">✏️ 编辑</a>

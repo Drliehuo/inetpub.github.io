@@ -54,20 +54,12 @@ class HomeController extends BaseController
                 .meta { color: #999; font-size: 14px; margin-bottom: 10px; }
                 .meta span { margin-right: 15px; }
                 .excerpt { color: #666; line-height: 1.6; }
-                /* ===== 摘要样式限制，防止破坏首页布局 ===== */
-                .excerpt img { max-width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px; }
-                .excerpt table { display: block; overflow-x: auto; }
-                .excerpt blockquote { border-left: 3px solid #3498db; padding-left: 15px; margin: 10px 0; color: #555; }
-                .excerpt pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 13px; }
-                .excerpt code { background: #f8f9fa; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
                 .admin-bar { background: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
                 .admin-bar a { color: #3498db; text-decoration: none; margin-right: 15px; }
                 .admin-bar a:hover { text-decoration: underline; }
                 .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; background: #e8f5e9; color: #2e7d32; margin-left: 10px; }
                 .status-badge.redis { background: #ffebee; color: #c62828; }
                 footer { text-align: center; padding: 30px 0; color: #999; border-top: 1px solid #eee; margin-top: 40px; }
-                /* ===== 摘要截断 ===== */
-                .excerpt-truncate { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
             </style>
         </head>
         <body>
@@ -107,10 +99,6 @@ class HomeController extends BaseController
             $html .= '<p style="text-align:center;padding:40px 0;">暂无文章，<a href="/admin/article/create">创建第一篇</a></p>';
         } else {
             foreach ($data['articles'] as $article) {
-                // ===== 关键修改：生成摘要（移除 htmlspecialchars） =====
-                $excerpt = $article['excerpt'] ?? $article['content'] ?? '';
-                $excerpt = mb_substr(strip_tags($excerpt), 0, 150) . '...';
-                
                 $html .= '<div class="article-card">
                     <h2><a href="/article/' . $article['id'] . '">' . htmlspecialchars($article['title']) . '</a></h2>
                     <div class="meta">
@@ -120,7 +108,7 @@ class HomeController extends BaseController
                         ' . ($article['is_top'] ? '<span>⭐ 置顶</span>' : '') . '
                         ' . ($article['is_recommend'] ? '<span>🔥 推荐</span>' : '') . '
                     </div>
-                    <p class="excerpt excerpt-truncate">' . $excerpt . '</p>
+                    <p class="excerpt">' . htmlspecialchars(mb_substr($article['excerpt'] ?? $article['content'] ?? '', 0, 150)) . '...</p>
                 </div>';
             }
         }
