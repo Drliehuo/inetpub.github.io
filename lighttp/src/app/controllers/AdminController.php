@@ -164,16 +164,21 @@ class AdminController extends BaseController
         $isEdit = $article !== null;
         $statusOptions = [0 => '草稿', 1 => '已发布', 2 => '待审核'];
 
+        // ===== 关键修改：后台 textarea 直接显示原始内容（不转义） =====
+        $content = $article ? ($article['content'] ?? '') : '';
+        $title = $article ? ($article['title'] ?? '') : '';
+        $excerpt = $article ? ($article['excerpt'] ?? '') : '';
+
         $html = '
         ' . ($error ? '<div style="background:#fde8e8;color:#e74c3c;padding:10px;border-radius:4px;margin-bottom:20px;">' . htmlspecialchars($error) . '</div>' : '') . '
         <form method="POST" style="background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.05);">
             <div style="margin-bottom:15px;">
                 <label style="display:block;margin-bottom:5px;font-weight:bold;">标题 *</label>
-                <input type="text" name="title" value="' . ($article ? htmlspecialchars($article['title']) : '') . '" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;" required>
+                <input type="text" name="title" value="' . htmlspecialchars($title) . '" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;" required>
             </div>
             <div style="margin-bottom:15px;">
                 <label style="display:block;margin-bottom:5px;font-weight:bold;">摘要</label>
-                <input type="text" name="excerpt" value="' . ($article ? htmlspecialchars($article['excerpt'] ?? '') : '') . '" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;">
+                <input type="text" name="excerpt" value="' . htmlspecialchars($excerpt) . '" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;">
             </div>
             <div style="margin-bottom:15px;">
                 <label style="display:block;margin-bottom:5px;font-weight:bold;">分类</label>
@@ -188,7 +193,12 @@ class AdminController extends BaseController
         $html .= '</select></div>
             <div style="margin-bottom:15px;">
                 <label style="display:block;margin-bottom:5px;font-weight:bold;">内容 *</label>
-                <textarea name="content" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;min-height:300px;" required>' . ($article ? htmlspecialchars($article['content'] ?? '') : '') . '</textarea>
+                <div style="margin-bottom:8px;">
+                    <span style="font-size:12px;color:#999;">💡 支持 HTML 标签：&lt;h1&gt;、&lt;p&gt;、&lt;a&gt;、&lt;img&gt;、&lt;ul&gt;、&lt;ol&gt;、&lt;table&gt;、&lt;pre&gt;、&lt;code&gt; 等</span>
+                    <button type="button" onclick="previewContent()" style="margin-left:10px;background:#6c757d;color:#fff;padding:4px 16px;border:none;border-radius:4px;cursor:pointer;font-size:13px;">👁️ 预览</button>
+                </div>
+                <textarea name="content" id="editor" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;min-height:300px;font-family:monospace;" required>' . $content . '</textarea>
+                <div id="preview" style="display:none;border:1px solid #ddd;padding:15px;margin-top:10px;border-radius:4px;background:#fff;max-height:400px;overflow-y:auto;"></div>
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:15px;">
                 <div>
@@ -214,7 +224,16 @@ class AdminController extends BaseController
                 <button type="submit" style="background:#3498db;color:#fff;padding:12px 30px;border:none;border-radius:4px;cursor:pointer;">' . ($isEdit ? '更新文章' : '发布文章') . '</button>
                 <a href="/admin/articles" style="background:#95a5a6;color:#fff;padding:12px 30px;border-radius:4px;text-decoration:none;">返回</a>
             </div>
-        </form>';
+        </form>
+
+        <script>
+        function previewContent() {
+            var content = document.getElementById("editor").value;
+            var preview = document.getElementById("preview");
+            preview.innerHTML = content;
+            preview.style.display = "block";
+        }
+        </script>';
 
         return $this->renderAdminLayout($isEdit ? '编辑文章' : '新建文章', $html);
     }
