@@ -171,9 +171,16 @@ class AdminController extends BaseController
     {
         $isEdit = $article !== null;
         $statusOptions = [0 => 'Draft', 1 => 'Published', 2 => 'Pending'];
-        $content = $article ? ($article['content'] ?? '') : '';
-        $title = $article ? ($article['title'] ?? '') : '';
-        $excerpt = $article ? ($article['excerpt'] ?? '') : '';
+
+        // 直接从数据库读取原始内容，不做任何解码
+        $content = '';
+        $title = '';
+        $excerpt = '';
+        if ($article !== null) {
+            $content = $article['content'] ?? '';
+            $title = $article['title'] ?? '';
+            $excerpt = $article['excerpt'] ?? '';
+        }
 
         $html = '<div class="admin-form">
             <span class="page-title">' . ($isEdit ? 'Edit Article' : 'New Article') . '</span>
@@ -205,7 +212,7 @@ class AdminController extends BaseController
                         <span style="font-size:0.75rem;color:var(--gray-500);">Supports HTML: h1, p, a, img, ul, ol, table, pre, code</span>
                         <button type="button" id="previewBtn" class="btn btn-sm" style="margin-left:8px;">Preview</button>
                     </div>
-                    <textarea id="editor" name="content" required>' . $content . '</textarea>
+                    <textarea id="editor" name="content" required>' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '</textarea>
                     <div id="preview" style="display:none;border:2px solid var(--gray-200);padding:16px;margin-top:8px;background:var(--white);max-height:400px;overflow-y:auto;"></div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
