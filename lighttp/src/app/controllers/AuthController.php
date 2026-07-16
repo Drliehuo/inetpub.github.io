@@ -15,6 +15,11 @@ class AuthController extends BaseController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // CSRF 验证
+            if (!$this->verifyCsrf()) {
+                return $this->renderLogin('CSRF token validation failed');
+            }
+
             $username = trim($_POST['username'] ?? '');
             $password = $_POST['password'] ?? '';
 
@@ -32,7 +37,6 @@ class AuthController extends BaseController
             // 检查是否需要重哈希（升级到更高成本因子）
             if ($userModel->needsRehash($user['password'])) {
                 $userModel->rehashPassword($user['id'], $password);
-                // 重新获取用户数据
                 $user = $userModel->find($user['id']);
             }
 
@@ -69,6 +73,7 @@ class AuthController extends BaseController
             <div class="auth-error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
         <form method="POST">
+            <?php echo $this->csrfField(); ?>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>
@@ -91,8 +96,26 @@ class AuthController extends BaseController
 
     public function logout(): void
     {
+        // 清除 CSRF Token
+        $config = Application::getInstance()->getConfig();
+        $tokenName = $config['security']['csrf_token_name'] ?? 'lig_csrf_token';
+        unset($_SESSION[$tokenName]);
+        unset($_SESSION[$tokenName . '_time']);
+
         Application::getInstance()->setCurrentUser(null);
+
+        // 清除会话Cookie
+        $sec = $config['security'];
+        $cookiePrefix = $sec['cookie_prefix'] ?? 'lig_';
+        $path = $sec['cookie_path'] ?? '/';
+        $domain = $sec['cookie_domain'] ?? '';
+
+        if (isset($_COOKIE[$cookiePrefix . 'session'])) {
+            setcookie($cookiePrefix . 'session', '', time() - 3600, $path, $domain, false, true);
+        }
+
         session_destroy();
+
         $this->redirect('/');
     }
 
@@ -103,6 +126,11 @@ class AuthController extends BaseController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // CSRF 验证
+            if (!$this->verifyCsrf()) {
+                return $this->renderRegister('CSRF token validation failed');
+            }
+
             $username = trim($_POST['username'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
@@ -156,6 +184,7 @@ class AuthController extends BaseController
             <div class="auth-error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
         <form method="POST">
+            <?php echo $this->csrfField(); ?>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>

@@ -52,16 +52,70 @@ abstract class BaseController
         exit;
     }
 
+    /**
+     * 生成 CSRF Token
+     */
     protected function csrfToken(): string
     {
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        $config = Application::getInstance()->getConfig();
+        $tokenName = $config['security']['csrf_token_name'] ?? 'lig_csrf_token';
+        $lifetime = $config['security']['csrf_token_lifetime'] ?? 3600;
+
+        if (!isset($_SESSION[$tokenName]) || !isset($_SESSION[$tokenName . '_time'])) {
+            $_SESSION[$tokenName] = bin2hex(random_bytes(32));
+            $_SESSION[$tokenName . '_time'] = time();
         }
-        return $_SESSION['csrf_token'];
+
+        // 检查 Token 是否过期
+        if (time() - $_SESSION[$tokenName . '_time'] > $lifetime) {
+            $_SESSION[$tokenName] = bin2hex(random_bytes(32));
+            $_SESSION[$tokenName . '_time'] = time();
+        }
+
+        return $_SESSION[$tokenName];
     }
 
+    /**
+     * 验证 CSRF Token
+     */
     protected function validateCsrf(string $token): bool
     {
-        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+        $config = Application::getInstance()->getConfig();
+        $tokenName = $config['security']['csrf_token_name'] ?? 'lig_csrf_token';
+
+        if (!isset($_SESSION[$tokenName])) {
+            return false;
+        }
+
+        return hash_equals($_SESSION[$tokenName], $token);
+    }
+
+    /**
+     * 生成 CSRF 隐藏字段 HTML
+     */
+    protected function csrfField(): string
+    {
+        $token = $this->csrfToken();
+        return '<input type="hidden" name="lig_csrf_token" value="' . $token . '">';
+    }
+
+    /**
+     * 验证 POST 请求的 CSRF Token（自动验证）
+     * 如果验证失败，返回 false 并设置 403 状态码
+     */
+    protected function verifyCsrf(): bool
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return true;
+        }
+
+        $token = $_POST['lig_csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+
+        if (empty($token) || !$this->validateCsrf($token)) {
+            http_response_code(403);
+            return false;
+        }
+
+        return true;
     }
 }

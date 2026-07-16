@@ -61,10 +61,57 @@ class Application
 
     private function initSession(): void
     {
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
+
         if (session_status() === PHP_SESSION_NONE) {
+            $sec = $this->config['security'];
+            $cookiePrefix = $sec['cookie_prefix'] ?? 'lig_';
+
+            // 会话名称：使用自定义前缀
+            session_name($cookiePrefix . 'session');
+
+            // Cookie 参数设置
+            $lifetime = (int)($sec['cookie_lifetime'] ?? 86400);
+            $path = (string)($sec['cookie_path'] ?? '/');
+            $domain = (string)($sec['cookie_domain'] ?? '');
+            $secure = (bool)($sec['cookie_secure'] ?? false);
+            $httponly = (bool)($sec['cookie_httponly'] ?? true);
+            $samesite = (string)($sec['cookie_samesite'] ?? 'Lax');
+
+            // 设置会话 Cookie 参数（PHP 7.3+ 支持 SameSite）
+            if (PHP_VERSION_ID >= 70300) {
+                session_set_cookie_params([
+                    'lifetime' => $lifetime,
+                    'path' => $path,
+                    'domain' => $domain,
+                    'secure' => $secure,
+                    'httponly' => $httponly,
+                    'samesite' => $samesite,
+                ]);
+            } else {
+                session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
+            }
+
             ini_set('session.save_handler', 'files');
             ini_set('session.save_path', ROOT_PATH . '/var/sessions');
+
+            // ============================================================
+            // 修复：ini_set() 第二个参数必须为字符串
+            // ============================================================
+            ini_set('session.use_strict_mode', '1');
+            ini_set('session.use_only_cookies', '1');
+            ini_set('session.cookie_httponly', $httponly ? '1' : '0');
+            ini_set('session.cookie_secure', $secure ? '1' : '0');
+
             session_start();
+
+            // 会话固定防护：重新生成ID
+            if (!isset($_SESSION['_lig_created'])) {
+                session_regenerate_id(true);
+                $_SESSION['_lig_created'] = time();
+            }
         }
     }
 
