@@ -29,6 +29,13 @@ class AuthController extends BaseController
                 return $this->renderLogin('Invalid username or password');
             }
 
+            // 检查是否需要重哈希（升级到更高成本因子）
+            if ($userModel->needsRehash($user['password'])) {
+                $userModel->rehashPassword($user['id'], $password);
+                // 重新获取用户数据
+                $user = $userModel->find($user['id']);
+            }
+
             if ($user['status'] != 1) {
                 return $this->renderLogin('Account is disabled');
             }

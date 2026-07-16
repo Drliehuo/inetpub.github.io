@@ -1,0 +1,34 @@
+# 创建或更新 .gitignore
+cat > .gitignore << 'EOF'
+# 敏感配置
+app/config/config.php
+.env
+.env.*
+*.local
+
+# 备份文件
+app/backup_*/
+*.bak
+*.backup
+
+# 运行时文件
+var/cache/*
+var/logs/*
+var/sessions/*
+!var/cache/.gitkeep
+!var/logs/.gitkeep
+!var/sessions/.gitkeep
+
+# 工具脚本（可选）
+migrate-passwords.php
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统
+.DS_Store
+Thumbs.db
+EOF

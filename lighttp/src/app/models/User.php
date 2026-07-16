@@ -9,6 +9,12 @@ class User
 {
     private string $table = 'users';
 
+    private function getBcryptCost(): int
+    {
+        $config = Application::getInstance()->getConfig();
+        return $config['security']['bcrypt_cost'] ?? 12;
+    }
+
     public function find(int $id): ?array
     {
         $db = Application::getInstance()->getDb();
@@ -42,7 +48,9 @@ class User
         if (!$db) {
             return 0;
         }
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $cost = $this->getBcryptCost();
+        $options = ['cost' => $cost];
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT, $options);
         return $db->execute(
             "INSERT INTO {$this->table} (username, email, password, role, created_at) VALUES (?, ?, ?, ?, NOW())",
             [$username, $email, $hashedPassword, $role]
@@ -76,12 +84,25 @@ class User
         $params = [];
         foreach ($data as $key => $value) {
             if ($key === 'password') {
-                $value = password_hash($value, PASSWORD_DEFAULT);
+                $cost = $this->getBcryptCost();
+                $options = ['cost' => $cost];
+                $value = password_hash($value, PASSWORD_BCRYPT, $options);
             }
             $sets[] = "$key = ?";
             $params[] = $value;
         }
         $params[] = $id;
         return $db->update("UPDATE {$this->table} SET " . implode(', ', $sets) . " WHERE id = ?", $params) > 0;
+    }
+
+    public function needsRehash(string $hashed): bool
+    {
+        $cost = $this->getBcryptCost();
+        return password_needs_rehash($hashed, PASSWORD_BCRYPT, ['cost' => $cost]);
+    }
+
+    public function rehashPassword(int $id, string $password): bool
+    {
+        return $this->update($id, ['password' => $password]);
     }
 }

@@ -3,18 +3,18 @@ declare(strict_types=1);
 
 return [
     'database' => [
-        'host' => 'localhost',
+        'host' => '127.0.0.1',
         'port' => 3306,
-        'database' => 'cms_db',
-        'username' => 'cms_db',
-        'password' => ']p3ZKkpDN(-T-NNE',
+        'database' => 'p_inetpub_cn',
+        'username' => 'p_inetpub_cn',
+        'password' => 'abcdefg',
         'charset' => 'utf8mb4',
     ],
     'cache' => [
         'enabled' => true,
         'host' => '127.0.0.1',
         'port' => 6379,
-        'password' => '',
+        'password' => 'abcdefg',
         'database' => 0,
         'prefix' => 'cms:',
         'default_ttl' => 3600,
@@ -24,5 +24,8 @@ return [
         'debug' => true,
         'timezone' => 'Asia/Shanghai',
         'per_page' => 10,
+    ],
+    'security' => [
+        'bcrypt_cost' => 12,
     ],
 ];

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lighttp 项目文档</title>
+    <style>
+        /* Lighttp v1.0.5 - Project Documentation Styles */
+        :root { --black: #000; --dark: #222; --gray-900: #333; --gray-700: #555; --gray-500: #777; --gray-300: #aaa; --gray-200: #ccc; --gray-100: #ddd; --gray-50: #eee; --gray-25: #f5f5f5; --white: #fff; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif; --transition: all 0.15s ease; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font); background: var(--white); color: var(--dark); line-height: 1.7; padding: 40px 20px; -webkit-font-smoothing: antialiased; }
+
+        a { color: var(--black); text-decoration: none; border-bottom: 1px solid var(--gray-300); transition: var(--transition); }
+        a:hover { border-bottom-color: var(--black); }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* Header */
+        .doc-header { border-bottom: 3px solid var(--black); padding-bottom: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+        .doc-header h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -1px; }
+        .doc-header h1 .highlight { color: var(--black); }
+        .doc-header .version { font-size: 0.875rem; color: var(--gray-500); border: 2px solid var(--gray-200); padding: 4px 16px; }
+        .doc-header .meta { font-size: 0.875rem; color: var(--gray-500); margin-top: 4px; }
+
+        /* TOC */
+        .toc { background: var(--gray-25); border: 2px solid var(--gray-200); padding: 24px 32px; margin-bottom: 40px; }
+        .toc h2 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; }
+        .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 24px; }
+        .toc-grid a { color: var(--gray-700); font-size: 0.875rem; border-bottom: 1px solid transparent; padding: 2px 0; display: inline-block; }
+        .toc-grid a:hover { color: var(--black); border-bottom-color: var(--black); }
+
+        /* Sections */
+        .section { margin-bottom: 48px; padding-bottom: 40px; border-bottom: 1px solid var(--gray-200); }
+        .section:last-child { border-bottom: none; margin-bottom: 0; }
+
+        .section h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.5px; }
+        .section .sub { color: var(--gray-500); font-size: 0.875rem; margin-bottom: 20px; }
+
+        .section h3 { font-size: 1.15rem; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+        .section h4 { font-size: 1rem; font-weight: 600; margin-top: 16px; margin-bottom: 4px; color: var(--gray-700); }
+
+        .section p { color: var(--gray-700); margin-bottom: 12px; }
+        .section ul, .section ol { color: var(--gray-700); padding-left: 24px; margin-bottom: 12px; }
+        .section li { margin-bottom: 4px; }
+
+        /* Tables */
+        .table-wrap { overflow-x: auto; margin: 16px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        table th, table td { padding: 8px 12px; text-align: left; border: 1px solid var(--gray-200); }
+        table th { background: var(--gray-25); font-weight: 600; }
+        table tr:nth-child(even) td { background: var(--gray-25); }
+
+        /* Code */
+        code { background: var(--gray-25); padding: 2px 8px; font-size: 0.813rem; font-family: "SF Mono", "JetBrains Mono", monospace; border: 1px solid var(--gray-200); }
+        pre { background: var(--dark); color: var(--gray-50); padding: 16px 20px; overflow-x: auto; font-size: 0.813rem; font-family: "SF Mono", "JetBrains Mono", monospace; line-height: 1.6; margin: 12px 0; border: 2px solid var(--black); }
+        pre .comment { color: var(--gray-500); }
+        pre .keyword { color: var(--gray-300); font-weight: 600; }
+        pre .string { color: var(--gray-300); }
+
+        /* Badge */
+        .badge { display: inline-block; padding: 2px 12px; font-size: 0.75rem; font-weight: 600; border: 2px solid var(--black); background: var(--white); color: var(--black); margin-right: 4px; }
+        .badge-success { border-color: var(--black); background: var(--white); color: var(--black); }
+        .badge-warning { border-color: var(--black); background: var(--gray-25); color: var(--black); }
+        .badge-danger { border-color: var(--black); background: var(--gray-25); color: var(--black); }
+
+        /* Changelog */
+        .changelog-item { border-left: 3px solid var(--black); padding-left: 16px; margin-bottom: 20px; }
+        .changelog-item .version { font-weight: 700; font-size: 1.05rem; }
+        .changelog-item .date { color: var(--gray-500); font-size: 0.813rem; margin-left: 12px; }
+        .changelog-item .type { display: inline-block; padding: 1px 10px; font-size: 0.75rem; font-weight: 600; border: 2px solid var(--black); margin: 4px 0 8px; }
+        .changelog-item ul { margin-top: 4px; }
+
+        /* Footer */
+        .doc-footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid var(--black); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.875rem; color: var(--gray-500); }
+        .doc-footer a { color: var(--black); border-bottom: 1px solid var(--gray-300); }
+        .doc-footer a:hover { border-bottom-color: var(--black); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 20px 12px; }
+            .doc-header { flex-direction: column; align-items: flex-start; }
+            .doc-header h1 { font-size: 1.6rem; }
+            .toc { padding: 16px 20px; }
+            .toc-grid { grid-template-columns: 1fr; }
+            .section h2 { font-size: 1.3rem; }
+            pre { font-size: 0.75rem; padding: 12px 14px; }
+            .changelog-item { padding-left: 12px; }
+            .doc-footer { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .doc-header h1 { font-size: 1.3rem; }
+            table { font-size: 0.75rem; }
+            table th, table td { padding: 4px 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="doc-header">
+            <div>
+                <h1>Lighttp <span class="highlight">项目文档</span></h1>
+                <div class="meta">版本 v1.0.5 &nbsp;·&nbsp; 更新于 2026年7月16日</div>
+            </div>
+            <div class="version">v1.0.5</div>
+        </header>
+
+        <!-- ===== TOC ===== -->
+        <nav class="toc">
+            <h2>目录</h2>
+            <div class="toc-grid">
+                <a href="#overview">1. 项目概述</a>
+                <a href="#tech-stack">2. 技术栈</a>
+                <a href="#directory-structure">3. 目录结构</a>
+                <a href="#features">4. 核心功能清单</a>
+                <a href="#security">5. 安全机制</a>
+                <a href="#database">6. 数据库结构</a>
+                <a href="#changelog">7. 更新记录</a>
+                <a href="#code-standards">8. 代码输出规范清单</a>
+                <a href="#developer-habits">9. 开发者行为习惯</a>
+            </div>
+        </nav>
+
+        <!-- ===== 1. 项目概述 ===== -->
+        <section class="section" id="overview">
+            <h2>1. 项目概述</h2>
+            <p class="sub">Lighttp — 轻量级 PHP 内容管理系统</p>
+
+            <p><strong>Lighttp</strong>（Lighttp Public Cloud）是一款基于 <strong>PHP + MySQL + Redis</strong> 构建的轻量级内容管理系统。采用 MVC 架构设计，代码简洁、性能优异、安全可靠，适用于个人博客、企业官网、知识库等场景。</p>
+
+            <h3>核心设计理念</h3>
+            <ul>
+                <li><strong>极速简洁</strong> — 最小化代码依赖，页面响应时间 &lt; 100ms</li>
+                <li><strong>安全优先</strong> — PDO 预处理、bcrypt 密码哈希、多层防护</li>
+                <li><strong>扁平化设计</strong> — 纯黑白灰配色，无 Emoji，专注内容</li>
+                <li><strong>完全响应式</strong> — 适配电脑、平板、手机</li>
+                <li><strong>HTML 原生支持</strong> — 文章内容完全支持 HTML 标签</li>
+            </ul>
+
+            <h3>项目信息</h3>
+            <table>
+                <tr><th>项目名称</th><td>Lighttp (Lighttp Public Cloud)</td></tr>
+                <tr><th>当前版本</th><td>v1.0.5</td></tr>
+                <tr><th>发布日期</th><td>2026年7月16日</td></tr>
+                <tr><th>许可证</th><td>MIT</td></tr>
+                <tr><th>开发者</th><td>Dr.liehuo (烈火帝君)</td></tr>
+                <tr><th>项目主页</th><td><a href="https://www.inetpub.cn/lighttp">https://www.inetpub.cn/lighttp</a></td></tr>
+                <tr><th>GitHub</th><td><a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src">https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src</a></td></tr>
+            </table>
+        </section>
+
+        <!-- ===== 2. 技术栈 ===== -->
+        <section class="section" id="tech-stack">
+            <h2>2. 技术栈</h2>
+
+            <table>
+                <tr><th>组件</th><th>版本</th><th>说明</th></tr>
+                <tr><td>PHP</td><td>7.4 ~ 8.3</td><td>核心语言</td></tr>
+                <tr><td>MySQL / MariaDB</td><td>5.6+ / 10.3+</td><td>主数据库</td></tr>
+                <tr><td>Redis</td><td>5.0+</td><td>缓存层</td></tr>
+                <tr><td>Nginx / Apache</td><td>1.18+ / 2.4+</td><td>Web 服务器</td></tr>
+            </table>
+
+            <h3>必须的 PHP 扩展</h3>
+            <ul>
+                <li><code>pdo_mysql</code> — PDO MySQL 驱动</li>
+                <li><code>redis</code> — Redis 扩展</li>
+                <li><code>mbstring</code> — 多字节字符串支持</li>
+                <li><code>json</code> — JSON 处理</li>
+                <li><code>session</code> — 会话管理</li>
+            </ul>
+
+            <h3>推荐环境</h3>
+            <ul>
+                <li>宝塔面板 / 阿里云 / 腾讯云</li>
+                <li>Linux (CentOS 7+ / Ubuntu 18.04+)</li>
+                <li>PHP 7.4.33 + OPcache</li>
+            </ul>
+        </section>
+
+        <!-- ===== 3. 目录结构 ===== -->
+        <section class="section" id="directory-structure">
+            <h2>3. 目录结构</h2>
+
+            <pre>
+lighttp/
+├── app/
+│   ├── config/
+│   │   └── config.php          # 系统配置（数据库/缓存/安全）
+│   ├── controllers/            # 控制器层（8个）
+│   │   ├── BaseController.php  # 抽象基类
+│   │   ├── HomeController.php  # 首页
+│   │   ├── ArticleController.php # 文章详情
+│   │   ├── CategoryController.php # 分类列表
+│   │   ├── AuthController.php  # 登录/注册/登出
+│   │   ├── AdminController.php # 后台管理（核心）
+│   │   ├── TagController.php   # 标签页
+│   │   └── PageController.php  # 静态页面
+│   ├── core/                   # 核心框架（3个）
+│   │   ├── Application.php     # 应用容器（路由/缓存/数据库/会话）
+│   │   ├── Database.php        # PDO 封装
+│   │   └── RedisCache.php      # Redis 缓存封装
+│   ├── models/                 # 数据模型（5个）
+│   │   ├── Article.php         # 文章 CRUD
+│   │   ├── Category.php        # 分类 CRUD
+│   │   ├── User.php            # 用户认证 + 密码哈希
+│   │   ├── Setting.php         # 系统配置读写
+│   │   └── Tag.php             # 标签查询
+│   ├── views/
+│   │   └── partials/
+│   │       ├── header.php      # 全局头部（v1.0.4 新增）
+│   │       └── footer.php      # 全局页脚（v1.0.4 新增）
+│   └── routes.php              # 路由定义（20+ 条）
+├── public/                     # Web 根目录
+│   ├── css/
+│   │   ├── style.css           # 全局样式
+│   │   ├── admin.css           # 后台样式
+│   │   └── auth.css            # 登录/注册样式
+│   ├── js/
+│   │   └── app.js              # 全局 JavaScript
+│   ├── index.php               # 入口文件
+│   └── .htaccess               # URL 重写
+├── var/                        # 运行时数据
+│   ├── cache/                  # 缓存目录
+│   ├── logs/                   # 日志目录
+│   └── sessions/               # 会话目录
+├── .htaccess                   # Apache 安全配置
+├── .user.ini                   # PHP 安全配置
+├── install.sql                 # 数据库安装脚本（12张表）
+├── install.php                 # CLI 安装脚本
+├── secure-permissions.sh       # 权限安全设置脚本
+└── nginx-config-example.conf   # Nginx 配置示例</pre>
+        </section>
+
+        <!-- ===== 4. 核心功能清单 ===== -->
+        <section class="section" id="features">
+            <h2>4. 核心功能清单</h2>
+
+            <h3>4.1 前台功能</h3>
+            <table>
+                <tr><th>功能</th><th>路由</th><th>说明</th></tr>
+                <tr><td>首页</td><td><code>/</code></td><td>文章列表 + 分类导航 + 状态标识</td></tr>
+                <tr><td>文章详情</td><td><code>/article/{id}</code></td><td>完整 HTML 内容 + 元信息</td></tr>
+                <tr><td>分类列表</td><td><code>/category/{slug}</code></td><td>按分类筛选文章</td></tr>
+                <tr><td>标签页</td><td><code>/tag/{slug}</code></td><td>标签下文章统计</td></tr>
+                <tr><td>静态页面</td><td><code>/page/{slug}</code></td><td>自定义独立页面</td></tr>
+                <tr><td>用户登录</td><td><code>/login</code></td><td>用户名 + 密码验证</td></tr>
+                <tr><td>用户注册</td><td><code>/register</code></td><td>用户名 + 邮箱 + 密码</td></tr>
+                <tr><td>用户登出</td><td><code>/logout</code></td><td>销毁会话</td></tr>
+            </table>
+
+            <h3>4.2 后台管理功能</h3>
+            <table>
+                <tr><th>功能</th><th>路由</th><th>权限要求</th></tr>
+                <tr><td>仪表盘</td><td><code>/admin</code></td><td>admin / editor</td></tr>
+                <tr><td>文章列表</td><td><code>/admin/articles</code></td><td>admin / editor</td></tr>
+                <tr><td>新建文章</td><td><code>/admin/article/create</code></td><td>admin / editor</td></tr>
+                <tr><td>编辑文章</td><td><code>/admin/article/edit/{id}</code></td><td>admin / editor</td></tr>
+                <tr><td>删除文章</td><td><code>/admin/article/delete/{id}</code></td><td>admin / editor</td></tr>
+                <tr><td>分类列表</td><td><code>/admin/categories</code></td><td>admin / editor</td></tr>
+                <tr><td>新建分类</td><td><code>/admin/category/create</code></td><td>admin / editor</td></tr>
+                <tr><td>编辑分类</td><td><code>/admin/category/edit/{id}</code></td><td>admin / editor</td></tr>
+                <tr><td>删除分类</td><td><code>/admin/category/delete/{id}</code></td><td>admin / editor</td></tr>
+                <tr><td>用户列表</td><td><code>/admin/users</code></td><td>admin / editor</td></tr>
+                <tr><td>系统设置</td><td><code>/admin/settings</code></td><td>admin</td></tr>
+                <tr><td>清空缓存</td><td><code>/admin/cache/clear</code></td><td>admin / editor</td></tr>
+            </table>
+
+            <h3>4.3 文章管理功能</h3>
+            <ul>
+                <li><strong>标题</strong> — 必填，文章标题</li>
+                <li><strong>摘要</strong> — 选填，文章简短介绍</li>
+                <li><strong>分类</strong> — 从已有分类中选择</li>
+                <li><strong>内容</strong> — 完全支持 HTML 标签</li>
+                <li><strong>状态</strong> — 草稿 / 已发布 / 待审核</li>
+                <li><strong>置顶</strong> — 显示在文章列表顶部</li>
+                <li><strong>推荐</strong> — 显示推荐标记</li>
+                <li><strong>预览</strong> — 后台实时预览 HTML 渲染效果</li>
+            </ul>
+        </section>
+
+        <!-- ===== 5. 安全机制 ===== -->
+        <section class="section" id="security">
+            <h2>5. 安全机制</h2>
+
+            <h3>5.1 密码安全</h3>
+            <table>
+                <tr><th>机制</th><th>实现</th><th>状态</th></tr>
+                <tr><td>哈希算法</td><td>bcrypt</td><td><span class="badge badge-success">已启用</span></td></tr>
+                <tr><td>成本因子</td><td>12</td><td><span class="badge badge-success">已启用 (v1.0.5)</span></td></tr>
+                <tr><td>盐值策略</td><td>自动随机盐值</td><td><span class="badge badge-success">已启用</span></td></tr>
+                <tr><td>登录自动重哈希</td><td>成本因子升级时自动处理</td><td><span class="badge badge-success">已启用 (v1.0.5)</span></td></tr>
+            </table>
+
+            <h3>5.2 数据库安全</h3>
+            <ul>
+                <li><strong>SQL 注入防护</strong> — PDO 预处理语句 (<code>Database::query</code>/<code>execute</code>)</li>
+                <li><strong>字符集</strong> — utf8mb4，完整 Unicode 支持</li>
+                <li><strong>索引长度</strong> — VARCHAR(190) 兼容 MySQL 5.6 767 字节限制</li>
+            </ul>
+
+            <h3>5.3 Web 安全</h3>
+            <ul>
+                <li><strong>XSS 防护</strong> — 输出使用 <code>htmlspecialchars()</code> 转义</li>
+                <li><strong>CSRF 防护</strong> — Token 机制已实现（待启用）</li>
+                <li><strong>会话安全</strong> — <code>session.cookie_httponly = 1</code></li>
+                <li><strong>安全头</strong> — X-XSS-Protection, X-Content-Type-Options, X-Frame-Options</li>
+                <li><strong>敏感文件保护</strong> — .htaccess 禁止访问 config.php, install.php 等</li>
+                <li><strong>目录保护</strong> — 禁止访问 var/, app/ 目录</li>
+                <li><strong>PHP 安全</strong> — .user.ini 禁用危险函数 (exec, shell_exec, system 等)</li>
+                <li><strong>open_basedir</strong> — 限制 PHP 文件访问范围</li>
+            </ul>
+
+            <h3>5.4 文件系统安全</h3>
+            <ul>
+                <li><strong>目录权限</strong> — 755 (drwxr-xr-x)</li>
+                <li><strong>文件权限</strong> — 644 (-rw-r--r--)</li>
+                <li><strong>可写目录</strong> — var/cache/, var/logs/, var/sessions/ (775)</li>
+                <li><strong>所有者</strong> — 当前用户:www (宝塔面板环境)</li>
+            </ul>
+
+            <h3>5.5 安全工具</h3>
+            <ul>
+                <li><code>secure-permissions.sh</code> — 一键设置文件/目录权限</li>
+                <li><code>.user.ini</code> — PHP 安全配置</li>
+                <li><code>.htaccess</code> — Apache 安全配置</li>
+                <li><code>migrate-passwords.php</code> — 密码迁移检查工具</li>
+            </ul>
+        </section>
+
+        <!-- ===== 6. 数据库结构 ===== -->
+        <section class="section" id="database">
+            <h2>6. 数据库结构</h2>
+            <p class="sub">12 张表 · MySQL 5.6+ / MariaDB 10.3+ · utf8mb4</p>
+
+            <table>
+                <tr><th>表名</th><th>说明</th><th>关键字段</th></tr>
+                <tr><td><code>articles</code></td><td>文章表</td><td><code>id</code>, <code>slug</code>(UNIQUE), <code>title</code>, <code>content</code>, <code>status</code></td></tr>
+                <tr><td><code>categories</code></td><td>分类表</td><td><code>id</code>, <code>slug</code>(UNIQUE), <code>name</code>, <code>description</code></td></tr>
+                <tr><td><code>users</code></td><td>用户表</td><td><code>id</code>, <code>username</code>(UNIQUE), <code>email</code>(UNIQUE), <code>password</code>(bcrypt)</td></tr>
+                <tr><td><code>comments</code></td><td>评论表</td><td><code>id</code>, <code>article_id</code>, <code>user_id</code>, <code>content</code>, <code>status</code></td></tr>
+                <tr><td><code>pages</code></td><td>页面表</td><td><code>id</code>, <code>slug</code>(UNIQUE), <code>title</code>, <code>content</code></td></tr>
+                <tr><td><code>links</code></td><td>友情链接表</td><td><code>id</code>, <code>name</code>, <code>url</code>, <code>sort_order</code></td></tr>
+                <tr><td><code>settings</code></td><td>系统配置表</td><td><code>id</code>, <code>key</code>(UNIQUE), <code>value</code>, <code>group</code></td></tr>
+                <tr><td><code>cache</code></td><td>缓存表（备用）</td><td><code>id</code>, <code>key</code>(UNIQUE), <code>value</code>, <code>expire_at</code></td></tr>
+                <tr><td><code>logs</code></td><td>操作日志表</td><td><code>id</code>, <code>user_id</code>, <code>action</code>, <code>ip</code>, <code>created_at</code></td></tr>
+                <tr><td><code>sessions</code></td><td>会话表</td><td><code>id</code>(PRIMARY), <code>data</code>, <code>expire_at</code></td></tr>
+                <tr><td><code>tags</code></td><td>标签表</td><td><code>id</code>, <code>slug</code>(UNIQUE), <code>name</code>, <code>count</code></td></tr>
+                <tr><td><code>article_tags</code></td><td>文章标签关联表</td><td><code>article_id</code>(PRIMARY), <code>tag_id</code>(PRIMARY)</td></tr>
+            </table>
+
+            <h3>默认数据</h3>
+            <ul>
+                <li><strong>管理员</strong> — 用户名 <code>admin</code> / 密码 <code>password</code> (bcrypt 成本因子 12)</li>
+                <li><strong>分类</strong> — 技术、生活、随笔、产品、设计</li>
+                <li><strong>示例文章</strong> — 6 篇（涵盖技术、PHP、Redis、MySQL 等主题）</li>
+                <li><strong>友情链接</strong> — PHP官方、MySQL官方、Redis官方、GitHub</li>
+                <li><strong>系统配置</strong> — site_name, site_description, per_page 等</li>
+            </ul>
+
+            <h3>索引策略</h3>
+            <p>所有 UNIQUE 索引字段使用 <code>VARCHAR(190)</code>，兼容 MySQL 5.6 的 767 字节索引限制：</p>
+            <pre>190 × 4 (utf8mb4) = 760 字节 &lt; 767 字节 ✓</pre>
+        </section>
+
+        <!-- ===== 7. 更新记录 ===== -->
+        <section class="section" id="changelog">
+            <h2>7. 更新记录</h2>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.0.5</span><span class="date">2026-07-16</span></div>
+                <span class="badge badge-success">安全增强</span>
+                <ul>
+                    <li>bcrypt 成本因子从 10 提升到 <strong>12</strong>（暴力破解难度提升 4 倍）</li>
+                    <li>新增 <code>security.bcrypt_cost</code> 配置项</li>
+                    <li>登录时自动检测并重哈希密码（现有用户平滑升级）</li>
+                    <li>新增 <code>migrate-passwords.php</code> 密码迁移检查工具</li>
+                    <li>修改文件：<code>config.php</code>, <code>User.php</code>, <code>AuthController.php</code></li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.0.4</span><span class="date">2026-07-16</span></div>
+                <span class="badge badge-warning">架构优化</span>
+                <ul>
+                    <li>创建独立的 <code>views/partials/header.php</code> 和 <code>footer.php</code></li>
+                    <li>所有控制器统一引用 header/footer，消除重复代码</li>
+                    <li>页脚链接集中管理：<a href="https://www.inetpub.cn/lighttp">https://www.inetpub.cn/lighttp</a></li>
+                    <li>新增 <code>update-v1.0.4.sh</code> 一键升级脚本</li>
+                    <li>修改文件：7 个控制器 + 2 个 partials</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.0.3</span><span class="date">2026-07-15</span></div>
+                <span class="badge badge-warning">UI 重构</span>
+                <ul>
+                    <li>全新黑白扁平化 UI 设计（纯黑白灰配色）</li>
+                    <li>移除所有 Emoji，替换为 ASCII 字符</li>
+                    <li>完全响应式支持（电脑 / 平板 / 手机）</li>
+                    <li>CSS 全部提取为独立文件（<code>style.css</code>, <code>admin.css</code>, <code>auth.css</code>）</li>
+                    <li>CSS 单行格式规范（每条规则仅一行）</li>
+                    <li>新增 <code>public/js/app.js</code> 全局 JavaScript</li>
+                    <li>修改文件：7 个控制器 + 4 个静态文件</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.0.2</span><span class="date">2026-07-15</span></div>
+                <span class="badge badge-warning">功能增强</span>
+                <ul>
+                    <li>文章内容完全支持 HTML 标签（<code>h1-h6</code>, <code>p</code>, <code>a</code>, <code>img</code>, <code>table</code>, <code>pre</code>, <code>code</code> 等）</li>
+                    <li>后台编辑器增加「预览」按钮，实时查看 HTML 渲染效果</li>
+                    <li>前台文章详情页增加富文本样式</li>
+                    <li>移除 <code>htmlspecialchars()</code> 转义，直接输出 HTML</li>
+                    <li>修改文件：<code>ArticleController.php</code>, <code>HomeController.php</code>, <code>AdminController.php</code></li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.0.1</span><span class="date">2026-07-15</span></div>
+                <span class="badge badge-warning">兼容性修复</span>
+                <ul>
+                    <li>修复 MySQL 索引长度超限问题 (#1071)</li>
+                    <li>索引字段从 <code>VARCHAR(255)</code> 改为 <code>VARCHAR(190)</code></li>
+                    <li>兼容 MySQL 5.6/5.7 InnoDB 767 字节索引限制</li>
+                    <li>涉及表：<code>articles</code>, <code>categories</code>, <code>pages</code>, <code>tags</code>, <code>settings</code>, <code>cache</code></li>
+                    <li>修改文件：<code>install.sql</code></li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.0.0</span><span class="date">2026-06-22</span></div>
+                <span class="badge badge-success">初始发布</span>
+                <ul>
+                    <li>完整的 MVC 架构</li>
+                    <li>文章、分类、用户、评论管理</li>
+                    <li>Redis 缓存支持（页面缓存 + 数据缓存）</li>
+                    <li>12 张数据表</li>
+                    <li>响应式管理后台</li>
+                    <li>默认管理员 <code>admin</code> / <code>password</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ===== 8. 代码输出规范清单 ===== -->
+        <section class="section" id="code-standards">
+            <h2>8. 代码输出规范清单</h2>
+            <p class="sub">所有代码输出必须遵守以下规范</p>
+
+            <h3>8.1 CSS 与 JS 本地化</h3>
+            <ul>
+                <li>❌ 禁止使用第三方 CDN 资源（jsdelivr, unpkg, cdnjs 等）</li>
+                <li>✅ 所有 CSS 和 JS 存放在 <code>public/css/</code> 和 <code>public/js/</code></li>
+                <li>✅ 使用系统字体栈，不依赖 Google Fonts</li>
+            </ul>
+
+            <h3>8.2 CSS 单行格式</h3>
+            <p>所有 CSS 规则必须保持单行格式：</p>
+            <pre><span class="comment">/* ✅ 正确 — 单行格式 */</span>
+.site-header { background: var(--white); border-bottom: 2px solid var(--black); padding: 16px 0; }
+
+<span class="comment">/* ❌ 错误 — 多行格式（禁止） */</span>
+.site-header {
+    background: var(--white);
+    border-bottom: 2px solid var(--black);
+    padding: 16px 0;
+}</pre>
+
+            <h3>8.3 禁止 CSS 内联</h3>
+            <ul>
+                <li>❌ 禁止使用 <code>&lt;style&gt;</code> 内联标签</li>
+                <li>❌ 禁止使用 <code>style=""</code> 属性</li>
+                <li>✅ 所有样式定义在独立 CSS 文件中</li>
+            </ul>
+
+            <h3>8.4 W3C 标准</h3>
+            <ul>
+                <li>✅ <code>&lt;!DOCTYPE html&gt;</code> 必须声明</li>
+                <li>✅ <code>&lt;meta charset="UTF-8"&gt;</code> 必须声明</li>
+                <li>✅ <code>&lt;meta name="viewport"&gt;</code> 必须声明</li>
+                <li>✅ 使用语义化标签（header, nav, main, article, section, footer）</li>
+                <li>✅ 所有 <code>&lt;img&gt;</code> 必须包含 <code>alt</code> 属性</li>
+                <li>✅ 所有 <code>&lt;a&gt;</code> 必须包含 <code>href</code> 属性</li>
+                <li>✅ 表单控件必须包含对应的 <code>&lt;label&gt;</code></li>
+            </ul>
+
+            <h3>8.5 命名规范</h3>
+            <ul>
+                <li><strong>CSS 类名</strong> — 语义化命名（<code>.article-card</code>, <code>.nav-links</code>, <code>.admin-bar</code>）</li>
+                <li><strong>PHP 命名空间</strong> — <code>App\controllers</code>, <code>App\models</code>, <code>App\core</code></li>
+                <li><strong>文件命名</strong> — PascalCase（<code>HomeController.php</code>, <code>Article.php</code>）</li>
+                <li><strong>路由</strong> — 小写 + 连字符（<code>/admin/article/create</code>）</li>
+            </ul>
+
+            <h3>8.6 JavaScript 规范</h3>
+            <ul>
+                <li>✅ 使用 <code>"use strict";</code></li>
+                <li>✅ 使用 <code>const</code> / <code>let</code>，禁止 <code>var</code></li>
+                <li>✅ 使用 <code>addEventListener()</code>，禁止行内事件</li>
+                <li>✅ 语句末尾加分号</li>
+            </ul>
+
+            <h3>8.7 禁止使用 Emoji</h3>
+            <ul>
+                <li>❌ 禁止使用 Emoji 字符</li>
+                <li>✅ 使用 ASCII 字符替代（如 [A], [C], [U], [S], [X]）</li>
+                <li>✅ 使用纯文本描述</li>
+            </ul>
+        </section>
+
+        <!-- ===== 9. 开发者行为习惯 ===== -->
+        <section class="section" id="developer-habits">
+            <h2>9. 开发者行为习惯</h2>
+            <p class="sub">AI 开发助手行为规范</p>
+
+            <h3>9.1 输出前自检</h3>
+            <ul>
+                <li>✅ 检查是否包含第三方 CDN 资源</li>
+                <li>✅ 检查 CSS 是否为单行格式</li>
+                <li>✅ 检查是否包含内联样式</li>
+                <li>✅ 检查是否包含 Emoji</li>
+                <li>✅ 检查是否符合 W3C 标准</li>
+                <li>✅ 检查敏感信息是否已脱敏</li>
+            </ul>
+
+            <h3>9.2 代码风格</h3>
+            <ul>
+                <li>PHP 使用 <code>declare(strict_types=1);</code></li>
+                <li>使用类型声明（string, int, array, ?array）</li>
+                <li>使用 <code>htmlspecialchars()</code> 转义所有用户输出</li>
+                <li>使用 PDO 预处理语句防止 SQL 注入</li>
+                <li>使用 <code>password_hash()</code> / <code>password_verify()</code></li>
+            </ul>
+
+            <h3>9.3 版本管理</h3>
+            <ul>
+                <li>每次发布打 Tag，不建 Branch（个人项目）</li>
+                <li>版本号格式：v1.0.5（主版本.次版本.补丁）</li>
+                <li>更新记录同步到 CHANGELOG.md</li>
+                <li>敏感配置不上传到 GitHub</li>
+            </ul>
+
+            <h3>9.4 文档习惯</h3>
+            <ul>
+                <li>所有功能变更同步更新文档</li>
+                <li>数据库变更同步更新 SQL</li>
+                <li>配置文件变更同步更新示例</li>
+                <li>保持文档与代码一致</li>
+            </ul>
+
+            <h3>9.5 安全习惯</h3>
+            <ul>
+                <li>敏感信息使用占位符（<code>your_db_password</code>）</li>
+                <li>生产环境 <code>debug = false</code></li>
+                <li>定期备份数据库和文件</li>
+                <li>定期清理 <code>var/logs/</code></li>
+            </ul>
+
+            <h3>9.6 沟通习惯</h3>
+            <ul>
+                <li>清晰说明每次变更的内容和原因</li>
+                <li>提供完整的操作命令和步骤</li>
+                <li>标注重要提醒（如安全警告）</li>
+                <li>使用结构化格式（表格、代码块）</li>
+            </ul>
+
+            <h3>9.7 Git 管理习惯</h3>
+            <ul>
+                <li>每次发版打 Tag 标记版本（如 v1.0.5）</li>
+                <li>敏感文件不上传（config.php, .env, backup 目录）</li>
+                <li>提交信息清晰描述变更内容</li>
+                <li>保持 main 分支为最新稳定版本</li>
+            </ul>
+        </section>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="doc-footer">
+            <span>Lighttp v1.0.5 &nbsp;·&nbsp; 项目文档</span>
+            <span>
+                <a href="https://www.inetpub.cn/lighttp">项目主页</a>
+                &nbsp;·&nbsp;
+                <a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src">GitHub</a>
+                &nbsp;·&nbsp;
+                <a href="mailto:webmaster@inetpub.cn">联系开发者</a>
+            </span>
+            <span>&copy; 2026 Lighttp. MIT License.</span>
+        </footer>
+
+    </div>
+</body>
+</html>

@@ -24,27 +24,59 @@ if [ ! -d "app/models" ] || [ ! -d "app/config" ]; then
 fi
 
 # ======================================================
-# 1. 更新 app/config/config.php
+# 1. 备份原文件
 # ======================================================
-echo -e "${YELLOW}[1/4] 更新 app/config/config.php...${NC}"
+echo -e "${YELLOW}[1/5] 备份原文件...${NC}"
+BACKUP_DIR="app/backup_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+cp app/config/config.php "$BACKUP_DIR/" 2>/dev/null || true
+cp app/models/User.php "$BACKUP_DIR/" 2>/dev/null || true
+cp app/controllers/AuthController.php "$BACKUP_DIR/" 2>/dev/null || true
+echo -e "${GREEN}备份已保存至: $BACKUP_DIR${NC}"
 
-# 检查是否已有 security 配置
-if grep -q "'security'" app/config/config.php; then
-    echo -e "${GREEN}已有 security 配置，跳过添加${NC}"
-else
-    # 在 app 配置后面添加 security 配置
-    sed -i "/'app' => \[/,/],/ {
-        /],/ a\\
-    'security' => [\\
-        'bcrypt_cost' => 12,\\
+# ======================================================
+# 2. 更新 app/config/config.php
+# ======================================================
+echo -e "${YELLOW}[2/5] 更新 app/config/config.php...${NC}"
+
+cat > app/config/config.php << 'EOF'
+<?php
+declare(strict_types=1);
+
+return [
+    'database' => [
+        'host' => 'localhost',
+        'port' => 3306,
+        'database' => 'p_inetpub_cn',
+        'username' => 'p_inetpub_cn',
+        'password' => ']p3ZKkpDN(-T-NNE',
+        'charset' => 'utf8mb4',
     ],
-    }" app/config/config.php
-fi
+    'cache' => [
+        'enabled' => true,
+        'host' => '127.0.0.1',
+        'port' => 6379,
+        'password' => '123456',
+        'database' => 0,
+        'prefix' => 'cms:',
+        'default_ttl' => 3600,
+    ],
+    'app' => [
+        'name' => 'My CMS',
+        'debug' => true,
+        'timezone' => 'Asia/Shanghai',
+        'per_page' => 10,
+    ],
+    'security' => [
+        'bcrypt_cost' => 12,
+    ],
+];
+EOF
 
 # ======================================================
-# 2. 更新 app/models/User.php
+# 3. 更新 app/models/User.php
 # ======================================================
-echo -e "${YELLOW}[2/4] 更新 app/models/User.php...${NC}"
+echo -e "${YELLOW}[3/5] 更新 app/models/User.php...${NC}"
 
 cat > app/models/User.php << 'EOF'
 <?php
@@ -152,43 +184,215 @@ class User
 
     public function rehashPassword(int $id, string $password): bool
     {
-        $cost = $this->getBcryptCost();
-        $options = ['cost' => $cost];
-        $newHash = password_hash($password, PASSWORD_BCRYPT, $options);
         return $this->update($id, ['password' => $password]);
     }
 }
 EOF
 
 # ======================================================
-# 3. 更新 app/controllers/AuthController.php（登录时自动重哈希）
+# 4. 更新 app/controllers/AuthController.php
 # ======================================================
-echo -e "${YELLOW}[3/4] 更新 app/controllers/AuthController.php...${NC}"
+echo -e "${YELLOW}[4/5] 更新 app/controllers/AuthController.php...${NC}"
 
-# 提取登录验证部分，添加自动重哈希逻辑
-sed -i '/if (!$user || !$userModel->verifyPassword/{
-    s/if (!$user || !$userModel->verifyPassword.*$/if (!$user || !$userModel->verifyPassword($password, $user['\''password'\''])) {/
-    a\
-                return $this->renderLogin('\''Invalid username or password'\'');
-            }\
-\
-            // 检查是否需要重哈希（升级到更高成本因子）\
-            if ($userModel->needsRehash($user['\''password'\''])) {\
-                $userModel->rehashPassword($user['\''id'\''], $password);\
-                // 重新获取用户数据\
-                $user = $userModel->find($user['\''id'\'']);\
+cat > app/controllers/AuthController.php << 'EOF'
+<?php
+declare(strict_types=1);
+
+namespace App\controllers;
+
+use App\models\User;
+use App\core\Application;
+
+class AuthController extends BaseController
+{
+    public function login(): string
+    {
+        if ($this->isLoggedIn()) {
+            $this->redirect('/');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = trim($_POST['username'] ?? '');
+            $password = $_POST['password'] ?? '';
+
+            if (empty($username) || empty($password)) {
+                return $this->renderLogin('Please fill in all fields');
             }
-}' app/controllers/AuthController.php
+
+            $userModel = new User();
+            $user = $userModel->findByUsername($username);
+
+            if (!$user || !$userModel->verifyPassword($password, $user['password'])) {
+                return $this->renderLogin('Invalid username or password');
+            }
+
+            // 检查是否需要重哈希（升级到更高成本因子）
+            if ($userModel->needsRehash($user['password'])) {
+                $userModel->rehashPassword($user['id'], $password);
+                // 重新获取用户数据
+                $user = $userModel->find($user['id']);
+            }
+
+            if ($user['status'] != 1) {
+                return $this->renderLogin('Account is disabled');
+            }
+
+            Application::getInstance()->setCurrentUser($user);
+            $userModel->updateLoginInfo($user['id'], $_SERVER['REMOTE_ADDR'] ?? '');
+
+            $this->redirect('/admin');
+        }
+
+        return $this->renderLogin();
+    }
+
+    private function renderLogin(string $error = ''): string
+    {
+        ob_start();
+        ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="auth-box">
+        <h1>Login</h1>
+        <?php if ($error): ?>
+            <div class="auth-error"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn-submit">Login</button>
+        </form>
+        <div class="auth-links">
+            <a href="/register">Register</a> | <a href="/">Back to home</a>
+        </div>
+    </div>
+</body>
+</html>
+<?php
+        return ob_get_clean();
+    }
+
+    public function logout(): void
+    {
+        Application::getInstance()->setCurrentUser(null);
+        session_destroy();
+        $this->redirect('/');
+    }
+
+    public function register(): string
+    {
+        if ($this->isLoggedIn()) {
+            $this->redirect('/');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $passwordConfirm = $_POST['password_confirm'] ?? '';
+
+            if (strlen($username) < 3) {
+                return $this->renderRegister('Username must be at least 3 characters');
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return $this->renderRegister('Invalid email format');
+            }
+            if (strlen($password) < 6) {
+                return $this->renderRegister('Password must be at least 6 characters');
+            }
+            if ($password !== $passwordConfirm) {
+                return $this->renderRegister('Passwords do not match');
+            }
+
+            $userModel = new User();
+            if ($userModel->findByUsername($username)) {
+                return $this->renderRegister('Username already taken');
+            }
+            if ($userModel->findByEmail($email)) {
+                return $this->renderRegister('Email already registered');
+            }
+
+            $userModel->create($username, $email, $password);
+            $this->redirect('/login');
+        }
+
+        return $this->renderRegister();
+    }
+
+    private function renderRegister(string $error = ''): string
+    {
+        ob_start();
+        ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="auth-box">
+        <h1>Register</h1>
+        <?php if ($error): ?>
+            <div class="auth-error"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password (min 6 chars)</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="password_confirm">Confirm Password</label>
+                <input type="password" id="password_confirm" name="password_confirm" required>
+            </div>
+            <button type="submit" class="btn-submit">Register</button>
+        </form>
+        <div class="auth-links">
+            <a href="/login">Already have an account? Login</a> | <a href="/">Back to home</a>
+        </div>
+    </div>
+</body>
+</html>
+<?php
+        return ob_get_clean();
+    }
+}
+EOF
 
 # ======================================================
-# 4. 创建密码重哈希工具脚本（可选，用于批量升级现有用户密码）
+# 5. 创建密码迁移检查工具
 # ======================================================
-echo -e "${YELLOW}[4/4] 创建工具脚本 migrate-passwords.php...${NC}"
+echo -e "${YELLOW}[5/5] 创建工具脚本 migrate-passwords.php...${NC}"
 
 cat > migrate-passwords.php << 'EOF'
 <?php
 /**
- * 密码迁移脚本 - 将现有用户密码升级到新的 bcrypt 成本因子
+ * 密码迁移检查工具
+ * 检查现有用户密码是否需要升级到新的 bcrypt 成本因子
  * 运行方式：php migrate-passwords.php
  */
 declare(strict_types=1);
@@ -214,8 +418,8 @@ use App\core\Application;
 use App\models\User;
 
 echo "========================================\n";
-echo "  Lighttp - 密码迁移工具\n";
-echo "  将用户密码升级到新的 bcrypt 成本因子\n";
+echo "  Lighttp - 密码迁移检查工具\n";
+echo "  检查用户密码是否需要升级\n";
 echo "========================================\n\n";
 
 $app = Application::getInstance();
@@ -229,32 +433,34 @@ $userModel = new User();
 $users = $db->query("SELECT id, username, password FROM users");
 
 if (empty($users)) {
-    echo "没有用户需要迁移。\n";
+    echo "没有用户需要检查。\n";
     exit(0);
 }
 
-$migrated = 0;
-$skipped = 0;
+$needUpgrade = 0;
+$alreadyUpgraded = 0;
+
+echo "用户密码状态：\n";
+echo "----------------------------------------\n";
 
 foreach ($users as $user) {
     if ($userModel->needsRehash($user['password'])) {
-        // 注意：这里无法获取原始密码，需要用户在登录时自动重哈希
-        echo "  - 用户 '{$user['username']}' (ID: {$user['id']}) 需要迁移\n";
-        echo "    提示：用户在下次登录时将自动升级密码哈希\n";
-        $skipped++;
+        echo "  [需要升级] 用户 '{$user['username']}' (ID: {$user['id']})\n";
+        echo "              → 下次登录时自动升级\n";
+        $needUpgrade++;
     } else {
-        echo "  - 用户 '{$user['username']}' (ID: {$user['id']}) 已是最新\n";
-        $migrated++;
+        echo "  [已是最新] 用户 '{$user['username']}' (ID: {$user['id']})\n";
+        $alreadyUpgraded++;
     }
 }
 
 echo "\n----------------------------------------\n";
 echo "统计：\n";
-echo "  - 已是最新: $migrated\n";
-echo "  - 需要登录时迁移: $skipped\n";
+echo "  - 已升级到成本因子12: $alreadyUpgraded\n";
+echo "  - 需要登录时自动升级: $needUpgrade\n";
 echo "\n";
-echo "✅ 密码迁移准备完成！\n";
-echo "📌 用户下次登录时会自动升级密码哈希。\n";
+echo "✅ 检查完成！\n";
+echo "📌 需要升级的用户在下次登录时会自动完成升级。\n";
 EOF
 
 # ======================================================
