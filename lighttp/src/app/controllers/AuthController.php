@@ -44,7 +44,9 @@ class AuthController extends BaseController
 
     private function renderLogin(string $error = ''): string
     {
-        return '<!DOCTYPE html>
+        ob_start();
+        ?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -56,7 +58,9 @@ class AuthController extends BaseController
 <body class="auth-page">
     <div class="auth-box">
         <h1>Login</h1>
-        ' . ($error ? '<div class="auth-error">' . htmlspecialchars($error) . '</div>' : '') . '
+        <?php if ($error): ?>
+            <div class="auth-error"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
         <form method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -73,7 +77,9 @@ class AuthController extends BaseController
         </div>
     </div>
 </body>
-</html>';
+</html>
+<?php
+        return ob_get_clean();
     }
 
     public function logout(): void
@@ -125,7 +131,9 @@ class AuthController extends BaseController
 
     private function renderRegister(string $error = ''): string
     {
-        return '<!DOCTYPE html>
+        ob_start();
+        ?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -137,7 +145,9 @@ class AuthController extends BaseController
 <body class="auth-page">
     <div class="auth-box">
         <h1>Register</h1>
-        ' . ($error ? '<div class="auth-error">' . htmlspecialchars($error) . '</div>' : '') . '
+        <?php if ($error): ?>
+            <div class="auth-error"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
         <form method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -162,6 +172,8 @@ class AuthController extends BaseController
         </div>
     </div>
 </body>
-</html>';
+</html>
+<?php
+        return ob_get_clean();
     }
 }

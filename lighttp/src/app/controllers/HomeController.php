@@ -29,83 +29,59 @@ class HomeController extends BaseController
             }
         }
 
-        $html = '<!DOCTYPE html>
+        ob_start();
+        ?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>' . htmlspecialchars($data['site_name']) . '</title>
+    <title><?php echo htmlspecialchars($data['site_name']); ?></title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container">
-            <a href="/" class="logo">' . htmlspecialchars($data['site_name']) . '</a>
-            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links" id="navLinks">';
+    <?php include APP_PATH . '/views/partials/header.php'; ?>
 
-        foreach ($data['categories'] as $cat) {
-            $html .= '<li><a href="/category/' . htmlspecialchars($cat['slug']) . '">' . htmlspecialchars($cat['name']) . '</a></li>';
-        }
+    <main class="container" style="padding-top:32px;">
+        <div class="admin-bar">
+            <a href="/admin/articles">Manage Articles</a>
+            <a href="/admin/article/create">New Article</a>
+            <a href="/admin/cache/clear">Clear Cache</a>
+            <span class="status-badge success">MySQL</span>
+            <span class="status-badge success">Redis</span>
+        </div>
 
-        if ($this->isLoggedIn()) {
-            $html .= '<li><a href="/admin">Admin</a></li>';
-            $html .= '<li><a href="/logout" class="nav-cta">Logout</a></li>';
-        } else {
-            $html .= '<li><a href="/login">Login</a></li>';
-            $html .= '<li><a href="/register" class="nav-cta">Register</a></li>';
-        }
+        <h2>Latest Articles</h2>
 
-        $html .= '</ul></div></header>
-
-        <main class="container" style="padding-top:32px;">
-            <div class="admin-bar">
-                <a href="/admin/articles">Manage Articles</a>
-                <a href="/admin/article/create">New Article</a>
-                <a href="/admin/cache/clear">Clear Cache</a>
-                <span class="status-badge success">MySQL</span>
-                <span class="status-badge success">Redis</span>
-            </div>
-
-            <h2>Latest Articles</h2>';
-
-        if (empty($data['articles'])) {
-            $html .= '<p>No articles yet. <a href="/admin/article/create">Create your first article</a></p>';
-        } else {
-            foreach ($data['articles'] as $article) {
+        <?php if (empty($data['articles'])): ?>
+            <p>No articles yet. <a href="/admin/article/create">Create your first article</a></p>
+        <?php else: ?>
+            <?php foreach ($data['articles'] as $article):
                 $excerpt = $article['excerpt'] ?? $article['content'] ?? '';
                 $excerpt = mb_substr(strip_tags($excerpt), 0, 150) . '...';
-                $html .= '<div class="article-card">
-                    <h2><a href="/article/' . $article['id'] . '">' . htmlspecialchars($article['title']) . '</a></h2>
-                    <div class="meta">
-                        <span>' . date('Y-m-d', strtotime($article['created_at'])) . '</span>
-                        <span>' . htmlspecialchars($article['category_name'] ?? 'Uncategorized') . '</span>
-                        <span>' . ($article['views'] ?? 0) . ' views</span>
-                        ' . ($article['is_top'] ? '<span>[Top]</span>' : '') . '
-                        ' . ($article['is_recommend'] ? '<span>[Recommend]</span>' : '') . '
-                    </div>
-                    <p class="excerpt">' . $excerpt . '</p>
-                </div>';
-            }
-        }
-
-        $html .= '</main>
-
-        <footer class="site-footer">
-            <div class="container">
-                <span class="footer-brand">' . htmlspecialchars($data['site_name']) . '</span>
-                <span class="footer-copy">&copy; ' . date('Y') . ' All rights reserved.</span>
-                <span class="footer-dev">Powered by <a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src">Lighttp</a></span>
+            ?>
+            <div class="article-card">
+                <h2><a href="/article/<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a></h2>
+                <div class="meta">
+                    <span><?php echo date('Y-m-d', strtotime($article['created_at'])); ?></span>
+                    <span><?php echo htmlspecialchars($article['category_name'] ?? 'Uncategorized'); ?></span>
+                    <span><?php echo $article['views'] ?? 0; ?> views</span>
+                    <?php if ($article['is_top']): ?><span>[Top]</span><?php endif; ?>
+                    <?php if ($article['is_recommend']): ?><span>[Recommend]</span><?php endif; ?>
+                </div>
+                <p class="excerpt"><?php echo $excerpt; ?></p>
             </div>
-        </footer>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </main>
 
-        <script src="/js/app.js"></script>
-    </body>
-    </html>';
+    <?php include APP_PATH . '/views/partials/footer.php'; ?>
 
-        return $html;
+    <script src="/js/app.js"></script>
+</body>
+</html>
+<?php
+        return ob_get_clean();
     }
 }

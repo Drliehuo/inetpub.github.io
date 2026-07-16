@@ -1,9 +1,0 @@
- <VirtualHost *:80>
-    ServerName your-domain.com
-    DocumentRoot /var/www/lighttp/public
-    <Directory /var/www/lighttp/public>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>

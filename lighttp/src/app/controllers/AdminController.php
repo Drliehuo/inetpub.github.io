@@ -24,12 +24,14 @@ class AdminController extends BaseController
 
     private function renderAdminLayout(string $title, string $content): string
     {
-        return '<!DOCTYPE html>
+        ob_start();
+        ?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>' . htmlspecialchars($title) . ' - Admin</title>
+    <title><?php echo htmlspecialchars($title); ?> - Admin</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -38,7 +40,7 @@ class AdminController extends BaseController
         <div class="container">
             <div class="brand"><a href="/admin">Lighttp Admin</a></div>
             <div class="user-info">
-                <span>' . htmlspecialchars($this->getCurrentUser()['username'] ?? '') . '</span>
+                <span><?php echo htmlspecialchars($this->getCurrentUser()['username'] ?? ''); ?></span>
                 <a href="/">Home</a>
                 <a href="/logout">Logout</a>
             </div>
@@ -46,12 +48,14 @@ class AdminController extends BaseController
     </header>
     <main class="admin-content">
         <div class="container">
-            ' . $content . '
+            <?php echo $content; ?>
         </div>
     </main>
     <script src="/js/app.js"></script>
 </body>
-</html>';
+</html>
+<?php
+        return ob_get_clean();
     }
 
     public function dashboard(): string
