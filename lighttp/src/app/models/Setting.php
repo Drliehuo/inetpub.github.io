@@ -31,4 +31,19 @@ class Setting
         }
         return $db->execute("INSERT INTO {$this->table} (`key`, `value`, created_at) VALUES (?, ?, NOW())", [$key, $value]) > 0;
     }
+
+    public function setMultiple(array $data): bool
+    {
+        $db = Application::getInstance()->getDb();
+        if (!$db) {
+            return false;
+        }
+        $success = true;
+        foreach ($data as $key => $value) {
+            if (!$this->set($key, trim($value))) {
+                $success = false;
+            }
+        }
+        return $success;
+    }
 }

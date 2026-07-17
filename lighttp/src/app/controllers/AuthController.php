@@ -20,18 +20,22 @@ class AuthController extends BaseController
                 return $this->renderLogin('CSRF token validation failed');
             }
 
-            $username = trim($_POST['username'] ?? '');
+            $login = trim($_POST['username'] ?? '');
             $password = $_POST['password'] ?? '';
 
-            if (empty($username) || empty($password)) {
+            if (empty($login) || empty($password)) {
                 return $this->renderLogin('Please fill in all fields');
             }
 
             $userModel = new User();
-            $user = $userModel->findByUsername($username);
+            // 支持用户名或邮箱登录
+            $user = $userModel->findByUsername($login);
+            if (!$user) {
+                $user = $userModel->findByEmail($login);
+            }
 
             if (!$user || !$userModel->verifyPassword($password, $user['password'])) {
-                return $this->renderLogin('Invalid username or password');
+                return $this->renderLogin('Invalid username/email or password');
             }
 
             // 检查是否需要重哈希（升级到更高成本因子）
@@ -75,7 +79,7 @@ class AuthController extends BaseController
         <form method="POST">
             <?php echo $this->csrfField(); ?>
             <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">Username or Email</label>
                 <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">

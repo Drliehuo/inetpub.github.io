@@ -1,4 +1,4 @@
-/* Lighttp v1.0.2 - Global JavaScript */
+/* Lighttp v1.0.4 - Global JavaScript */
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
             nav.classList.toggle('open');
         });
 
-        // Close menu on link click (mobile)
         nav.querySelectorAll('a').forEach(function(link) {
             link.addEventListener('click', function() {
                 toggle.classList.remove('active');

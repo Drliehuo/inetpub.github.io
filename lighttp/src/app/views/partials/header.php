@@ -1,4 +1,4 @@
-<!-- Lighttp v1.0.4 - Header Partial -->
+<!-- Lighttp v1.0.8 - Header Partial -->
 <header class="site-header">
     <div class="container">
         <a href="/" class="logo">Lighttp</a>
@@ -8,6 +8,7 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="/">Home</a></li>
             <li><a href="/admin">Admin</a></li>
+            <li><a href="/admin/profile">Profile</a></li>
         </ul>
     </div>
 </header>

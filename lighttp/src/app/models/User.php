@@ -95,6 +95,30 @@ class User
         return $db->update("UPDATE {$this->table} SET " . implode(', ', $sets) . " WHERE id = ?", $params) > 0;
     }
 
+    public function updateProfile(int $id, string $email, string $nickname): bool
+    {
+        $db = Application::getInstance()->getDb();
+        if (!$db) {
+            return false;
+        }
+        return $db->update(
+            "UPDATE {$this->table} SET email = ?, nickname = ? WHERE id = ?",
+            [$email, $nickname, $id]
+        ) > 0;
+    }
+
+    public function updatePassword(int $id, string $password): bool
+    {
+        $db = Application::getInstance()->getDb();
+        if (!$db) {
+            return false;
+        }
+        $cost = $this->getBcryptCost();
+        $options = ['cost' => $cost];
+        $hashed = password_hash($password, PASSWORD_BCRYPT, $options);
+        return $db->update("UPDATE {$this->table} SET password = ? WHERE id = ?", [$hashed, $id]) > 0;
+    }
+
     public function needsRehash(string $hashed): bool
     {
         $cost = $this->getBcryptCost();
@@ -103,6 +127,6 @@ class User
 
     public function rehashPassword(int $id, string $password): bool
     {
-        return $this->update($id, ['password' => $password]);
+        return $this->updatePassword($id, $password);
     }
 }

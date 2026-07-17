@@ -1,34 +1,48 @@
 <?php
 declare(strict_types=1);
-
 namespace App\controllers;
-
 use App\core\Application;
 use App\models\Article;
 use App\models\Category;
-
+use App\models\Setting;
 class HomeController extends BaseController
 {
     public function index(): string
     {
+        $page = (int)($_GET['page'] ?? 1);
+        if ($page < 1) $page = 1;
+        $settingModel = new Setting();
+        $perPage = (int)($settingModel->get('per_page') ?? 10);
         $cache = Application::getInstance()->getCache();
-        $cacheKey = 'home_data';
-        $data = $cache && $cache->has($cacheKey) ? $cache->get($cacheKey) : null;
-
-        if ($data === null) {
-            $articleModel = new Article();
-            $categoryModel = new Category();
-            $data = [
-                'articles' => $articleModel->getLatest(10),
-                'categories' => $categoryModel->findAll(),
-                'site_name' => 'My CMS',
-                'site_description' => 'A lightweight CMS built with PHP + MySQL + Redis'
-            ];
-            if ($cache) {
-                $cache->set($cacheKey, $data, 300);
-            }
+        $cacheKey = 'home_page_' . $page;
+        $cached = $cache && $cache->has($cacheKey) ? $cache->get($cacheKey) : null;
+        if ($cached !== null) {
+            return $cached;
         }
-
+        $articleModel = new Article();
+        $categoryModel = new Category();
+        $result = $articleModel->getPaginated(null, $page, $perPage);
+        $categories = $categoryModel->findAll();
+        $siteName = $settingModel->get('site_name') ?? 'My CMS';
+        $siteDesc = $settingModel->get('site_description') ?? 'A lightweight CMS built with PHP + MySQL + Redis';
+        $data = [
+            'articles' => $result['data'],
+            'categories' => $categories,
+            'total' => $result['total'],
+            'page' => $result['page'],
+            'perPage' => $result['perPage'],
+            'totalPages' => $result['totalPages'],
+            'site_name' => $siteName,
+            'site_description' => $siteDesc
+        ];
+        if ($cache) {
+            $cache->set($cacheKey, $this->renderPage($data), 300);
+        }
+        return $this->renderPage($data);
+    }
+    private function renderPage(array $data): string
+    {
+        $baseUrl = '?';
         ob_start();
         ?>
 <!DOCTYPE html>
@@ -37,12 +51,12 @@ class HomeController extends BaseController
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($data['site_name']); ?></title>
+    <meta name="description" content="<?php echo htmlspecialchars($data['site_description'] ?? ''); ?>">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
     <?php include APP_PATH . '/views/partials/header.php'; ?>
-
     <main class="container" style="padding-top:32px;">
         <div class="admin-bar">
             <a href="/admin/articles">Manage Articles</a>
@@ -51,9 +65,7 @@ class HomeController extends BaseController
             <span class="status-badge success">MySQL</span>
             <span class="status-badge success">Redis</span>
         </div>
-
         <h2>Latest Articles</h2>
-
         <?php if (empty($data['articles'])): ?>
             <p>No articles yet. <a href="/admin/article/create">Create your first article</a></p>
         <?php else: ?>
@@ -73,11 +85,16 @@ class HomeController extends BaseController
                 <p class="excerpt"><?php echo $excerpt; ?></p>
             </div>
             <?php endforeach; ?>
+            <?php
+            $baseUrl = '?';
+            $total = $data['total'];
+            $perPage = $data['perPage'];
+            $currentPage = $data['page'];
+            include APP_PATH . '/views/partials/pagination.php';
+            ?>
         <?php endif; ?>
     </main>
-
     <?php include APP_PATH . '/views/partials/footer.php'; ?>
-
     <script src="/js/app.js"></script>
 </body>
 </html>

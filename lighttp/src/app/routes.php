@@ -8,12 +8,12 @@ return [
     '/category/{slug}' => 'CategoryController@index',
     '/tag/{slug}' => 'TagController@index',
     '/page/{slug}' => 'PageController@show',
-    
+
     // 用户认证
     '/login' => 'AuthController@login',
     '/logout' => 'AuthController@logout',
     '/register' => 'AuthController@register',
-    
+
     // 后台路由
     '/admin' => 'AdminController@dashboard',
     '/admin/articles' => 'AdminController@articles',
@@ -27,4 +27,9 @@ return [
     '/admin/users' => 'AdminController@users',
     '/admin/settings' => 'AdminController@settings',
     '/admin/cache/clear' => 'AdminController@clearCache',
+
+    // v1.0.8 新增路由
+    '/admin/profile' => 'AdminController@profile',
+    '/admin/profile/update' => 'AdminController@updateProfile',
+    '/admin/profile/password' => 'AdminController@updatePassword',
 ];

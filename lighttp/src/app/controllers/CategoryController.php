@@ -1,18 +1,14 @@
 <?php
 declare(strict_types=1);
-
 namespace App\controllers;
-
 use App\models\Category;
 use App\models\Article;
-
 class CategoryController extends BaseController
 {
     public function index(string $slug): string
     {
         $categoryModel = new Category();
         $category = $categoryModel->findBySlug($slug);
-
         if (!$category) {
             ob_start();
             ?>
@@ -20,10 +16,11 @@ class CategoryController extends BaseController
 <?php
             return ob_get_clean();
         }
-
+        $page = (int)($_GET['page'] ?? 1);
+        if ($page < 1) $page = 1;
+        $perPage = 10;
         $articleModel = new Article();
-        $articles = $articleModel->getByCategory($category['id']);
-
+        $result = $articleModel->getByCategoryPaginated($category['id'], $page, $perPage);
         ob_start();
         ?>
 <!DOCTYPE html>
@@ -36,29 +33,31 @@ class CategoryController extends BaseController
 </head>
 <body>
     <?php include APP_PATH . '/views/partials/header.php'; ?>
-
     <main class="container" style="padding-top:32px;">
         <h1><?php echo htmlspecialchars($category['name']); ?></h1>
         <p><?php echo htmlspecialchars($category['description'] ?? ''); ?></p>
-
-        <?php if (empty($articles)): ?>
+        <?php if (empty($result['data'])): ?>
             <p>No articles in this category.</p>
         <?php else: ?>
             <div style="margin-top:24px;">
-            <?php foreach ($articles as $article): ?>
+            <?php foreach ($result['data'] as $article): ?>
                 <div class="article-card">
                     <h2><a href="/article/<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a></h2>
                     <div class="meta"><span><?php echo date('Y-m-d', strtotime($article['created_at'])); ?></span><span><?php echo $article['views'] ?? 0; ?> views</span></div>
                 </div>
             <?php endforeach; ?>
             </div>
+            <?php
+            $baseUrl = '/category/' . $slug . '?';
+            $total = $result['total'];
+            $perPage = $result['perPage'];
+            $currentPage = $result['page'];
+            include APP_PATH . '/views/partials/pagination.php';
+            ?>
         <?php endif; ?>
-
         <a href="/" class="btn btn-sm" style="margin-top:16px;">Back to home</a>
     </main>
-
     <?php include APP_PATH . '/views/partials/footer.php'; ?>
-
     <script src="/js/app.js"></script>
 </body>
 </html>

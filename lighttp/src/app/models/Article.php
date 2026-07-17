@@ -1,15 +1,11 @@
 <?php
 declare(strict_types=1);
-
 namespace App\models;
-
 use App\core\Application;
-
 class Article
 {
     private string $table = 'articles';
-
-    public function getAll(array $filters = []): array
+    public function getAll(?int $status = null): array
     {
         $db = Application::getInstance()->getDb();
         if (!$db) {
@@ -19,18 +15,79 @@ class Article
                 FROM {$this->table} a 
                 LEFT JOIN categories c ON a.category_id = c.id 
                 LEFT JOIN users u ON a.author_id = u.id 
-                WHERE a.status = 1";
+                WHERE 1=1";
         $params = [];
-        
-        if (!empty($filters['category_id'])) {
-            $sql .= " AND a.category_id = ?";
-            $params[] = $filters['category_id'];
+        if ($status !== null) {
+            $sql .= " AND a.status = ?";
+            $params[] = $status;
+        } else {
+            $sql .= " AND a.status = 1";
         }
-        
         $sql .= " ORDER BY a.is_top DESC, a.published_at DESC";
         return $db->query($sql, $params);
     }
-
+    public function getPaginated(?int $status = null, int $page = 1, int $perPage = 10): array
+    {
+        $db = Application::getInstance()->getDb();
+        if (!$db) {
+            return ['data' => [], 'total' => 0, 'page' => $page, 'perPage' => $perPage, 'totalPages' => 0];
+        }
+        $offset = ($page - 1) * $perPage;
+        $params = [];
+        $countSql = "SELECT COUNT(*) as total FROM {$this->table} WHERE 1=1";
+        if ($status !== null) {
+            $countSql .= " AND status = ?";
+            $params[] = $status;
+        } else {
+            $countSql .= " AND status = 1";
+        }
+        $totalResult = $db->queryOne($countSql, $params);
+        $total = $totalResult['total'] ?? 0;
+        $dataSql = "SELECT a.*, c.name as category_name, u.username as author_name 
+                    FROM {$this->table} a 
+                    LEFT JOIN categories c ON a.category_id = c.id 
+                    LEFT JOIN users u ON a.author_id = u.id 
+                    WHERE 1=1";
+        $dataParams = [];
+        if ($status !== null) {
+            $dataSql .= " AND a.status = ?";
+            $dataParams[] = $status;
+        } else {
+            $dataSql .= " AND a.status = 1";
+        }
+        $dataSql .= " ORDER BY a.is_top DESC, a.published_at DESC LIMIT ? OFFSET ?";
+        $dataParams[] = $perPage;
+        $dataParams[] = $offset;
+        $data = $db->query($dataSql, $dataParams);
+        return [
+            'data' => $data,
+            'total' => $total,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalPages' => ceil($total / $perPage)
+        ];
+    }
+    public function getByCategoryPaginated(int $categoryId, int $page = 1, int $perPage = 10): array
+    {
+        $db = Application::getInstance()->getDb();
+        if (!$db) {
+            return ['data' => [], 'total' => 0, 'page' => $page, 'perPage' => $perPage, 'totalPages' => 0];
+        }
+        $offset = ($page - 1) * $perPage;
+        $countSql = "SELECT COUNT(*) as total FROM {$this->table} WHERE category_id = ? AND status = 1";
+        $totalResult = $db->queryOne($countSql, [$categoryId]);
+        $total = $totalResult['total'] ?? 0;
+        $dataSql = "SELECT * FROM {$this->table} WHERE category_id = ? AND status = 1 
+                    ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        $data = $db->query($dataSql, [$categoryId, $perPage, $offset]);
+        return [
+            'data' => $data,
+            'total' => $total,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalPages' => ceil($total / $perPage)
+        ];
+    }
     public function getLatest(int $limit = 10): array
     {
         $db = Application::getInstance()->getDb();
@@ -47,7 +104,6 @@ class Article
             [$limit]
         );
     }
-
     public function find(int $id): ?array
     {
         $db = Application::getInstance()->getDb();
@@ -62,15 +118,11 @@ class Article
             WHERE a.id = ?",
             [$id]
         );
-        
         if ($article) {
-            // 增加浏览次数
             $db->update("UPDATE {$this->table} SET views = views + 1 WHERE id = ?", [$id]);
         }
-        
         return $article;
     }
-
     public function findBySlug(string $slug): ?array
     {
         $db = Application::getInstance()->getDb();
@@ -86,7 +138,6 @@ class Article
             [$slug]
         );
     }
-
     public function create(array $data): int
     {
         $db = Application::getInstance()->getDb();
@@ -116,7 +167,6 @@ class Article
             ]
         );
     }
-
     public function update(int $id, array $data): bool
     {
         $db = Application::getInstance()->getDb();
@@ -135,7 +185,6 @@ class Article
         $sql = "UPDATE {$this->table} SET " . implode(', ', $sets) . ", updated_at = NOW() WHERE id = ?";
         return $db->update($sql, $params) > 0;
     }
-
     public function delete(int $id): bool
     {
         $db = Application::getInstance()->getDb();
@@ -144,7 +193,6 @@ class Article
         }
         return $db->delete("DELETE FROM {$this->table} WHERE id = ?", [$id]) > 0;
     }
-
     private function generateSlug(string $title): string
     {
         $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9-]+/', '-', $title), '-'));
@@ -157,7 +205,6 @@ class Article
         }
         return $slug;
     }
-
     public function getByCategory(int $categoryId, int $limit = 10): array
     {
         $db = Application::getInstance()->getDb();
