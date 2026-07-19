@@ -1,8 +1,8 @@
 <!-- Lighttp v1.0.9 - Footer Partial -->
 <?php
 $settingModel = new App\models\Setting();
-$siteFooter = $settingModel->get('site_footer') ?? '';
 $siteName = $settingModel->get('site_name') ?? 'Lighttp';
+$siteFooter = $settingModel->get('site_footer') ?? '';
 ?>
 <footer class="site-footer">
     <div class="container">

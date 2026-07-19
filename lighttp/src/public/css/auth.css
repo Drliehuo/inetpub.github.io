@@ -1,19 +1,20 @@
-/* Lighttp v1.0.2 - Auth Styles */
-.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--white); padding: 24px; }
-.auth-box { width: 100%; max-width: 400px; border: 2px solid var(--black); padding: 40px; background: var(--white); }
-.auth-box h1 { font-size: 1.5rem; text-align: center; margin-bottom: 24px; border-bottom: 2px solid var(--black); padding-bottom: 12px; }
+/* Lighttp v1.0.9 - trxrg.com 深色 Notion 风格 Auth */
+.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-body); padding: 24px; }
+.auth-box { width: 100%; max-width: 380px; padding: 40px 36px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); }
+.auth-box h1 { font-size: 1.4rem; font-weight: 600; text-align: center; margin-bottom: 24px; color: var(--text-primary); }
 .auth-box .form-group { margin-bottom: 16px; }
-.auth-box .form-group label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.875rem; color: var(--dark); }
-.auth-box .form-group input { width: 100%; padding: 10px 12px; border: 2px solid var(--gray-300); background: var(--white); color: var(--dark); font-size: 0.875rem; transition: var(--transition); }
-.auth-box .form-group input:focus { outline: none; border-color: var(--black); }
-.auth-box .btn-submit { width: 100%; padding: 12px; background: var(--black); color: var(--white); border: 2px solid var(--black); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
-.auth-box .btn-submit:hover { background: var(--dark); }
-.auth-box .auth-error { color: #c00; text-align: center; padding: 8px; border: 2px solid #c00; margin-bottom: 16px; font-size: 0.875rem; }
-.auth-box .auth-links { text-align: center; margin-top: 16px; font-size: 0.875rem; }
-.auth-box .auth-links a { color: var(--black); border-bottom: 1px solid var(--gray-300); }
-.auth-box .auth-links a:hover { border-bottom-color: var(--black); text-decoration: none; }
+.auth-box .form-group label { display: block; margin-bottom: 4px; font-weight: 500; font-size: 0.85rem; color: var(--text-secondary); }
+.auth-box .form-group input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background: var(--bg-input); color: var(--text-primary); font-size: 0.9rem; transition: var(--transition); }
+.auth-box .form-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,92,246,0.15); }
+.auth-box .btn-submit { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.auth-box .btn-submit:hover { background: var(--accent-hover); }
+.auth-box .auth-error { color: #f87171; text-align: center; padding: 8px 12px; border: 1px solid #f87171; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.875rem; background: rgba(248,113,113,0.05); }
+.auth-box .auth-links { text-align: center; margin-top: 16px; font-size: 0.85rem; }
+.auth-box .auth-links a { color: var(--accent); border-bottom: 1px solid transparent; transition: var(--transition); }
+.auth-box .auth-links a:hover { border-bottom-color: var(--accent); text-decoration: none; }
 
 @media (max-width: 480px) {
-  .auth-box { padding: 24px; }
-  .auth-box h1 { font-size: 1.25rem; }
+  .auth-box { padding: 28px 20px; }
+  .auth-box h1 { font-size: 1.2rem; }
+  .auth-box .form-group input { padding: 8px 12px; font-size: 0.85rem; }
 }

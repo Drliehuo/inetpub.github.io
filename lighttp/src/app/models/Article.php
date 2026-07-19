@@ -26,7 +26,7 @@ class Article
         $sql .= " ORDER BY a.is_top DESC, a.published_at DESC";
         return $db->query($sql, $params);
     }
-    public function getPaginated(?int $status = null, int $page = 1, int $perPage = 10): array
+    public function getPaginated(?int $status = null, int $page = 1, int $perPage = 10, ?int $authorId = null): array
     {
         $db = Application::getInstance()->getDb();
         if (!$db) {
@@ -34,28 +34,24 @@ class Article
         }
         $offset = ($page - 1) * $perPage;
         $params = [];
-        $countSql = "SELECT COUNT(*) as total FROM {$this->table} WHERE 1=1";
+        $where = "WHERE a.status " . ($status !== null ? "= ?" : "= 1");
         if ($status !== null) {
-            $countSql .= " AND status = ?";
             $params[] = $status;
-        } else {
-            $countSql .= " AND status = 1";
         }
+        if ($authorId !== null) {
+            $where .= " AND a.author_id = ?";
+            $params[] = $authorId;
+        }
+        $countSql = "SELECT COUNT(*) as total FROM {$this->table} a {$where}";
         $totalResult = $db->queryOne($countSql, $params);
         $total = $totalResult['total'] ?? 0;
         $dataSql = "SELECT a.*, c.name as category_name, u.username as author_name 
                     FROM {$this->table} a 
                     LEFT JOIN categories c ON a.category_id = c.id 
                     LEFT JOIN users u ON a.author_id = u.id 
-                    WHERE 1=1";
-        $dataParams = [];
-        if ($status !== null) {
-            $dataSql .= " AND a.status = ?";
-            $dataParams[] = $status;
-        } else {
-            $dataSql .= " AND a.status = 1";
-        }
-        $dataSql .= " ORDER BY a.is_top DESC, a.published_at DESC LIMIT ? OFFSET ?";
+                    {$where}
+                    ORDER BY a.is_top DESC, a.published_at DESC LIMIT ? OFFSET ?";
+        $dataParams = $params;
         $dataParams[] = $perPage;
         $dataParams[] = $offset;
         $data = $db->query($dataSql, $dataParams);

@@ -45,14 +45,14 @@ class RedisCache
         return (bool)$this->redis->del($this->prefix . $key);
     }
 
-    public function clear(): bool
-    {
-        $keys = $this->redis->keys($this->prefix . '*');
-        if (empty($keys)) {
-            return true;
-        }
-        return (bool)$this->redis->del($keys);
+public function clear(): bool
+{
+    $keys = $this->redis->keys($this->prefix . '*');
+    if (empty($keys)) {
+        return true;
     }
+    return (bool)$this->redis->del($keys);
+}
 
     public function increment(string $key, int $step = 1): int
     {
