@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lighttp 项目文档 v1.0.8</title>
+    <title>Lighttp 项目文档 v1.1.0</title>
     <style>
-        /* Lighttp v1.0.8 - Project Documentation Styles */
+        /* Lighttp v1.1.0 - Project Documentation Styles */
         :root { --black: #000; --dark: #222; --gray-900: #333; --gray-700: #555; --gray-500: #777; --gray-300: #aaa; --gray-200: #ccc; --gray-100: #ddd; --gray-50: #eee; --gray-25: #f5f5f5; --white: #fff; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif; --transition: all 0.15s ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -46,6 +46,7 @@
         .badge-success { border-color: var(--black); background: var(--white); color: var(--black); }
         .badge-warning { border-color: var(--black); background: var(--gray-25); color: var(--black); }
         .badge-danger { border-color: var(--black); background: var(--gray-25); color: var(--black); }
+        .badge-info { border-color: var(--black); background: var(--gray-25); color: var(--black); }
         .changelog-item { border-left: 3px solid var(--black); padding-left: 16px; margin-bottom: 20px; }
         .changelog-item .version { font-weight: 700; font-size: 1.05rem; }
         .changelog-item .date { color: var(--gray-500); font-size: 0.813rem; margin-left: 12px; }
@@ -77,9 +78,9 @@
         <header class="doc-header">
             <div>
                 <h1>Lighttp <span class="highlight">项目文档</span></h1>
-                <div class="meta">版本 v1.0.8 &nbsp;·&nbsp; 更新于 2026年7月18日</div>
+                <div class="meta">版本 v1.1.0 &nbsp;·&nbsp; 更新于 2026年7月19日</div>
             </div>
-            <div class="version">v1.0.8</div>
+            <div class="version">v1.1.0</div>
         </header>
         <nav class="toc">
             <h2>目录</h2>
@@ -103,15 +104,15 @@
             <ul>
                 <li><strong>极速简洁</strong> — 最小化代码依赖，页面响应时间 &lt; 100ms</li>
                 <li><strong>安全优先</strong> — PDO 预处理、bcrypt 密码哈希、多层防护</li>
-                <li><strong>扁平化设计</strong> — 纯黑白灰配色，无 Emoji，专注内容</li>
+                <li><strong>Microsoft Fluent 设计</strong> — 现代、清晰、专业的视觉风格</li>
                 <li><strong>完全响应式</strong> — 适配电脑、平板、手机</li>
                 <li><strong>HTML 原生支持</strong> — 文章内容完全支持 HTML 标签</li>
             </ul>
             <h3>项目信息</h3>
             <table>
                 <tr><th>项目名称</th><td>Lighttp (Lighttp Public Cloud)</td></tr>
-                <tr><th>当前版本</th><td>v1.0.8</td></tr>
-                <tr><th>发布日期</th><td>2026年7月18日</td></tr>
+                <tr><th>当前版本</th><td>v1.1.0</td></tr>
+                <tr><th>发布日期</th><td>2026年7月19日</td></tr>
                 <tr><th>许可证</th><td>MIT</td></tr>
                 <tr><th>开发者</th><td>Dr.liehuo (烈火帝君)</td></tr>
                 <tr><th>项目主页</th><td><a href="https://www.inetpub.cn/lighttp">https://www.inetpub.cn/lighttp</a></td></tr>
@@ -151,11 +152,11 @@ lighttp/
 │   │   └── config.php          # 系统配置（数据库/缓存/安全）
 │   ├── controllers/            # 控制器层（8个）
 │   │   ├── BaseController.php  # 抽象基类
-│   │   ├── HomeController.php  # 首页
-│   │   ├── ArticleController.php # 文章详情
-│   │   ├── CategoryController.php # 分类列表
+│   │   ├── HomeController.php  # 首页 (v1.1.0 Fluent风格)
+│   │   ├── ArticleController.php # 文章详情 (v1.1.0 作者昵称)
+│   │   ├── CategoryController.php # 分类列表 (v1.1.0 重构)
 │   │   ├── AuthController.php  # 登录/注册/登出
-│   │   ├── AdminController.php # 后台管理（核心）
+│   │   ├── AdminController.php # 后台管理 (v1.1.0 作者昵称)
 │   │   ├── TagController.php   # 标签页
 │   │   └── PageController.php  # 静态页面
 │   ├── core/                   # 核心框架（3个）
@@ -163,31 +164,31 @@ lighttp/
 │   │   ├── Database.php        # PDO 封装
 │   │   └── RedisCache.php      # Redis 缓存封装
 │   ├── models/                 # 数据模型（5个）
-│   │   ├── Article.php         # 文章 CRUD + 分页
+│   │   ├── Article.php         # 文章 CRUD + 分页 (v1.1.0 author_display)
 │   │   ├── Category.php        # 分类 CRUD
 │   │   ├── User.php            # 用户认证 + 密码哈希 + Profile
 │   │   ├── Setting.php         # 系统配置读写
 │   │   └── Tag.php             # 标签查询
 │   ├── views/
 │   │   └── partials/
-│   │       ├── header.php      # 全局头部
+│   │       ├── header.php      # 全局头部 (v1.1.0 滚动阴影)
 │   │       ├── footer.php      # 全局页脚
-│   │       └── pagination.php  # 分页组件（v1.0.8 新增）
+│   │       └── pagination.php  # 分页组件
 │   └── routes.php              # 路由定义（20+ 条）
 ├── public/
 │   ├── css/
-│   │   ├── style.css           # 全局样式
-│   │   ├── admin.css           # 后台样式
-│   │   └── auth.css            # 登录/注册样式
+│   │   ├── style.css           # 全局样式 (v1.1.0 Fluent + Win7玻璃)
+│   │   ├── admin.css           # 后台样式 (v1.1.0 Fluent)
+│   │   └── auth.css            # 登录/注册样式 (v1.1.0 Fluent)
 │   ├── js/
 │   │   └── app.js              # 全局 JavaScript
 │   ├── index.php               # 入口文件
-│   └── .htaccess               # URL 重写
+│   └── .htaccess               # URL 重写 + Cache-Control
 ├── var/
 │   ├── cache/
 │   ├── logs/
 │   └── sessions/
-├── .htaccess                   # Apache 安全配置
+├── .htaccess                   # Apache 安全配置 + Cache-Control
 ├── .user.ini                   # PHP 安全配置
 ├── install.sql                 # 数据库安装脚本（12张表）
 ├── install.php                 # CLI 安装脚本
@@ -198,13 +199,13 @@ lighttp/
             <h3>4.1 前台功能</h3>
             <table>
                 <tr><th>功能</th><th>路由</th><th>说明</th></tr>
-                <tr><td>首页</td><td><code>/</code></td><td>文章列表 + 分类导航 + 分页</td></tr>
-                <tr><td>文章详情</td><td><code>/article/{id}</code></td><td>完整 HTML 内容 + 元信息</td></tr>
-                <tr><td>分类列表</td><td><code>/category/{slug}</code></td><td>按分类筛选文章 + 分页</td></tr>
+                <tr><td>首页</td><td><code>/</code></td><td>文章列表 + 分类导航 + 分页 (v1.1.0 Fluent风格)</td></tr>
+                <tr><td>文章详情</td><td><code>/article/{id}</code></td><td>完整 HTML 内容 + 元信息 (v1.1.0 作者昵称)</td></tr>
+                <tr><td>分类列表</td><td><code>/category/{slug}</code></td><td>按分类筛选文章 + 分页 (v1.1.0 重构)</td></tr>
                 <tr><td>标签页</td><td><code>/tag/{slug}</code></td><td>标签下文章统计</td></tr>
                 <tr><td>静态页面</td><td><code>/page/{slug}</code></td><td>自定义独立页面</td></tr>
                 <tr><td>用户登录</td><td><code>/login</code></td><td>支持用户名/邮箱 + 密码验证</td></tr>
-                <tr><td>用户注册</td><td><code>/register</code></td><td>用户名 + 邮箱 + 密码，注册后自动登录</td></tr>
+                <tr><td>用户注册</td><td><code>/register</code></td><td>用户名 + 邮箱 + 密码</td></tr>
                 <tr><td>用户登出</td><td><code>/logout</code></td><td>销毁会话并清除 Cookie</td></tr>
             </table>
             <h3>4.2 后台管理功能</h3>
@@ -224,14 +225,17 @@ lighttp/
                 <tr><td>个人资料</td><td><code>/admin/profile</code></td><td>所有登录用户</td></tr>
                 <tr><td>清空缓存</td><td><code>/admin/cache/clear</code></td><td>admin / editor</td></tr>
             </table>
-            <h3>4.3 v1.0.8 新增功能</h3>
+            <h3>4.3 v1.1.0 新增与优化</h3>
             <ul>
-                <li><strong>个人资料管理</strong> — 修改邮箱、昵称、密码（需验证当前密码）</li>
-                <li><strong>文章筛选</strong> — 下拉菜单筛选 All / Published / Draft / Pending</li>
-                <li><strong>分页功能</strong> — 首页 / 后台 / 分类页，每页 10 篇（可配置）</li>
-                <li><strong>设置生效</strong> — 网站名称、描述、页脚、每页数量真正生效</li>
-                <li><strong>注册自动登录</strong> — 注册成功后自动登录并跳转后台</li>
-                <li><strong>非管理员强制待审核</strong> — subscriber 创建的文章强制为 pending 状态</li>
+                <li><strong>Microsoft Fluent 设计主题</strong> — 全新 UI 风格，现代、清晰、专业</li>
+                <li><strong>用户昵称显示</strong> — 文章详情、列表、后台均优先显示昵称</li>
+                <li><strong>分类页重构</strong> — 分类头部、分类导航、空状态、文章列表</li>
+                <li><strong>首页分类导航</strong> — "Browse:" 标签 + 分类芯片</li>
+                <li><strong>作者卡片组件</strong> — 文章详情页显示作者头像首字母 + 昵称</li>
+                <li><strong>Windows 7 玻璃风格图片</strong> — 透明边框 + 内高光 + 悬停效果</li>
+                <li><strong>移动端元数据水平滚动</strong> — 手机端文章元数据横向滚动不换行</li>
+                <li><strong>Nginx 静态文件 Cache-Control: no-cache</strong></li>
+                <li><strong>保留 <code>.txt</code> 工具类</strong> — 首行缩进2字符，行高32px，字号16px</li>
             </ul>
         </section>
         <section class="section" id="security">
@@ -292,6 +296,32 @@ lighttp/
             <h2>7. 更新记录</h2>
 
             <div class="changelog-item">
+                <div><span class="version">v1.1.0</span><span class="date">2026-07-19</span></div>
+                <span class="badge badge-success">主题重构</span>
+                <ul>
+                    <li><strong>Microsoft Fluent 设计主题</strong> — 全新 UI 风格</li>
+                    <li><strong>配色体系</strong> — Microsoft 官方蓝色 (#0078d4) + 灰度体系</li>
+                    <li><strong>Windows 7 玻璃风格图片</strong> — 透明边框 + 内高光 + 悬停上浮</li>
+                    <li><strong>用户昵称显示</strong> — 全站优先显示 nickname，无则降级 username</li>
+                    <li><strong>分类页重构</strong> — 分类头部 + 导航 + 空状态</li>
+                    <li><strong>首页分类导航</strong> — Browse 标签 + 分类芯片</li>
+                    <li><strong>作者卡片</strong> — 头像首字母 + 昵称 + 发布时间</li>
+                    <li><strong>手机端元数据水平滚动</strong> — 不换行，隐藏滚动条</li>
+                    <li><strong>Nginx 静态文件 Cache-Control: no-cache</strong></li>
+                    <li><strong>保留 .txt 工具类</strong> — 首行缩进 2em，行高 32px，字号 16px</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.0.9</span><span class="date">2026-07-19</span></div>
+                <span class="badge badge-info">缓存策略</span>
+                <ul>
+                    <li><strong>Nginx 静态文件缓存</strong> — 所有静态文件统一 Cache-Control: no-cache</li>
+                    <li><strong>PHP 页面缓存</strong> — 由 session.cache_limiter = nocache 控制</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
                 <div><span class="version">v1.0.8</span><span class="date">2026-07-18</span></div>
                 <span class="badge badge-success">功能增强</span>
                 <ul>
@@ -307,8 +337,6 @@ lighttp/
                     <li><strong>前台导航修复</strong> — 已登录用户显示 Admin / Profile / Logout</li>
                     <li><strong>Session 管理</strong> — 参考 Laravel 重构 Session 管理</li>
                     <li><strong>数据库连接优化</strong> — PDO 单例模式复用连接</li>
-                    <li>修改文件：<code>AdminController.php</code>, <code>HomeController.php</code>, <code>CategoryController.php</code>, <code>AuthController.php</code>, <code>Article.php</code>, <code>User.php</code>, <code>Setting.php</code>, <code>Application.php</code>, <code>Database.php</code>, <code>header.php</code>, <code>footer.php</code>, <code>routes.php</code></li>
-                    <li>新增文件：<code>app/core/Session.php</code>, <code>app/views/partials/pagination.php</code></li>
                 </ul>
             </div>
 
@@ -317,7 +345,6 @@ lighttp/
                 <span class="badge badge-warning">Bug修复</span>
                 <ul>
                     <li>修复文章编辑时 HTML 实体被解析的问题</li>
-                    <li>修改文件：<code>AdminController.php</code></li>
                 </ul>
             </div>
 
@@ -451,12 +478,17 @@ lighttp/
             <h3>9.3 版本管理</h3>
             <ul>
                 <li>每次发布打 Tag，不建 Branch</li>
-                <li>版本号格式：v1.0.8</li>
+                <li>版本号格式：v1.1.0</li>
                 <li>敏感配置不上传到 GitHub</li>
+            </ul>
+            <h3>9.4 v1.1.0 新增规范</h3>
+            <ul>
+                <li><strong>代码输出前置验证</strong> — 输出前必须完成完整逻辑推演验证</li>
+                <li><strong>完整源代码输出</strong> — 必须在用户完整源代码上进行增量修改后完整输出</li>
             </ul>
         </section>
         <footer class="doc-footer">
-            <span>Lighttp v1.0.8 &nbsp;·&nbsp; 项目文档</span>
+            <span>Lighttp v1.1.0 &nbsp;·&nbsp; 项目文档</span>
             <span>
                 <a href="https://www.inetpub.cn/lighttp">项目主页</a>
                 &nbsp;·&nbsp;

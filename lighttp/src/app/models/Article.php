@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
+
 namespace App\models;
+
 use App\core\Application;
+
 class Article
 {
     private string $table = 'articles';
+
     public function getAll(?int $status = null): array
     {
         $db = Application::getInstance()->getDb();
         if (!$db) {
             return [];
         }
-        $sql = "SELECT a.*, c.name as category_name, u.username as author_name 
-                FROM {$this->table} a 
-                LEFT JOIN categories c ON a.category_id = c.id 
-                LEFT JOIN users u ON a.author_id = u.id 
-                WHERE 1=1";
+        $sql = "SELECT a.*, c.name as category_name, u.username as author_name, COALESCE(u.nickname, u.username) as author_display FROM {$this->table} a LEFT JOIN categories c ON a.category_id = c.id LEFT JOIN users u ON a.author_id = u.id WHERE 1=1";
         $params = [];
         if ($status !== null) {
             $sql .= " AND a.status = ?";
@@ -26,6 +26,7 @@ class Article
         $sql .= " ORDER BY a.is_top DESC, a.published_at DESC";
         return $db->query($sql, $params);
     }
+
     public function getPaginated(?int $status = null, int $page = 1, int $perPage = 10, ?int $authorId = null): array
     {
         $db = Application::getInstance()->getDb();
@@ -45,12 +46,7 @@ class Article
         $countSql = "SELECT COUNT(*) as total FROM {$this->table} a {$where}";
         $totalResult = $db->queryOne($countSql, $params);
         $total = $totalResult['total'] ?? 0;
-        $dataSql = "SELECT a.*, c.name as category_name, u.username as author_name 
-                    FROM {$this->table} a 
-                    LEFT JOIN categories c ON a.category_id = c.id 
-                    LEFT JOIN users u ON a.author_id = u.id 
-                    {$where}
-                    ORDER BY a.is_top DESC, a.published_at DESC LIMIT ? OFFSET ?";
+        $dataSql = "SELECT a.*, c.name as category_name, u.username as author_name, COALESCE(u.nickname, u.username) as author_display FROM {$this->table} a LEFT JOIN categories c ON a.category_id = c.id LEFT JOIN users u ON a.author_id = u.id {$where} ORDER BY a.is_top DESC, a.published_at DESC LIMIT ? OFFSET ?";
         $dataParams = $params;
         $dataParams[] = $perPage;
         $dataParams[] = $offset;
@@ -63,6 +59,7 @@ class Article
             'totalPages' => ceil($total / $perPage)
         ];
     }
+
     public function getByCategoryPaginated(int $categoryId, int $page = 1, int $perPage = 10): array
     {
         $db = Application::getInstance()->getDb();
@@ -73,8 +70,7 @@ class Article
         $countSql = "SELECT COUNT(*) as total FROM {$this->table} WHERE category_id = ? AND status = 1";
         $totalResult = $db->queryOne($countSql, [$categoryId]);
         $total = $totalResult['total'] ?? 0;
-        $dataSql = "SELECT * FROM {$this->table} WHERE category_id = ? AND status = 1 
-                    ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        $dataSql = "SELECT * FROM {$this->table} WHERE category_id = ? AND status = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?";
         $data = $db->query($dataSql, [$categoryId, $perPage, $offset]);
         return [
             'data' => $data,
@@ -84,6 +80,7 @@ class Article
             'totalPages' => ceil($total / $perPage)
         ];
     }
+
     public function getLatest(int $limit = 10): array
     {
         $db = Application::getInstance()->getDb();
@@ -91,15 +88,11 @@ class Article
             return [];
         }
         return $db->query(
-            "SELECT a.*, c.name as category_name, u.username as author_name 
-            FROM {$this->table} a 
-            LEFT JOIN categories c ON a.category_id = c.id 
-            LEFT JOIN users u ON a.author_id = u.id 
-            WHERE a.status = 1 
-            ORDER BY a.is_top DESC, a.published_at DESC LIMIT ?",
+            "SELECT a.*, c.name as category_name, u.username as author_name, COALESCE(u.nickname, u.username) as author_display FROM {$this->table} a LEFT JOIN categories c ON a.category_id = c.id LEFT JOIN users u ON a.author_id = u.id WHERE a.status = 1 ORDER BY a.is_top DESC, a.published_at DESC LIMIT ?",
             [$limit]
         );
     }
+
     public function find(int $id): ?array
     {
         $db = Application::getInstance()->getDb();
@@ -107,11 +100,7 @@ class Article
             return null;
         }
         $article = $db->queryOne(
-            "SELECT a.*, c.name as category_name, c.slug as category_slug, u.username as author_name 
-            FROM {$this->table} a 
-            LEFT JOIN categories c ON a.category_id = c.id 
-            LEFT JOIN users u ON a.author_id = u.id 
-            WHERE a.id = ?",
+            "SELECT a.*, c.name as category_name, c.slug as category_slug, u.username as author_name, COALESCE(u.nickname, u.username) as author_display FROM {$this->table} a LEFT JOIN categories c ON a.category_id = c.id LEFT JOIN users u ON a.author_id = u.id WHERE a.id = ?",
             [$id]
         );
         if ($article) {
@@ -119,6 +108,7 @@ class Article
         }
         return $article;
     }
+
     public function findBySlug(string $slug): ?array
     {
         $db = Application::getInstance()->getDb();
@@ -126,14 +116,11 @@ class Article
             return null;
         }
         return $db->queryOne(
-            "SELECT a.*, c.name as category_name, c.slug as category_slug, u.username as author_name 
-            FROM {$this->table} a 
-            LEFT JOIN categories c ON a.category_id = c.id 
-            LEFT JOIN users u ON a.author_id = u.id 
-            WHERE a.slug = ? AND a.status = 1",
+            "SELECT a.*, c.name as category_name, c.slug as category_slug, u.username as author_name FROM {$this->table} a LEFT JOIN categories c ON a.category_id = c.id LEFT JOIN users u ON a.author_id = u.id WHERE a.slug = ? AND a.status = 1",
             [$slug]
         );
     }
+
     public function create(array $data): int
     {
         $db = Application::getInstance()->getDb();
@@ -142,10 +129,7 @@ class Article
         }
         $slug = $data['slug'] ?? $this->generateSlug($data['title']);
         return $db->execute(
-            "INSERT INTO {$this->table} 
-            (title, slug, content, excerpt, category_id, author_id, status, cover_image, 
-             is_top, is_recommend, meta_title, meta_description, meta_keywords, published_at, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())",
+            "INSERT INTO {$this->table} (title, slug, content, excerpt, category_id, author_id, status, cover_image, is_top, is_recommend, meta_title, meta_description, meta_keywords, published_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())",
             [
                 $data['title'],
                 $slug,
@@ -163,6 +147,7 @@ class Article
             ]
         );
     }
+
     public function update(int $id, array $data): bool
     {
         $db = Application::getInstance()->getDb();
@@ -181,6 +166,7 @@ class Article
         $sql = "UPDATE {$this->table} SET " . implode(', ', $sets) . ", updated_at = NOW() WHERE id = ?";
         return $db->update($sql, $params) > 0;
     }
+
     public function delete(int $id): bool
     {
         $db = Application::getInstance()->getDb();
@@ -189,6 +175,7 @@ class Article
         }
         return $db->delete("DELETE FROM {$this->table} WHERE id = ?", [$id]) > 0;
     }
+
     private function generateSlug(string $title): string
     {
         $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9-]+/', '-', $title), '-'));
@@ -201,6 +188,7 @@ class Article
         }
         return $slug;
     }
+
     public function getByCategory(int $categoryId, int $limit = 10): array
     {
         $db = Application::getInstance()->getDb();
@@ -208,8 +196,7 @@ class Article
             return [];
         }
         return $db->query(
-            "SELECT * FROM {$this->table} WHERE category_id = ? AND status = 1 
-            ORDER BY created_at DESC LIMIT ?",
+            "SELECT * FROM {$this->table} WHERE category_id = ? AND status = 1 ORDER BY created_at DESC LIMIT ?",
             [$categoryId, $limit]
         );
     }

@@ -179,14 +179,14 @@ private function renderAdminLayout(string $title, string $content): string
             $statusMap = [0 => 'Draft', 1 => 'Published', 2 => 'Pending'];
             foreach ($articles as $article) {
                 $status = $statusMap[$article['status']] ?? 'Unknown';
-                $authorName = $article['author_name'] ?? 'Unknown';
+                $authorDisplay = $article['author_display'] ?? $article['author_name'] ?? 'Unknown';
                 $isOwn = ($user['id'] === $article['author_id']);
                 $canEdit = in_array($user['role'], ['admin', 'editor']) || $isOwn;
                 $content .= '<tr>
                     <td>' . $article['id'] . '</td>
                     <td>' . htmlspecialchars($article['title']) . '</td>
                     <td>' . htmlspecialchars($article['category_name'] ?? 'Uncategorized') . '</td>
-                    <td>' . htmlspecialchars($authorName) . ($isOwn ? ' <span style="color:var(--gray-500);font-size:0.75rem;">(you)</span>' : '') . '</td>
+                    <td>' . htmlspecialchars($authorDisplay) . ($isOwn ? ' <span style="color:var(--ms-gray-500);font-size:0.75rem;">(you)</span>' : '') . '</td>
                     <td><span class="status-badge status-' . strtolower($status) . '">' . $status . '</span></td>
                     <td>' . date('Y-m-d', strtotime($article['created_at'])) . '</td>
                     <td>

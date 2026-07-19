@@ -1,9 +1,12 @@
-Lighttp 项目代码输出规范清单 v1.5
-📋 规范版本：v1.5
+Lighttp 项目代码输出规范清单 v1.6
+
+📋 规范版本：v1.6
 生效日期：2026年7月19日
-更新内容：新增「代码输出前置验证」规范
+更新内容：新增 v1.1.0 主题风格规范 + 完善 CSS 变量规范
+
 
 1. 核心原则：禁止造轮子（v1.3 新增）
+
 1.1 基本原则
 原则	说明
 优先使用成熟方案	遇到通用问题（Session、数据库、缓存等），优先使用 GitHub 上成熟的开源方案
@@ -27,7 +30,9 @@ CSRF 防护	自己实现 Token 生成和验证	使用成熟的 CSRF Token 方案
 - 是否避免了自己从零实现通用功能？
 - 如果是自行实现，是否有充分的理由？
 
+
 2. CSS 与 JS 本地化规范
+
 2.1 禁止使用第三方 CDN 资源
 ❌ 禁止	✅ 允许
 <script src="https://cdn.jsdelivr.net/...">	<script src="/js/app.js">
@@ -41,7 +46,9 @@ CSRF 防护	自己实现 Token 生成和验证	使用成熟的 CSRF Token 方案
 - 富文本编辑器 — 如需集成 TinyMCE 等，需用户明确要求
 - 图表库 — 如需集成 ECharts 等，需用户明确要求
 
+
 3. W3C 开发标准规范
+
 3.1 HTML 标准
 要求	说明
 DOCTYPE	必须声明 <!DOCTYPE html>
@@ -59,7 +66,7 @@ a 标签	必须包含 href 属性
 选择器命名	使用 BEM 或语义化命名（如 .article-card、.nav-link）
 注释规范	重要模块添加注释说明
 单位使用	优先使用 rem / em，避免 px（边框除外）
-颜色使用	使用 CSS 变量（var(--primary)）便于主题切换
+颜色使用	使用 CSS 变量（var(--ms-blue)）便于主题切换
 
 3.3 CSS 格式规范
 所有 CSS 规则必须保持单行格式：
@@ -80,7 +87,9 @@ a 标签	必须包含 href 属性
 事件绑定	使用 addEventListener()，禁止行内事件（onclick）
 注释规范	复杂逻辑添加注释说明
 
+
 4. CSS 内联禁止规范
+
 4.1 禁止使用 <style> 内联
 <!-- ❌ 错误 -->
 <head>
@@ -107,18 +116,28 @@ a 标签	必须包含 href 属性
 - 邮件模板（邮件客户端对 CSS 支持有限）
 - 第三方组件集成（需用户明确要求）
 
+
 5. 代码文件组织结构
+
 5.1 CSS 文件
 public/css/
-├── style.css       # 全局样式（首页、通用）
-├── admin.css       # 后台管理样式
-└── auth.css        # 登录/注册页面样式
+├── style.css       # 全局样式（首页、通用）— v1.1.0 Fluent + Windows 7 玻璃
+├── admin.css       # 后台管理样式 — v1.1.0 Fluent
+└── auth.css        # 登录/注册页面样式 — v1.1.0 Fluent
 
 5.2 JavaScript 文件
 public/js/
 └── app.js          # 全局通用 JS
 
+5.3 视图文件
+app/views/partials/
+├── header.php      # 全局头部（v1.1.0 滚动阴影）
+├── footer.php      # 全局页脚
+└── pagination.php  # 分页组件
+
+
 6. 代码输出方式规范
+
 6.1 升级方式选择
 改动规模	推荐方式	说明
 配置文件单行值	手动修改（告知文件+行号）	如 debug: true → false
@@ -134,7 +153,9 @@ public/js/
 ❌ Bash 行号删除+插入	经实测不可靠，经常无效（已废弃）
 ❌ 自行实现基础功能（造轮子）	试错成本高，优先使用成熟方案（v1.3 新增）
 
+
 7. 代码自检清单（输出前检查）
+
 在输出任何代码前，必须确认以下项目：
 
 HTML 自检
@@ -155,6 +176,7 @@ CSS 自检
 - [ ] 已添加必要的注释
 - [ ] 未使用 !important（极特殊情况除外）
 - [ ] 使用 CSS 变量管理颜色和间距
+- [ ] v1.1.0 规范：使用 --ms-* 系列 CSS 变量
 
 JavaScript 自检
 - [ ] 使用了 "use strict";
@@ -186,9 +208,12 @@ PHP 自检
 - [ ] 方法声明不换行
 - [ ] 控制结构与括号同行
 
+
 8. 代码输出前置验证规范（v1.5 新增）
+
 8.1 核心原则
 在输出任何代码给用户之前，必须先在逻辑上完成完整的推演验证。
+而且必须完整输出源代码，也就是说，必须在用户完整的源代码上进行增量、修改完成后，再完整的输出代码给用户。（否则会遗漏之前的代码，导致系统功能性缺失）
 
 原则	说明
 逻辑自洽	输出的代码在逻辑上必须是完整且自洽的
@@ -222,13 +247,67 @@ SQL 正确	确保 SQL 语句语法正确，表名、字段名、别名无误
 ✅ 零歧义 SQL — 不会出现 Ambiguous column 错误
 ✅ 完整功能闭环 — 修改一处，关联处同步更新
 
-9. 规范违规处理
+
+9. v1.1.0 主题风格规范（新增）
+
+9.1 设计语言
+Lighttp v1.1.0 采用 Microsoft Fluent Design 设计语言，特点如下：
+- 配色：Microsoft 官方蓝色 (#0078d4) 为主色
+- 字体：系统字体栈 "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, ...
+- 圆角：2px (--ms-radius) / 4px (--ms-radius-md)
+- 阴影：轻量化阴影，悬停加深
+- 边框：极细边框 (#edebe9)
+
+9.2 CSS 变量体系（必须使用）
+:root {
+    --ms-blue: #0078d4;
+    --ms-blue-hover: #106ebe;
+    --ms-blue-light: #e6f1fc;
+    --ms-blue-bg: #f0f6fc;
+    --ms-black: #242424;
+    --ms-gray-900: #323130;
+    --ms-gray-700: #605e5c;
+    --ms-gray-500: #8a8886;
+    --ms-gray-300: #c8c6c4;
+    --ms-gray-200: #edebe9;
+    --ms-gray-100: #f3f2f1;
+    --ms-gray-50: #faf9f8;
+    --ms-white: #ffffff;
+    --ms-shadow: 0 1.6px 3.6px rgba(0,0,0,0.04), 0 0.3px 0.9px rgba(0,0,0,0.02);
+    --ms-shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    --ms-shadow-hover: 0 6.4px 14.4px rgba(0,0,0,0.06), 0 1.2px 3.6px rgba(0,0,0,0.04);
+    --ms-shadow-lg: 0 16px 48px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    --ms-radius: 2px;
+    --ms-radius-md: 4px;
+    --ms-font: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+    --ms-transition: 0.15s ease;
+    --ms-transition-slow: 0.25s ease;
+}
+
+9.3 Windows 7 玻璃风格图片（v1.1.0 新增）
+文章中图片使用 Windows 7 玻璃风格：
+- 透明边框：border: 3px solid rgba(255,255,255,0.7)
+- 右下高光：border-bottom-color / border-right-color 更亮
+- 内高光：inset 0 1px 0 rgba(255,255,255,0.8)
+- 外阴影：多层柔和阴影
+- 悬停效果：阴影加深 + 上浮 -3px
+- 直角设计（无圆角）
+
+9.4 .txt 工具类（必须保留）
+.txt { text-indent: 2em; line-height: 32px; font-size: 16px; }
+用途：文章编辑时使用 <div class="txt"> 实现首行缩进段落
+
+
+10. 规范违规处理
+
 违规次数	处理方式
 第 1 次	自检发现后自动修正
 第 2 次	输出时附加违规说明
 第 3 次	暂停输出，请求用户确认
 
-10. CSS 单行格式示例
+
+11. CSS 单行格式示例
+
 正确示例
 /* ===== Header ===== */
 .site-header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: var(--spacing-md) 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
@@ -236,7 +315,9 @@ SQL 正确	确保 SQL 语句语法正确，表名、字段名、别名无误
 .nav-links { display: flex; align-items: center; gap: var(--spacing-lg); list-style: none; flex-wrap: wrap; }
 .nav-links a { color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; transition: var(--transition); }
 
-11. 版本记录
+
+12. 版本记录
+
 版本	日期	更新内容
 v1.0	2026-07-15	初始版本
 v1.1	2026-07-15	新增 CSS 单行格式规范
@@ -244,20 +325,25 @@ v1.2	2026-07-16	新增 Bash 升级脚本规范
 v1.3	2026-07-18	新增「禁止造轮子」原则 + 移除 Bash 行号删除+插入方案
 v1.4	2026-07-19	新增「代码压缩格式」规范
 v1.5	2026-07-19	新增「代码输出前置验证」规范
+v1.6	2026-07-19	新增 v1.1.0 主题风格规范 + 完善 CSS 变量规范
 
-12. 代码压缩格式规范（v1.4 新增）
-12.1 PHP 代码压缩规则
-规则	说明	✅ 正确	❌ 错误
-命名空间声明	与 <?php 同行	<?php declare(strict_types=1); namespace App\models;	<?php\n\ndeclare(strict_types=1);\n\nnamespace App\models;
-use 语句	连续书写，不换行	use App\core\Application;	use App\core\nApplication;
-类声明	不换行	class Article extends BaseController	class Article\nextends BaseController
-方法声明	不换行	public function index(): string	public function\nindex(): string
-方法体	保留必要空格，去除多余换行	public function foo() { return true; }	public function foo() \n{\n    return true;\n}
-控制结构	与括号同行	if ($condition) {	if ($condition)\n{
 
-12.2 压缩示例
-✅ 正确（压缩格式）
-<?php declare(strict_types=1); namespace App\controllers; use App\models\Article; class HomeController extends BaseController { public function index(): string { return 'Hello'; } }
+13. 代码压缩格式规范（v1.4 新增）
+
+13.1 PHP 代码压缩规则
+
+✅ 正确（压缩格式、没有多余空行，除非是新的函数或者其他的定义代码，可以空一行，再写）
+<?php
+declare(strict_types=1);
+namespace App\controllers;
+use App\models\Article;
+class HomeController extends BaseController
+{
+    public function index(): string
+    {
+        return 'Hello';
+    }
+}
 
 ❌ 错误（非压缩格式）
 <?php
@@ -276,13 +362,8 @@ class HomeController extends BaseController
     }
 }
 
-12.3 例外情况
-以下场景允许保留换行和缩进（需在代码中标注说明）：
-- SQL 语句（保持可读性）
-- 复杂的 HTML 模板（保持可读性）
-- JSON 数据结构（保持可读性）
 
-12. 4 页面结构完整性检查清单（v1.6 新增）
+14. 页面结构完整性检查清单（v1.6 新增）
 
 在输出任何包含 HTML 输出的代码（Controller、View）前，必须逐项确认：
 
@@ -298,5 +379,6 @@ class HomeController extends BaseController
 [ ] 所有 HTML 标签是否正确配对？
 
 违反以上任何一项，禁止输出代码，必须修复后再输出。
+
 
 本规范自 2026年7月19日起生效，所有 Lighttp 项目代码输出均需遵守此规范。
