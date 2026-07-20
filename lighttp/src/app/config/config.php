@@ -21,7 +21,7 @@ return [
     ],
     'app' => [
         'name' => 'My CMS',
-        'debug' => true,
+        'debug' => false,
         'timezone' => 'Asia/Shanghai',
         'per_page' => 10,
     ],

@@ -90,7 +90,6 @@ class Application
                 session_regenerate_id(true);
                 $_SESSION['_lig_created'] = time();
             }
-            // 从Session恢复用户信息到当前实例
             if (isset($_SESSION['user_id'])) {
                 $userModel = new \App\models\User();
                 $this->currentUser = $userModel->find($_SESSION['user_id']);
@@ -120,23 +119,27 @@ class Application
         }
         return $value;
     }
+    // ============================================================
+    // AVD-001 修复：登录时强制重新生成 Session ID，防止会话固定攻击
+    // ============================================================
     public function setCurrentUser(?array $user): void
     {
         $this->currentUser = $user;
         if ($user) {
+            session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['_lig_created'] = time();
         } else {
             unset($_SESSION['user_id']);
+            $_SESSION['_lig_created'] = time();
             $this->currentUser = null;
         }
     }
     public function getCurrentUser(): ?array
     {
-        // 如果内存中已有，直接返回
         if ($this->currentUser !== null) {
             return $this->currentUser;
         }
-        // 如果Session中有用户ID，尝试从数据库加载
         if (isset($_SESSION['user_id'])) {
             $userModel = new \App\models\User();
             $this->currentUser = $userModel->find($_SESSION['user_id']);
@@ -148,63 +151,52 @@ class Application
     {
         return $this->getCurrentUser() !== null;
     }
-public function run(): void
-{
-    $uri = $_SERVER['REQUEST_URI'] ?? '/';
-    $uri = strtok($uri, '?');
-    $uri = rtrim($uri, '/') ?: '/';
-
-    // 只有未登录用户的 GET 请求才走页面缓存
-    $cacheKey = 'page:' . md5($uri);
-    $cache = $this->getCache();
-    if ($_SERVER['REQUEST_METHOD'] === 'GET' && !$this->isLoggedIn() && $cache && $cache->has($cacheKey)) {
-        $cachedContent = $cache->get($cacheKey);
-        if ($cachedContent) {
-            echo $cachedContent;
+    public function run(): void
+    {
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $uri = strtok($uri, '?');
+        $uri = rtrim($uri, '/') ?: '/';
+        $cacheKey = 'page:' . md5($uri);
+        $cache = $this->getCache();
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && !$this->isLoggedIn() && $cache && $cache->has($cacheKey)) {
+            $cachedContent = $cache->get($cacheKey);
+            if ($cachedContent) {
+                echo $cachedContent;
+                return;
+            }
+        }
+        $routeFound = false;
+        $routes = require APP_PATH . '/routes.php';
+        foreach ($routes as $route => $handler) {
+            $pattern = '#^' . preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $route) . '$#';
+            if (preg_match($pattern, $uri, $matches)) {
+                array_shift($matches);
+                $routeFound = true;
+                $this->dispatch($handler, $matches);
+                break;
+            }
+        }
+        if (!$routeFound) {
+            http_response_code(404);
+            echo '<h1>404 - Page Not Found</h1>';
+        }
+    }
+    private function dispatch(string $handler, array $params): void
+    {
+        list($controllerClass, $method) = explode('@', $handler);
+        $controllerClass = 'App\\controllers\\' . $controllerClass;
+        if (!class_exists($controllerClass)) {
+            http_response_code(500);
+            echo "Controller not found: $controllerClass";
             return;
         }
-    }
-
-    $routeFound = false;
-    $routes = require APP_PATH . '/routes.php';
-
-    foreach ($routes as $route => $handler) {
-        $pattern = '#^' . preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $route) . '$#';
-        if (preg_match($pattern, $uri, $matches)) {
-            array_shift($matches);
-            $routeFound = true;
-            $this->dispatch($handler, $matches);
-            break;
+        $controller = new $controllerClass();
+        if (!method_exists($controller, $method)) {
+            http_response_code(500);
+            echo "Method not found: $method";
+            return;
         }
+        $content = $controller->$method(...$params);
+        echo $content;
     }
-
-    if (!$routeFound) {
-        http_response_code(404);
-        echo '<h1>404 - Page Not Found</h1>';
-    }
-}
-private function dispatch(string $handler, array $params): void
-{
-    list($controllerClass, $method) = explode('@', $handler);
-    $controllerClass = 'App\\controllers\\' . $controllerClass;
-
-    if (!class_exists($controllerClass)) {
-        http_response_code(500);
-        echo "Controller not found: $controllerClass";
-        return;
-    }
-
-    $controller = new $controllerClass();
-    if (!method_exists($controller, $method)) {
-        http_response_code(500);
-        echo "Method not found: $method";
-        return;
-    }
-
-    $content = $controller->$method(...$params);
-
-    // 移除这里的页面缓存逻辑，由各 Controller 自行决定缓存策略
-    // 只有 HomeController 等需要缓存的控制器才自己缓存
-    echo $content;
-}
 }
