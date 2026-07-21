@@ -1,18 +1,10 @@
 <?php declare(strict_types=1);
 $app = \App\core\Application::getInstance();
 $isLoggedIn = $app->isLoggedIn();
-// 从数据库获取网站名称，缓存 60 秒
-$cache = $app->getCache();
-$siteName = 'Lighttp';
-if ($cache && $cache->has('site_name')) {
-    $siteName = $cache->get('site_name');
-} else {
-    $settingModel = new \App\models\Setting();
-    $siteName = $settingModel->get('site_name') ?? 'Lighttp';
-    if ($cache) {
-        $cache->set('site_name', $siteName, 60);
-    }
-}
+
+// 直接从数据库读取，移除独立缓存
+$settingModel = new \App\models\Setting();
+$siteName = $settingModel->get('site_name') ?? 'Lighttp';
 ?>
 <header class="site-header">
     <div class="container">
