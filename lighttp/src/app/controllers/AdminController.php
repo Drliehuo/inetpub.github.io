@@ -646,26 +646,28 @@ private function renderAdminLayout(string $title, string $content): string
     }
     public function settings(): string
     {
-        $this->checkAuth();
-        $user = $this->getCurrentUser();
-        if ($user['role'] !== 'admin') {
-            return $this->renderAdminLayout('Error', '<p style="color:#c00;">You do not have permission to access settings.</p>');
+    $this->checkAuth();
+    $user = $this->getCurrentUser();
+    if ($user['role'] !== 'admin') {
+        return $this->renderAdminLayout('Error', '<p style="color:#c00;">You do not have permission to access settings.</p>');
+    }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!$this->verifyCsrf()) {
+            return $this->renderAdminLayout('Error', '<p style="color:#c00;">CSRF token validation failed</p>');
         }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!$this->verifyCsrf()) {
-                return $this->renderAdminLayout('Error', '<p style="color:#c00;">CSRF token validation failed</p>');
+        $settingModel = new Setting();
+        $excludeKeys = ['submit', 'lig_csrf_token'];
+        foreach ($_POST as $key => $value) {
+            if (!in_array($key, $excludeKeys)) {
+                $settingModel->set($key, trim($value));
             }
-            $settingModel = new Setting();
-            $excludeKeys = ['submit', 'lig_csrf_token'];
-            foreach ($_POST as $key => $value) {
-                if (!in_array($key, $excludeKeys)) {
-                    $settingModel->set($key, trim($value));
-                }
-            }
-            $cache = $this->getCache();
-            if ($cache) {
-                $cache->delete('home_data');
-            }
+        }
+        $cache = $this->getCache();
+        if ($cache) {
+            // AVD-007 修复：清除首页和页面缓存
+            $cache->clearModule('home');
+            $cache->clearModule('page');
+        }
         }
         $settingModel = new Setting();
         $siteName = $settingModel->get('site_name') ?? 'My CMS';
@@ -710,9 +712,12 @@ public function clearCache(): void
     }
     $cache = $this->getCache();
     if ($cache) {
+        // AVD-007 修复：使用统一方法清除所有缓存
         $cache->clear();
+        // 或者只清除页面和首页缓存（保留其他）
+        // $cache->clearModule('page');
+        // $cache->clearModule('home');
     }
-    // 同时也清除数据库缓存表（如果有）
     $db = $this->getDb();
     if ($db) {
         $db->execute("TRUNCATE TABLE cache");

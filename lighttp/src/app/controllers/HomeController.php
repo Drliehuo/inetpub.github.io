@@ -1,37 +1,29 @@
 <?php
 declare(strict_types=1);
-
 namespace App\controllers;
-
 use App\core\Application;
 use App\models\Article;
 use App\models\Category;
 use App\models\Setting;
-
 class HomeController extends BaseController
 {
     public function index(): string
     {
         $page = (int)($_GET['page'] ?? 1);
         if ($page < 1) $page = 1;
-
         $settingModel = new Setting();
         $perPage = (int)($settingModel->get('per_page') ?? 10);
-
         $cache = Application::getInstance()->getCache();
-        $cacheKey = 'ms_home_' . $page;
-        $cachedBody = $cache && $cache->has($cacheKey) ? $cache->get($cacheKey) : null;
-
+        // AVD-007 修复：使用统一缓存键 cms:home:page_{page}
+        $cacheKey = $cache ? $cache->key('home', 'page_' . $page) : 'cms:home:page_' . $page;
+        $cachedBody = $cache && $cache->hasWithPrefix($cacheKey) ? $cache->getWithPrefix($cacheKey) : null;
         $articleModel = new Article();
         $categoryModel = new Category();
-
         $result = $articleModel->getPaginated(null, $page, $perPage);
         $categories = $categoryModel->findAll();
-
         $siteName = $settingModel->get('site_name') ?? 'Lighttp';
         $siteDesc = $settingModel->get('site_description') ?? 'Modern content management system';
         $siteFooter = $settingModel->get('site_footer') ?? '';
-
         $data = [
             'articles' => $result['data'],
             'categories' => $categories,
@@ -43,21 +35,17 @@ class HomeController extends BaseController
             'site_description' => $siteDesc,
             'site_footer' => $siteFooter
         ];
-
         if ($cachedBody === null) {
             $cachedBody = $this->renderBody($data);
             if ($cache) {
-                $cache->set($cacheKey, $cachedBody, 300);
+                $cache->setWithPrefix($cacheKey, $cachedBody, 300);
             }
         }
-
         $head = $this->renderHead($data);
         $header = $this->renderHeader();
         $footer = $this->renderFooter($data);
-
         return $head . $header . $cachedBody . $footer;
     }
-
     private function renderHead(array $data): string
     {
         ob_start();
@@ -76,14 +64,12 @@ class HomeController extends BaseController
 <?php
         return ob_get_clean();
     }
-
     private function renderHeader(): string
     {
         ob_start();
         include APP_PATH . '/views/partials/header.php';
         return ob_get_clean();
     }
-
     private function renderBody(array $data): string
     {
         ob_start();
@@ -186,7 +172,6 @@ class HomeController extends BaseController
 <?php
         return ob_get_clean();
     }
-
     private function renderFooter(array $data): string
     {
         ob_start();

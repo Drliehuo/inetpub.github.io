@@ -119,9 +119,6 @@ class Application
         }
         return $value;
     }
-    // ============================================================
-    // AVD-001 修复：登录时强制重新生成 Session ID，防止会话固定攻击
-    // ============================================================
     public function setCurrentUser(?array $user): void
     {
         $this->currentUser = $user;
@@ -156,10 +153,11 @@ class Application
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
         $uri = strtok($uri, '?');
         $uri = rtrim($uri, '/') ?: '/';
-        $cacheKey = 'page:' . md5($uri);
         $cache = $this->getCache();
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' && !$this->isLoggedIn() && $cache && $cache->has($cacheKey)) {
-            $cachedContent = $cache->get($cacheKey);
+        // AVD-007 修复：使用统一缓存键 cms:page:{md5}
+        $cacheKey = $cache ? $cache->key('page', md5($uri)) : 'cms:page:' . md5($uri);
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && !$this->isLoggedIn() && $cache && $cache->hasWithPrefix($cacheKey)) {
+            $cachedContent = $cache->getWithPrefix($cacheKey);
             if ($cachedContent) {
                 echo $cachedContent;
                 return;

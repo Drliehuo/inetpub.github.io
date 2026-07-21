@@ -2,7 +2,7 @@
 $app = \App\core\Application::getInstance();
 $isLoggedIn = $app->isLoggedIn();
 
-// 直接从数据库读取，移除独立缓存
+// 直接从数据库读取
 $settingModel = new \App\models\Setting();
 $siteName = $settingModel->get('site_name') ?? 'Lighttp';
 ?>
