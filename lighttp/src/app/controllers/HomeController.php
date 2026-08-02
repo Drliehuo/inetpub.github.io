@@ -14,7 +14,6 @@ class HomeController extends BaseController
         $settingModel = new Setting();
         $perPage = (int)($settingModel->get('per_page') ?? 10);
         $cache = Application::getInstance()->getCache();
-        // AVD-007 修复：使用统一缓存键 cms:home:page_{page}
         $cacheKey = $cache ? $cache->key('home', 'page_' . $page) : 'cms:home:page_' . $page;
         $cachedBody = $cache && $cache->hasWithPrefix($cacheKey) ? $cache->getWithPrefix($cacheKey) : null;
         $articleModel = new Article();
@@ -42,7 +41,7 @@ class HomeController extends BaseController
             }
         }
         $head = $this->renderHead($data);
-        $header = $this->renderHeader();
+        $header = $this->renderHeader($data);
         $footer = $this->renderFooter($data);
         return $head . $header . $cachedBody . $footer;
     }
@@ -50,114 +49,106 @@ class HomeController extends BaseController
     {
         ob_start();
         ?>
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($data['site_name']); ?> — Modern CMS</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?php echo htmlspecialchars($data['site_description'] ?? ''); ?>">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/admin.css">
+    <meta name="author" content="Lighttp">
+    <title><?php echo htmlspecialchars($data['site_name']); ?></title>
+    <link rel="stylesheet" href="/css/lighttp-bootstrap.css">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/examples/offcanvas/offcanvas.css">
 </head>
 <body>
 <?php
         return ob_get_clean();
     }
-    private function renderHeader(): string
+    private function renderHeader(array $data): string
     {
         ob_start();
-        include APP_PATH . '/views/partials/header.php';
+        ?>
+<nav class="navbar navbar-fixed-top navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"><?php echo htmlspecialchars($data['site_name']); ?></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <?php foreach ($data['categories'] as $cat): ?>
+                <li><a href="/category/<?php echo htmlspecialchars($cat['slug']); ?>"><?php echo htmlspecialchars($cat['name']); ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <?php if ($this->isLoggedIn()): ?>
+                <li><a href="/admin">Admin</a></li>
+                <li><a href="/admin/profile">Profile</a></li>
+                <li><a href="/logout">Logout</a></li>
+                <?php else: ?>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <?php endif; ?>
+            </ul>
+        </div>
+    </div>
+</nav>
+<?php
         return ob_get_clean();
     }
     private function renderBody(array $data): string
     {
         ob_start();
         ?>
-<section class="ms-hero">
-    <div class="container">
-        <div class="content">
-            <span class="badge">v1.1.0 · Fluent Design</span>
-            <h1>Build better<br><span class="highlight">digital experiences</span></h1>
-            <p><?php echo htmlspecialchars($data['site_description'] ?? 'Modern content management system built for speed, security, and developer happiness.'); ?></p>
-            <div class="actions">
-                <a href="/register" class="btn btn-primary">Get Started</a>
-                <a href="#features" class="btn">Learn More</a>
+<div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+            <p class="pull-right visible-xs">
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+            </p>
+            <div class="jumbotron">
+                <h1><?php echo htmlspecialchars($data['site_name']); ?></h1>
+                <p><?php echo htmlspecialchars($data['site_description'] ?? 'Modern content management system built for speed, security, and developer happiness.'); ?></p>
+                <?php if (!$this->isLoggedIn()): ?>
+                <p><a class="btn btn-primary btn-lg" href="/register" role="button">Get Started &raquo;</a></p>
+                <?php else: ?>
+                <p><a class="btn btn-primary btn-lg" href="/admin" role="button">Dashboard &raquo;</a></p>
+                <?php endif; ?>
             </div>
-        </div>
-        <div class="stats">
-            <div><span class="num">&lt;100ms</span><span class="label">Response</span></div>
-            <div><span class="num">12</span><span class="label">Tables</span></div>
-            <div><span class="num">100%</span><span class="label">Open Source</span></div>
-        </div>
-    </div>
-</section>
-
-<section class="ms-section" id="features">
-    <div class="container">
-        <div class="section-header">
-            <span class="label">Features</span>
-            <h2>Everything you need to succeed</h2>
-            <p>Modern tools for modern content creators and developers.</p>
-        </div>
-        <div class="ms-grid">
-            <div class="ms-card"><span class="icon">⚡</span><h3>Lightning Fast</h3><p>Redis-powered caching delivers sub-100ms page loads with 90% fewer database queries.</p></div>
-            <div class="ms-card"><span class="icon">🔒</span><h3>Secure by Default</h3><p>PDO prepared statements, bcrypt hashing, CSRF protection — security built in from day one.</p></div>
-            <div class="ms-card"><span class="icon">📝</span><h3>Content Management</h3><p>Full article, category, and page management with SEO-friendly URLs and meta tags.</p></div>
-            <div class="ms-card"><span class="icon">👥</span><h3>User Management</h3><p>Role-based access control with admin, editor, author, and subscriber roles.</p></div>
-            <div class="ms-card"><span class="icon">🎨</span><h3>Fluent Design</h3><p>Clean, modern interface with Microsoft Fluent design language for a polished experience.</p></div>
-            <div class="ms-card"><span class="icon">🌐</span><h3>Open Source</h3><p>MIT licensed — use it, modify it, and contribute back to the community.</p></div>
-        </div>
-    </div>
-</section>
-
-<section class="ms-section">
-    <div class="container">
-        <div class="section-header">
-            <span class="label">Latest Articles</span>
-            <h2>Recent posts</h2>
-        </div>
-
-        <?php if (!empty($data['categories'])): ?>
-        <div class="home-category-nav">
-            <span class="home-category-label">Browse:</span>
-            <?php foreach ($data['categories'] as $cat): ?>
-            <a href="/category/<?php echo htmlspecialchars($cat['slug']); ?>" class="home-category-chip">
-                <?php echo htmlspecialchars($cat['name']); ?>
-            </a>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
-
-        <?php if (empty($data['articles'])): ?>
-            <p style="color:var(--ms-gray-500);">No articles yet. <a href="/admin/article/create">Create your first article</a></p>
-        <?php else: ?>
-            <div class="ms-article-list">
-            <?php foreach ($data['articles'] as $article):
-                $excerpt = $article['excerpt'] ?? $article['content'] ?? '';
-                $excerpt = mb_substr(strip_tags($excerpt), 0, 120) . '...';
-                $authorDisplay = $article['author_display'] ?? $article['author_name'] ?? 'Unknown';
-            ?>
-                <div class="ms-article-item">
-                    <h3><a href="/article/<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a></h3>
-                    <div class="meta">
-                        <span><?php echo date('F j, Y', strtotime($article['created_at'])); ?></span>
-                        <span>·</span>
-                        <span><?php echo htmlspecialchars($article['category_name'] ?? 'Uncategorized'); ?></span>
-                        <span>·</span>
-                        <span><?php echo htmlspecialchars($authorDisplay); ?></span>
-                        <span>·</span>
-                        <span><?php echo $article['views'] ?? 0; ?> views</span>
-                    </div>
-                    <p class="excerpt"><?php echo $excerpt; ?></p>
-                    <?php if ($article['is_top'] || $article['is_recommend']): ?>
-                    <div class="labels">
-                        <?php if ($article['is_top']): ?><span class="top">Top</span><?php endif; ?>
-                        <?php if ($article['is_recommend']): ?><span>Recommend</span><?php endif; ?>
-                    </div>
-                    <?php endif; ?>
+            <div class="row">
+                <?php if (empty($data['articles'])): ?>
+                <div class="col-xs-12">
+                    <div class="alert alert-info">No articles yet. <a href="/admin/article/create">Create your first article</a></div>
                 </div>
-            <?php endforeach; ?>
+                <?php else: ?>
+                <?php foreach ($data['articles'] as $article):
+                    $excerpt = $article['excerpt'] ?? $article['content'] ?? '';
+                    $excerpt = mb_substr(strip_tags($excerpt), 0, 120) . '...';
+                    $authorDisplay = $article['author_display'] ?? $article['author_name'] ?? 'Unknown';
+                ?>
+                <div class="col-xs-6 col-lg-4">
+                    <h2><a href="/article/<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a></h2>
+                    <p class="text-muted small">
+                        <?php echo date('Y-m-d', strtotime($article['created_at'])); ?>
+                        · <?php echo htmlspecialchars($article['category_name'] ?? 'Uncategorized'); ?>
+                        · <?php echo htmlspecialchars($authorDisplay); ?>
+                        · <?php echo $article['views'] ?? 0; ?> views
+                        <?php if ($article['is_top']): ?><span class="label label-primary">Top</span><?php endif; ?>
+                        <?php if ($article['is_recommend']): ?><span class="label label-success">Recommend</span><?php endif; ?>
+                    </p>
+                    <p><?php echo $excerpt; ?></p>
+                    <p><a class="btn btn-default" href="/article/<?php echo $article['id']; ?>" role="button">View details &raquo;</a></p>
+                </div>
+                <?php endforeach; ?>
+                <?php endif; ?>
             </div>
             <?php
             $baseUrl = '?';
@@ -166,9 +157,32 @@ class HomeController extends BaseController
             $currentPage = $data['page'];
             include APP_PATH . '/views/partials/pagination.php';
             ?>
-        <?php endif; ?>
+        </div>
+        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+            <div class="list-group">
+                <a href="/" class="list-group-item active">All posts</a>
+                <?php foreach ($data['categories'] as $cat): ?>
+                <a href="/category/<?php echo htmlspecialchars($cat['slug']); ?>" class="list-group-item">
+                    <?php echo htmlspecialchars($cat['name']); ?>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <?php if ($this->isLoggedIn()): ?>
+            <div class="panel panel-default">
+                <div class="panel-heading">Quick Actions</div>
+                <div class="list-group">
+                    <a href="/admin/article/create" class="list-group-item">+ New article</a>
+                    <a href="/admin" class="list-group-item">Dashboard</a>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
     </div>
-</section>
+    <hr>
+    <footer>
+        <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($data['site_name']); ?> · Powered by <a href="https://www.inetpub.cn/lighttp">Lighttp</a></p>
+    </footer>
+</div>
 <?php
         return ob_get_clean();
     }
@@ -176,14 +190,9 @@ class HomeController extends BaseController
     {
         ob_start();
         ?>
-<footer class="site-footer">
-    <div class="container">
-        <span class="footer-brand"><?php echo htmlspecialchars($data['site_name']); ?></span>
-        <span class="footer-copy"><?php echo htmlspecialchars($data['site_footer'] ?? ''); ?></span>
-        <span class="footer-dev">Powered by <a href="https://www.inetpub.cn/lighttp">Lighttp</a></span>
-    </div>
-</footer>
-<script src="/js/app.js"></script>
+<script src="/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/examples/offcanvas/offcanvas.js"></script>
 </body>
 </html>
 <?php
