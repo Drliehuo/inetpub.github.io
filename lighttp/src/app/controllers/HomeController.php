@@ -104,10 +104,10 @@ class HomeController extends BaseController
 <?php
         return ob_get_clean();
     }
-    private function renderBody(array $data): string
-    {
-        ob_start();
-        ?>
+private function renderBody(array $data): string
+{
+    ob_start();
+    ?>
 <div class="container">
     <div class="row row-offcanvas row-offcanvas-right">
         <div class="col-xs-12 col-sm-9">
@@ -123,29 +123,40 @@ class HomeController extends BaseController
                 <p><a class="btn btn-primary btn-lg" href="/admin" role="button">Dashboard &raquo;</a></p>
                 <?php endif; ?>
             </div>
-            <div class="row">
+            <div class="row article-grid">
                 <?php if (empty($data['articles'])): ?>
                 <div class="col-xs-12">
                     <div class="alert alert-info">No articles yet. <a href="/admin/article/create">Create your first article</a></div>
                 </div>
                 <?php else: ?>
                 <?php foreach ($data['articles'] as $article):
+                    // 标题截断：最多30个字符
+                    $title = htmlspecialchars($article['title']);
+                    if (mb_strlen($title) > 30) {
+                        $title = mb_substr($title, 0, 30) . '...';
+                    }
+                    // 描述截断：最多60个字符
                     $excerpt = $article['excerpt'] ?? $article['content'] ?? '';
-                    $excerpt = mb_substr(strip_tags($excerpt), 0, 120) . '...';
+                    $excerpt = strip_tags($excerpt);
+                    if (mb_strlen($excerpt) > 60) {
+                        $excerpt = mb_substr($excerpt, 0, 60) . '...';
+                    }
                     $authorDisplay = $article['author_display'] ?? $article['author_name'] ?? 'Unknown';
                 ?>
                 <div class="col-xs-6 col-lg-4">
-                    <h2><a href="/article/<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a></h2>
-                    <p class="text-muted small">
-                        <?php echo date('Y-m-d', strtotime($article['created_at'])); ?>
-                        · <?php echo htmlspecialchars($article['category_name'] ?? 'Uncategorized'); ?>
-                        · <?php echo htmlspecialchars($authorDisplay); ?>
-                        · <?php echo $article['views'] ?? 0; ?> views
-                        <?php if ($article['is_top']): ?><span class="label label-primary">Top</span><?php endif; ?>
-                        <?php if ($article['is_recommend']): ?><span class="label label-success">Recommend</span><?php endif; ?>
-                    </p>
-                    <p><?php echo $excerpt; ?></p>
-                    <p><a class="btn btn-default" href="/article/<?php echo $article['id']; ?>" role="button">View details &raquo;</a></p>
+                    <div class="article-card">
+                        <h2><a href="/article/<?php echo $article['id']; ?>"><?php echo $title; ?></a></h2>
+                        <p class="text-muted small meta">
+                            <?php echo date('Y-m-d', strtotime($article['created_at'])); ?>
+                            · <?php echo htmlspecialchars($article['category_name'] ?? 'Uncategorized'); ?>
+                            · <?php echo htmlspecialchars($authorDisplay); ?>
+                            · <?php echo $article['views'] ?? 0; ?> views
+                            <?php if ($article['is_top']): ?><span class="label label-primary">Top</span><?php endif; ?>
+                            <?php if ($article['is_recommend']): ?><span class="label label-success">Recommend</span><?php endif; ?>
+                        </p>
+                        <p class="excerpt"><?php echo $excerpt; ?></p>
+                        <p><a class="btn btn-default" href="/article/<?php echo $article['id']; ?>" role="button">View details &raquo;</a></p>
+                    </div>
                 </div>
                 <?php endforeach; ?>
                 <?php endif; ?>
@@ -184,8 +195,8 @@ class HomeController extends BaseController
     </footer>
 </div>
 <?php
-        return ob_get_clean();
-    }
+    return ob_get_clean();
+}
     private function renderFooter(array $data): string
     {
         ob_start();
