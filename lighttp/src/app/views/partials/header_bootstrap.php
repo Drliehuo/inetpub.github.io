@@ -5,13 +5,9 @@ $settingModel = new \App\models\Setting();
 $siteName = $settingModel->get('site_name') ?? 'Lighttp';
 $categoryModel = new \App\models\Category();
 $categories = $categoryModel->findAll();
-
-// 获取当前 URI，用于判断 active 状态
 $currentUri = $_SERVER['REQUEST_URI'] ?? '/';
 $currentUri = strtok($currentUri, '?');
 $currentUri = rtrim($currentUri, '/') ?: '/';
-
-// 判断当前是否在文章页，如果是则获取文章的分类 slug
 $articleCategorySlug = null;
 if (preg_match('#^/article/(\d+)$#', $currentUri, $matches)) {
     $articleId = (int)$matches[1];
@@ -41,10 +37,8 @@ if (preg_match('#^/article/(\d+)$#', $currentUri, $matches)) {
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li<?php echo ($currentUri === '/') ? ' class="active"' : ''; ?>><a href="/">首页</a></li>
-                <?php foreach ($categories as $cat): ?>
-                <?php
+                <?php foreach ($categories as $cat):
                 $catUri = '/category/' . $cat['slug'];
-                // 判断当前分类是否应该高亮：分类页匹配 或 文章页所属分类匹配
                 $isActive = ($currentUri === $catUri) || ($articleCategorySlug && $articleCategorySlug === $cat['slug']);
                 ?>
                 <li<?php echo $isActive ? ' class="active"' : ''; ?>><a href="<?php echo htmlspecialchars($catUri); ?>"><?php echo htmlspecialchars($cat['name']); ?></a></li>

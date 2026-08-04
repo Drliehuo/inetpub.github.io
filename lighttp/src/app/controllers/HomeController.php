@@ -74,7 +74,7 @@ class HomeController extends BaseController
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">菜单</span>
+                <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -90,11 +90,11 @@ class HomeController extends BaseController
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($this->isLoggedIn()): ?>
-                <li><a href="/admin">Admin</a></li>
-                <li><a href="/admin/profile">Profile</a></li>
+                <li><a href="/admin">管理</a></li>
+                <li><a href="/admin/profile">个人</a></li>
                 <li><a href="/logout">退出</a></li>
                 <?php else: ?>
-                <li><a href="/login">登陆</a></li>
+                <li><a href="/login">登录</a></li>
                 <li><a href="/register">注册</a></li>
                 <?php endif; ?>
             </ul>
@@ -104,15 +104,15 @@ class HomeController extends BaseController
 <?php
         return ob_get_clean();
     }
-private function renderBody(array $data): string
-{
-    ob_start();
-    ?>
+    private function renderBody(array $data): string
+    {
+        ob_start();
+        ?>
 <div class="container">
     <div class="row row-offcanvas row-offcanvas-right">
         <div class="col-xs-12 col-sm-9">
             <p class="pull-right visible-xs">
-                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">菜单</button>
             </p>
             <div class="jumbotron">
                 <h1><?php echo htmlspecialchars($data['site_name']); ?></h1>
@@ -130,12 +130,10 @@ private function renderBody(array $data): string
                 </div>
                 <?php else: ?>
                 <?php foreach ($data['articles'] as $article):
-                    // 标题截断：最多30个字符
                     $title = htmlspecialchars($article['title']);
                     if (mb_strlen($title) > 30) {
                         $title = mb_substr($title, 0, 30) . '...';
                     }
-                    // 描述截断：最多60个字符
                     $excerpt = $article['excerpt'] ?? $article['content'] ?? '';
                     $excerpt = strip_tags($excerpt);
                     if (mb_strlen($excerpt) > 60) {
@@ -170,23 +168,7 @@ private function renderBody(array $data): string
             ?>
         </div>
         <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
-            <div class="list-group">
-                <a href="/" class="list-group-item active">All posts</a>
-                <?php foreach ($data['categories'] as $cat): ?>
-                <a href="/category/<?php echo htmlspecialchars($cat['slug']); ?>" class="list-group-item">
-                    <?php echo htmlspecialchars($cat['name']); ?>
-                </a>
-                <?php endforeach; ?>
-            </div>
-            <?php if ($this->isLoggedIn()): ?>
-            <div class="panel panel-default">
-                <div class="panel-heading">Quick Actions</div>
-                <div class="list-group">
-                    <a href="/admin/article/create" class="list-group-item">+ New article</a>
-                    <a href="/admin" class="list-group-item">Dashboard</a>
-                </div>
-            </div>
-            <?php endif; ?>
+            <?php include APP_PATH . '/views/partials/sidebar.php'; ?>
         </div>
     </div>
     <hr>
@@ -195,8 +177,8 @@ private function renderBody(array $data): string
     </footer>
 </div>
 <?php
-    return ob_get_clean();
-}
+        return ob_get_clean();
+    }
     private function renderFooter(array $data): string
     {
         ob_start();
