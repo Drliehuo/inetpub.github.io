@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lighttp 项目文档 v1.1.0</title>
+    <title>Lighttp 项目文档 v1.1.4</title>
     <style>
-        /* Lighttp v1.1.0 - Project Documentation Styles */
+        /* Lighttp v1.1.4 - Project Documentation Styles */
         :root { --black: #000; --dark: #222; --gray-900: #333; --gray-700: #555; --gray-500: #777; --gray-300: #aaa; --gray-200: #ccc; --gray-100: #ddd; --gray-50: #eee; --gray-25: #f5f5f5; --white: #fff; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif; --transition: all 0.15s ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -37,6 +37,7 @@
         table th, table td { padding: 8px 12px; text-align: left; border: 1px solid var(--gray-200); }
         table th { background: var(--gray-25); font-weight: 600; }
         table tr:nth-child(even) td { background: var(--gray-25); }
+        table tr:hover td { background: var(--gray-100); }
         code { background: var(--gray-25); padding: 2px 8px; font-size: 0.813rem; font-family: "SF Mono", "JetBrains Mono", monospace; border: 1px solid var(--gray-200); }
         pre { background: var(--dark); color: var(--gray-50); padding: 16px 20px; overflow-x: auto; font-size: 0.813rem; font-family: "SF Mono", "JetBrains Mono", monospace; line-height: 1.6; margin: 12px 0; border: 2px solid var(--black); }
         pre .comment { color: var(--gray-500); }
@@ -47,6 +48,7 @@
         .badge-warning { border-color: var(--black); background: var(--gray-25); color: var(--black); }
         .badge-danger { border-color: var(--black); background: var(--gray-25); color: var(--black); }
         .badge-info { border-color: var(--black); background: var(--gray-25); color: var(--black); }
+        .badge-theme { border-color: var(--black); background: var(--gray-25); color: var(--black); }
         .changelog-item { border-left: 3px solid var(--black); padding-left: 16px; margin-bottom: 20px; }
         .changelog-item .version { font-weight: 700; font-size: 1.05rem; }
         .changelog-item .date { color: var(--gray-500); font-size: 0.813rem; margin-left: 12px; }
@@ -78,9 +80,9 @@
         <header class="doc-header">
             <div>
                 <h1>Lighttp <span class="highlight">项目文档</span></h1>
-                <div class="meta">版本 v1.1.0 &nbsp;·&nbsp; 更新于 2026年7月19日</div>
+                <div class="meta">版本 v1.1.4 &nbsp;·&nbsp; 更新于 2026年8月4日</div>
             </div>
-            <div class="version">v1.1.0</div>
+            <div class="version">v1.1.4</div>
         </header>
         <nav class="toc">
             <h2>目录</h2>
@@ -104,15 +106,15 @@
             <ul>
                 <li><strong>极速简洁</strong> — 最小化代码依赖，页面响应时间 &lt; 100ms</li>
                 <li><strong>安全优先</strong> — PDO 预处理、bcrypt 密码哈希、多层防护</li>
-                <li><strong>Microsoft Fluent 设计</strong> — 现代、清晰、专业的视觉风格</li>
+                <li><strong>Bootstrap 3 设计</strong> — 成熟、稳定、响应式</li>
                 <li><strong>完全响应式</strong> — 适配电脑、平板、手机</li>
                 <li><strong>HTML 原生支持</strong> — 文章内容完全支持 HTML 标签</li>
             </ul>
             <h3>项目信息</h3>
             <table>
                 <tr><th>项目名称</th><td>Lighttp (Lighttp Public Cloud)</td></tr>
-                <tr><th>当前版本</th><td>v1.1.0</td></tr>
-                <tr><th>发布日期</th><td>2026年7月19日</td></tr>
+                <tr><th>当前版本</th><td>v1.1.4</td></tr>
+                <tr><th>发布日期</th><td>2026年8月4日</td></tr>
                 <tr><th>许可证</th><td>MIT</td></tr>
                 <tr><th>开发者</th><td>Dr.liehuo (烈火帝君)</td></tr>
                 <tr><th>项目主页</th><td><a href="https://www.inetpub.cn/lighttp">https://www.inetpub.cn/lighttp</a></td></tr>
@@ -127,6 +129,7 @@
                 <tr><td>MySQL / MariaDB</td><td>5.6+ / 10.3+</td><td>主数据库</td></tr>
                 <tr><td>Redis</td><td>5.0+</td><td>缓存层</td></tr>
                 <tr><td>Nginx / Apache</td><td>1.18+ / 2.4+</td><td>Web 服务器</td></tr>
+                <tr><td>前端框架</td><td>Bootstrap 3</td><td>响应式 UI</td></tr>
             </table>
             <h3>必须的 PHP 扩展</h3>
             <ul>
@@ -149,93 +152,85 @@
 lighttp/
 ├── app/
 │   ├── config/
-│   │   └── config.php          # 系统配置（数据库/缓存/安全）
-│   ├── controllers/            # 控制器层（8个）
-│   │   ├── BaseController.php  # 抽象基类
-│   │   ├── HomeController.php  # 首页 (v1.1.0 Fluent风格)
-│   │   ├── ArticleController.php # 文章详情 (v1.1.0 作者昵称)
-│   │   ├── CategoryController.php # 分类列表 (v1.1.0 重构)
-│   │   ├── AuthController.php  # 登录/注册/登出
-│   │   ├── AdminController.php # 后台管理 (v1.1.0 作者昵称)
-│   │   ├── TagController.php   # 标签页
-│   │   └── PageController.php  # 静态页面
-│   ├── core/                   # 核心框架（3个）
-│   │   ├── Application.php     # 应用容器（路由/缓存/数据库/会话）
-│   │   ├── Database.php        # PDO 封装
-│   │   └── RedisCache.php      # Redis 缓存封装
-│   ├── models/                 # 数据模型（5个）
-│   │   ├── Article.php         # 文章 CRUD + 分页 (v1.1.0 author_display)
-│   │   ├── Category.php        # 分类 CRUD
-│   │   ├── User.php            # 用户认证 + 密码哈希 + Profile
-│   │   ├── Setting.php         # 系统配置读写
-│   │   └── Tag.php             # 标签查询
+│   │   └── config.php          # 系统配置
+│   ├── controllers/            # 控制器层
+│   │   ├── BaseController.php
+│   │   ├── HomeController.php  # (v1.1.4 Bootstrap)
+│   │   ├── ArticleController.php # (v1.1.4 Bootstrap)
+│   │   ├── CategoryController.php # (v1.1.4 Bootstrap)
+│   │   ├── AuthController.php
+│   │   ├── AdminController.php # (v1.1.4 Bootstrap)
+│   │   ├── TagController.php
+│   │   ├── PageController.php
+│   │   └── AttachmentController.php # (v1.1.4 新增)
+│   ├── core/                   # 核心框架
+│   ├── models/
 │   ├── views/
 │   │   └── partials/
-│   │       ├── header.php      # 全局头部 (v1.1.0 滚动阴影)
-│   │       ├── footer.php      # 全局页脚
-│   │       └── pagination.php  # 分页组件
-│   └── routes.php              # 路由定义（20+ 条）
+│   │       ├── header.php
+│   │       ├── header_bootstrap.php  # (v1.1.4 新增)
+│   │       ├── footer.php
+│   │       ├── pagination.php   # (v1.1.4 Bootstrap)
+│   │       └── attachments.php  # (v1.1.4 新增)
+│   └── routes.php
 ├── public/
+│   ├── bootstrap/              # (v1.1.4 新增) Bootstrap 3 资源
+│   │   └── css/
+│   │       └── bootstrap.min.css
 │   ├── css/
-│   │   ├── style.css           # 全局样式 (v1.1.0 Fluent + Win7玻璃)
-│   │   ├── admin.css           # 后台样式 (v1.1.0 Fluent)
-│   │   └── auth.css            # 登录/注册样式 (v1.1.0 Fluent)
+│   │   ├── style.css
+│   │   ├── admin.css
+│   │   ├── auth.css
+│   │   ├── offcanvas.css       # (v1.1.4 新增)
+│   │   └── lighttp-bootstrap.css # (v1.1.4 新增)
 │   ├── js/
-│   │   └── app.js              # 全局 JavaScript
-│   ├── index.php               # 入口文件
-│   └── .htaccess               # URL 重写 + Cache-Control
-├── var/
-│   ├── cache/
-│   ├── logs/
-│   └── sessions/
-├── .htaccess                   # Apache 安全配置 + Cache-Control
-├── .user.ini                   # PHP 安全配置
-├── install.sql                 # 数据库安装脚本（12张表）
-├── install.php                 # CLI 安装脚本
-└── nginx-config-example.conf   # Nginx 配置示例</pre>
+│   │   ├── app.js
+│   │   ├── jquery.min.js       # (v1.1.4 新增)
+│   │   ├── bootstrap.min.js    # (v1.1.4 新增)
+│   │   ├── offcanvas.js        # (v1.1.4 新增)
+│   │   └── attachment.js       # (v1.1.4 新增)
+│   ├── examples/
+│   │   └── offcanvas/          # (v1.1.4 新增)
+│   │       └── offcanvas.css
+│   └── upload/                 # (v1.1.4 新增)
+│       └── attachments/        # 附件存储
+└── ...
+</pre>
         </section>
         <section class="section" id="features">
             <h2>4. 核心功能清单</h2>
             <h3>4.1 前台功能</h3>
             <table>
                 <tr><th>功能</th><th>路由</th><th>说明</th></tr>
-                <tr><td>首页</td><td><code>/</code></td><td>文章列表 + 分类导航 + 分页 (v1.1.0 Fluent风格)</td></tr>
-                <tr><td>文章详情</td><td><code>/article/{id}</code></td><td>完整 HTML 内容 + 元信息 (v1.1.0 作者昵称)</td></tr>
-                <tr><td>分类列表</td><td><code>/category/{slug}</code></td><td>按分类筛选文章 + 分页 (v1.1.0 重构)</td></tr>
-                <tr><td>标签页</td><td><code>/tag/{slug}</code></td><td>标签下文章统计</td></tr>
+                <tr><td>首页</td><td><code>/</code></td><td>文章列表 + 分类导航 + 分页 (Bootstrap 3)</td></tr>
+                <tr><td>文章详情</td><td><code>/article/{id}</code></td><td>完整 HTML 内容 + 元信息 (Bootstrap 3)</td></tr>
+                <tr><td>分类列表</td><td><code>/category/{slug}</code></td><td>按分类筛选 + 分页 (Bootstrap 3)</td></tr>
+                <tr><td>标签页</td><td><code>/tag/{slug}</code></td><td>标签统计</td></tr>
                 <tr><td>静态页面</td><td><code>/page/{slug}</code></td><td>自定义独立页面</td></tr>
-                <tr><td>用户登录</td><td><code>/login</code></td><td>支持用户名/邮箱 + 密码验证</td></tr>
+                <tr><td>用户登录</td><td><code>/login</code></td><td>用户名/邮箱 + 密码</td></tr>
                 <tr><td>用户注册</td><td><code>/register</code></td><td>用户名 + 邮箱 + 密码</td></tr>
-                <tr><td>用户登出</td><td><code>/logout</code></td><td>销毁会话并清除 Cookie</td></tr>
+                <tr><td>用户登出</td><td><code>/logout</code></td><td>销毁会话</td></tr>
             </table>
             <h3>4.2 后台管理功能</h3>
             <table>
                 <tr><th>功能</th><th>路由</th><th>权限要求</th></tr>
                 <tr><td>仪表盘</td><td><code>/admin</code></td><td>admin / editor</td></tr>
-                <tr><td>文章列表（含分页/筛选）</td><td><code>/admin/articles</code></td><td>admin / editor</td></tr>
-                <tr><td>新建文章</td><td><code>/admin/article/create</code></td><td>admin / editor（subscriber 强制 pending）</td></tr>
+                <tr><td>文章列表</td><td><code>/admin/articles</code></td><td>admin / editor</td></tr>
+                <tr><td>新建文章</td><td><code>/admin/article/create</code></td><td>admin / editor</td></tr>
                 <tr><td>编辑文章</td><td><code>/admin/article/edit/{id}</code></td><td>admin / editor</td></tr>
                 <tr><td>删除文章</td><td><code>/admin/article/delete/{id}</code></td><td>admin / editor</td></tr>
-                <tr><td>分类列表</td><td><code>/admin/categories</code></td><td>admin / editor</td></tr>
-                <tr><td>新建分类</td><td><code>/admin/category/create</code></td><td>admin / editor</td></tr>
-                <tr><td>编辑分类</td><td><code>/admin/category/edit/{id}</code></td><td>admin / editor</td></tr>
-                <tr><td>删除分类</td><td><code>/admin/category/delete/{id}</code></td><td>admin / editor</td></tr>
-                <tr><td>用户列表</td><td><code>/admin/users</code></td><td>admin / editor</td></tr>
+                <tr><td>分类管理</td><td><code>/admin/categories</code></td><td>admin / editor</td></tr>
+                <tr><td>用户管理</td><td><code>/admin/users</code></td><td>admin / editor</td></tr>
                 <tr><td>系统设置</td><td><code>/admin/settings</code></td><td>admin</td></tr>
                 <tr><td>个人资料</td><td><code>/admin/profile</code></td><td>所有登录用户</td></tr>
                 <tr><td>清空缓存</td><td><code>/admin/cache/clear</code></td><td>admin / editor</td></tr>
             </table>
-            <h3>4.3 v1.1.0 新增与优化</h3>
+            <h3>4.3 v1.1.4 新增功能</h3>
             <ul>
-                <li><strong>Microsoft Fluent 设计主题</strong> — 全新 UI 风格，现代、清晰、专业</li>
-                <li><strong>用户昵称显示</strong> — 文章详情、列表、后台均优先显示昵称</li>
-                <li><strong>分类页重构</strong> — 分类头部、分类导航、空状态、文章列表</li>
-                <li><strong>首页分类导航</strong> — "Browse:" 标签 + 分类芯片</li>
-                <li><strong>作者卡片组件</strong> — 文章详情页显示作者头像首字母 + 昵称</li>
-                <li><strong>Windows 7 玻璃风格图片</strong> — 透明边框 + 内高光 + 悬停效果</li>
-                <li><strong>移动端元数据水平滚动</strong> — 手机端文章元数据横向滚动不换行</li>
-                <li><strong>Nginx 静态文件 Cache-Control: no-cache</strong></li>
-                <li><strong>保留 <code>.txt</code> 工具类</strong> — 首行缩进2字符，行高32px，字号16px</li>
+                <li><strong>Bootstrap 3 主题</strong> — 全新 UI，Offcanvas 响应式布局</li>
+                <li><strong>表格移动端水平滚动</strong> — 手机端表格可左右滑动查看</li>
+                <li><strong>表格悬停高亮</strong> — 鼠标悬停行颜色加深</li>
+                <li><strong>附件管理（开发中）</strong> — 支持 zip, txt, mp3, mp4, jpg, png</li>
             </ul>
         </section>
         <section class="section" id="security">
@@ -296,111 +291,59 @@ lighttp/
             <h2>7. 更新记录</h2>
 
             <div class="changelog-item">
+                <div><span class="version">v1.1.4</span><span class="date">2026-08-04</span></div>
+                <span class="badge badge-theme">主题重构</span>
+                <ul>
+                    <li><strong>Bootstrap 3 主题迁移</strong> — 从 Microsoft Fluent 风格迁移至 Bootstrap 3</li>
+                    <li><strong>Offcanvas 响应式布局</strong> — 移动端侧边栏滑动菜单</li>
+                    <li><strong>表格移动端水平滚动</strong> — 添加 <code>.table-wrap</code> 容器，支持左右滑动</li>
+                    <li><strong>表格悬停高亮</strong> — 鼠标悬停行颜色加深一个档次</li>
+                    <li><strong>导航菜单更新</strong> — 分类导航 + 登录/注册/Admin/Profile/退出</li>
+                    <li><strong>分页组件</strong> — 更新为 Bootstrap 3 默认分页样式</li>
+                    <li><strong>新增 Bootstrap 资源</strong> — jQuery 1.12.4、Bootstrap 3、Offcanvas</li>
+                    <li><strong>新增自定义 CSS</strong> — <code>lighttp-bootstrap.css</code>，保留 Windows 7 玻璃图片风格</li>
+                    <li><strong>新增附件管理框架</strong> — <code>AttachmentController.php</code>（开发中）</li>
+                    <li><strong>新增 <code>.txt</code> 工具类</strong> — 首行缩进 2em，行高 32px，字号 16px</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.1.3</span><span class="date">2026-07-22</span></div>
+                <span class="badge badge-success">代码质量</span>
+                <ul>
+                    <li><strong>AVD-007 缓存键命名规范统一</strong> — 格式：<code>cms:{module}:{identifier}</code></li>
+                    <li><strong>新增 RedisCache 辅助方法</strong> — <code>key()</code>, <code>clearModule()</code>, <code>getWithPrefix()</code> 等</li>
+                    <li><strong>缓存管理优化</strong> — 支持按模块清除缓存</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.1.2</span><span class="date">2026-07-22</span></div>
+                <span class="badge badge-warning">优化维护</span>
+                <ul>
+                    <li><strong>site_name 缓存逻辑优化</strong> — 移除独立缓存，实时读取数据库</li>
+                    <li><strong>导航名称立即生效</strong> — 修改网站名称后无需等待缓存过期</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
+                <div><span class="version">v1.1.1</span><span class="date">2026-07-20</span></div>
+                <span class="badge badge-danger">安全维护</span>
+                <ul>
+                    <li><strong>AVD-001 会话固定漏洞修复</strong> — 登录时强制重新生成 Session ID</li>
+                    <li><strong>AVD-003 Debug 模式关闭</strong> — 生产环境关闭调试模式</li>
+                </ul>
+            </div>
+
+            <div class="changelog-item">
                 <div><span class="version">v1.1.0</span><span class="date">2026-07-19</span></div>
-                <span class="badge badge-success">主题重构</span>
+                <span class="badge badge-success">功能版本</span>
                 <ul>
                     <li><strong>Microsoft Fluent 设计主题</strong> — 全新 UI 风格</li>
-                    <li><strong>配色体系</strong> — Microsoft 官方蓝色 (#0078d4) + 灰度体系</li>
-                    <li><strong>Windows 7 玻璃风格图片</strong> — 透明边框 + 内高光 + 悬停上浮</li>
-                    <li><strong>用户昵称显示</strong> — 全站优先显示 nickname，无则降级 username</li>
+                    <li><strong>用户昵称显示</strong> — 全站优先显示 nickname</li>
                     <li><strong>分类页重构</strong> — 分类头部 + 导航 + 空状态</li>
-                    <li><strong>首页分类导航</strong> — Browse 标签 + 分类芯片</li>
+                    <li><strong>Windows 7 玻璃风格图片</strong> — 透明边框 + 内高光 + 悬停</li>
                     <li><strong>作者卡片</strong> — 头像首字母 + 昵称 + 发布时间</li>
-                    <li><strong>手机端元数据水平滚动</strong> — 不换行，隐藏滚动条</li>
-                    <li><strong>Nginx 静态文件 Cache-Control: no-cache</strong></li>
-                    <li><strong>保留 .txt 工具类</strong> — 首行缩进 2em，行高 32px，字号 16px</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.9</span><span class="date">2026-07-19</span></div>
-                <span class="badge badge-info">缓存策略</span>
-                <ul>
-                    <li><strong>Nginx 静态文件缓存</strong> — 所有静态文件统一 Cache-Control: no-cache</li>
-                    <li><strong>PHP 页面缓存</strong> — 由 session.cache_limiter = nocache 控制</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.8</span><span class="date">2026-07-18</span></div>
-                <span class="badge badge-success">功能增强</span>
-                <ul>
-                    <li><strong>个人资料管理</strong> — 新增 <code>/admin/profile</code> 页面，支持修改邮箱、昵称、密码</li>
-                    <li><strong>文章筛选</strong> — 后台文章列表支持按状态筛选 (All / Published / Draft / Pending)</li>
-                    <li><strong>分页功能</strong> — 首页、后台、分类页统一分页，每页 10 篇</li>
-                    <li><strong>设置生效修复</strong> — 网站名称、描述、页脚、每页数量真正生效</li>
-                    <li><strong>注册自动登录</strong> — 注册成功后自动登录并跳转后台</li>
-                    <li><strong>非管理员强制待审核</strong> — subscriber 创建的文章强制为 pending 状态</li>
-                    <li><strong>登录优化</strong> — 支持用户名或邮箱登录</li>
-                    <li><strong>用户列表增强</strong> — 显示昵称字段</li>
-                    <li><strong>分页组件</strong> — 新增 <code>app/views/partials/pagination.php</code></li>
-                    <li><strong>前台导航修复</strong> — 已登录用户显示 Admin / Profile / Logout</li>
-                    <li><strong>Session 管理</strong> — 参考 Laravel 重构 Session 管理</li>
-                    <li><strong>数据库连接优化</strong> — PDO 单例模式复用连接</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.7</span><span class="date">2026-07-17</span></div>
-                <span class="badge badge-warning">Bug修复</span>
-                <ul>
-                    <li>修复文章编辑时 HTML 实体被解析的问题</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.6</span><span class="date">2026-07-16</span></div>
-                <span class="badge badge-warning">安全增强</span>
-                <ul>
-                    <li>Cookie 安全增强 — 自定义前缀 <code>lig_</code>，HttpOnly，SameSite=Lax</li>
-                    <li>CSRF Token 防护 — 所有 POST 表单自动添加 CSRF 防护</li>
-                    <li>会话固定防护 — 登录时自动重新生成 Session ID</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.5</span><span class="date">2026-07-16</span></div>
-                <span class="badge badge-success">安全增强</span>
-                <ul>
-                    <li>bcrypt 成本因子从 10 提升到 <strong>12</strong></li>
-                    <li>登录时自动检测并重哈希密码</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.4</span><span class="date">2026-07-16</span></div>
-                <span class="badge badge-warning">架构优化</span>
-                <ul>
-                    <li>创建独立的 <code>views/partials/header.php</code> 和 <code>footer.php</code></li>
-                    <li>所有控制器统一引用，消除重复代码</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.3</span><span class="date">2026-07-15</span></div>
-                <span class="badge badge-warning">UI 重构</span>
-                <ul>
-                    <li>全新黑白扁平化 UI 设计</li>
-                    <li>完全响应式支持（电脑 / 平板 / 手机）</li>
-                    <li>CSS 全部提取为独立文件，单行格式</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.2</span><span class="date">2026-07-15</span></div>
-                <span class="badge badge-warning">功能增强</span>
-                <ul>
-                    <li>文章内容完全支持 HTML 标签</li>
-                    <li>后台编辑器增加「预览」按钮</li>
-                </ul>
-            </div>
-
-            <div class="changelog-item">
-                <div><span class="version">v1.0.1</span><span class="date">2026-07-15</span></div>
-                <span class="badge badge-warning">兼容性修复</span>
-                <ul>
-                    <li>修复 MySQL 索引长度超限问题 (#1071)</li>
-                    <li>索引字段从 <code>VARCHAR(255)</code> 改为 <code>VARCHAR(190)</code></li>
                 </ul>
             </div>
 
@@ -478,17 +421,18 @@ lighttp/
             <h3>9.3 版本管理</h3>
             <ul>
                 <li>每次发布打 Tag，不建 Branch</li>
-                <li>版本号格式：v1.1.0</li>
+                <li>版本号格式：v1.1.4</li>
                 <li>敏感配置不上传到 GitHub</li>
             </ul>
-            <h3>9.4 v1.1.0 新增规范</h3>
+            <h3>9.4 v1.1.4 新增规范</h3>
             <ul>
-                <li><strong>代码输出前置验证</strong> — 输出前必须完成完整逻辑推演验证</li>
-                <li><strong>完整源代码输出</strong> — 必须在用户完整源代码上进行增量修改后完整输出</li>
+                <li><strong>表格容器</strong> — 使用 <code>.table-wrap</code> 包裹表格，支持移动端水平滚动</li>
+                <li><strong>表格悬停高亮</strong> — 使用 <code>tbody tr:hover</code> 颜色加深一个档次</li>
+                <li><strong>Bootstrap 3 风格</strong> — 所有新页面优先使用 Bootstrap 3 样式</li>
             </ul>
         </section>
         <footer class="doc-footer">
-            <span>Lighttp v1.1.0 &nbsp;·&nbsp; 项目文档</span>
+            <span>Lighttp v1.1.4 &nbsp;·&nbsp; 项目文档</span>
             <span>
                 <a href="https://www.inetpub.cn/lighttp">项目主页</a>
                 &nbsp;·&nbsp;

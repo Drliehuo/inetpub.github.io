@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPC · LCC  | 烈火实验室</title>
+    <meta name="description" content="LPC (Lighttp Public Cloud) 共有云系统 与 LCC (Lighttp Customer/Private Cloud) 私有内容管理系统，由烈火博士(Dr.liehuo)及alpha团队开发。">
+    <link rel="canonical" href="https://www.inetpub.cn/">
+    <style>
+        /* 全局重置 & 字体 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #fafafa;
+            color: #222;
+            line-height: 1.6;
+            padding: 2rem 1.5rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            padding: 2.8rem 2.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        /* 头部 */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem;
+            padding-bottom: 1.8rem;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 2.5rem;
+        }
+
+        .brand h1 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+        }
+
+        .brand .sub {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 4px;
+            letter-spacing: 0.2px;
+        }
+
+        .brand .sub a {
+            color: #1a1a1a;
+            text-decoration: none;
+            border-bottom: 1px solid #ccc;
+            transition: border-color 0.15s;
+        }
+
+        .brand .sub a:hover {
+            border-bottom-color: #1a1a1a;
+        }
+
+        .badge-version {
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 1rem;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .header-meta {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .header-meta .team {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* 通用 */
+        h2 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin: 2.2rem 0 0.8rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid #eee;
+            color: #1a1a1a;
+        }
+
+        h2:first-of-type {
+            border-top: none;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1.6rem 0 0.5rem;
+            color: #1a1a1a;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        a {
+            color: #1a1a1a;
+            text-decoration: none;
+            border-bottom: 1px solid #d0d0d0;
+            transition: border-color 0.15s;
+        }
+
+        a:hover {
+            border-bottom-color: #1a1a1a;
+        }
+
+        ul, ol {
+            margin: 0.5rem 0 1.2rem 1.8rem;
+            color: #333;
+        }
+
+        li {
+            margin-bottom: 0.3rem;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem 2.5rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .card {
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 1.5rem 1.8rem;
+            border: 1px solid #f0f0f0;
+            transition: background 0.15s;
+        }
+
+        .card:hover {
+            background: #f5f5f5;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card .tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 0.1rem 0.9rem;
+            border-radius: 20px;
+            margin-left: 6px;
+        }
+
+        .card ul {
+            margin: 0.5rem 0 0 1.2rem;
+        }
+
+        .card ul li {
+            margin-bottom: 0.2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem 1.8rem;
+            margin: 0.8rem 0 1.2rem;
+        }
+
+        .feature-grid span {
+            display: inline-block;
+            background: #f5f5f5;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #1a1a1a;
+            border: 1px solid #eaeaea;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.1rem 1rem;
+            border-radius: 20px;
+            margin-right: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-light {
+            background: #eaeaea;
+            color: #1a1a1a;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            font-family: "SF Mono", "JetBrains Mono", monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            color: #1a1a1a;
+            margin: 0.8rem 0 1.2rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 2rem 0;
+        }
+
+        .contact-block {
+            background: #fafafa;
+            border-radius: 10px;
+            padding: 1.5rem 2rem;
+            margin: 1.8rem 0 0.5rem;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem 1.5rem;
+        }
+
+        .contact-block .info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 1.8rem;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .contact-block .info strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .btn-outline {
+            display: inline-block;
+            padding: 0.4rem 1.6rem;
+            border: 2px solid #1a1a1a;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: transparent;
+            color: #1a1a1a;
+            transition: background 0.15s, color 0.15s;
+            text-decoration: none;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        .btn-outline:hover {
+            background: #1a1a1a;
+            color: #fff;
+            border-bottom-color: #1a1a1a;
+        }
+
+        .footer {
+            margin-top: 2.8rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f0f0f0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .footer a {
+            color: #1a1a1a;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .footer a:hover {
+            border-bottom-color: #1a1a1a;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .container {
+                padding: 1.8rem 1.2rem;
+            }
+            .site-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-meta {
+                text-align: left;
+                width: 100%;
+            }
+            .grid-2col {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+            .contact-block {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .brand h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+            .card {
+                padding: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand h1 {
+                font-size: 1.5rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.4rem;
+            }
+            .contact-block .info {
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- 头部 -->
+    <header class="site-header">
+        <div class="brand">
+            <h1>
+                inetpub.cn
+                <span class="badge-version">v2.0</span>
+            </h1>
+            <div class="sub">
+                <a href="https://github.com/Drliehuo/inetpub.github.io" target="_blank" rel="noopener">GitHub</a>
+                · 烈火实验室 · 开源项目
+            </div>
+        </div>
+        <div class="header-meta">
+            <div class="team">烈火博士 (Dr.liehuo) · alpha团队</div>
+            <div style="font-size:0.8rem; color:#888; margin-top:4px;">LPC · LCC 官方主页</div>
+        </div>
+    </header>
+
+    <!-- 简介 -->
+    <section>
+        <p style="font-size:1.1rem; font-weight:400; color:#222;">
+            基于 PHP + MySQL + Redis 的轻量级内容管理解决方案。
+            由 <strong>烈火博士</strong> 及 <strong>alpha团队</strong> 设计维护，开源且安全。
+        </p>
+        <div class="feature-grid">
+            <span>PHP 7.4+</span>
+            <span>MySQL / MariaDB</span>
+            <span>Redis 缓存</span>
+            <span>PDO 预处理</span>
+            <span>Bootstrap 3</span>
+            <span>响应式设计</span>
+            <span>阿里云 OSS</span>
+            <span>JWPlayer</span>
+        </div>
+    </section>
+
+    <!-- 双系统 -->
+    <h2>产品与服务</h2>
+    <div class="grid-2col">
+
+        <!-- LPC -->
+        <div class="card">
+            <h3>
+                LPC
+                <span class="tag">共有云</span>
+            </h3>
+            <p style="margin-bottom:0.5rem; color:#444;">
+                <strong>Lighttp Public Cloud</strong> · 轻量级共有云内容系统
+            </p>
+            <ul>
+                <li>多租户架构，支持高并发</li>
+                <li>文章 / 分类 / 标签 / 用户管理</li>
+                <li>Redis 缓存加速，页面响应 &lt; 100ms</li>
+                <li>Bootstrap 3 响应式后台</li>
+                <li>支持 OSS 对象存储</li>
+            </ul>
+            <div style="margin-top:0.6rem; font-size:0.85rem; color:#555;">
+                <span class="badge badge-light">v1.1.4</span> 最新 · 2026-08-04
+            </div>
+        </div>
+
+        <!-- LCC -->
+        <div class="card">
+            <h3>
+                LCC
+                <span class="tag">私有云</span>
+            </h3>
+            <p style="margin-bottom:0.5rem; color:#444;">
+                <strong>Lighttp Customer/Private Cloud</strong> · 私有内容管理系统
+            </p>
+            <ul>
+                <li>单租户私有化部署，数据隔离</li>
+                <li>文章密码保护 / IP 白名单 (CIDR)</li>
+                <li>严格鉴权模式 (token 路径绑定)</li>
+                <li>附件总库 + 拖拽批量上传 (OSS)</li>
+                <li>访客统计 / 每日更新追踪</li>
+            </ul>
+            <div style="margin-top:0.6rem; font-size:0.85rem; color:#555;">
+                <span class="badge badge-light">v2.0.5</span> 最新 · 2026-07-12
+            </div>
+        </div>
+    </div>
+
+    <!-- 技术特性 -->
+    <h2>核心特性</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem 0.8rem; margin: 0.5rem 0 1rem;">
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">Argon2id 密码加密</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">Cookie 安全 (httponly, secure)</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">Redis 令牌管理</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">Admin IP 白名单</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">文章 IP 白名单 (CIDR)</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">严格鉴权 (方案B)</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">OSS 签名缓存</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">Nginx 安全加固</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">JWPlayer 8.24.3</span>
+        <span style="background:#f5f5f5; padding:0.2rem 0.8rem; border-radius:20px; font-size:0.85rem;">每日更新任务追踪</span>
+    </div>
+
+    <!-- 快速链接 -->
+    <h2>项目资源</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.8rem 1.8rem; margin: 0.5rem 0 1rem; font-size:0.95rem;">
+        <a href="https://github.com/Drliehuo/inetpub.github.io" target="_blank" rel="noopener">GitHub 仓库</a>
+        <a href="https://github.com/Drliehuo/inetpub.github.io/tree/main/lighttp/src" target="_blank" rel="noopener">LPC 源码 (lighttp)</a>
+        <a href="#" style="cursor:default; border-bottom:1px dashed #ccc;">LCC 文档 (内部)</a>
+        <a href="#" style="cursor:default; border-bottom:1px dashed #ccc;">API 参考</a>
+    </div>
+
+    <!-- 联系信息 -->
+    <div class="contact-block">
+        <div class="info">
+            <span><strong>邮件</strong> <a href="mailto:webmaster@inetpub.cn">webmaster@inetpub.cn</a></span>
+            <span><strong>地址</strong> 云南省红河哈尼族彝族自治州蒙自市天竺路2号俊豪中央大街-二期</span>
+        </div>
+        <a href="mailto:webmaster@inetpub.cn" class="btn-outline">联系团队</a>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <span>&copy; 2014-2026 inetpub.cn · LPC &amp; LCC</span>
+        <span>
+            <a href="https://github.com/Drliehuo/inetpub.github.io" target="_blank" rel="noopener">GitHub</a>
+            ·
+            <a href="mailto:webmaster@inetpub.cn">邮件</a>
+            ·
+            <span style="color:#888;">烈火博士 · alpha团队</span>
+        </span>
+    </footer>
+
+</div>
+</body>
+</html>

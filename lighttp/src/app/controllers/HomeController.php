@@ -74,7 +74,7 @@ class HomeController extends BaseController
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
+                <span class="sr-only">菜单</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -83,7 +83,7 @@ class HomeController extends BaseController
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
+                <li class="active"><a href="/">首页</a></li>
                 <?php foreach ($data['categories'] as $cat): ?>
                 <li><a href="/category/<?php echo htmlspecialchars($cat['slug']); ?>"><?php echo htmlspecialchars($cat['name']); ?></a></li>
                 <?php endforeach; ?>
@@ -92,10 +92,10 @@ class HomeController extends BaseController
                 <?php if ($this->isLoggedIn()): ?>
                 <li><a href="/admin">Admin</a></li>
                 <li><a href="/admin/profile">Profile</a></li>
-                <li><a href="/logout">Logout</a></li>
+                <li><a href="/logout">退出</a></li>
                 <?php else: ?>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
+                <li><a href="/login">登陆</a></li>
+                <li><a href="/register">注册</a></li>
                 <?php endif; ?>
             </ul>
         </div>
