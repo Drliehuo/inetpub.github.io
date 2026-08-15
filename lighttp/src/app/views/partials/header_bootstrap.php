@@ -22,6 +22,8 @@ if (preg_match('#^/article/(\d+)$#', $currentUri, $matches)) {
         }
     }
 }
+// 获取搜索关键词（用于搜索框回显）
+$searchKeyword = $_GET['q'] ?? '';
 ?>
 <nav class="navbar navbar-fixed-top navbar-inverse">
     <div class="container">
@@ -44,6 +46,12 @@ if (preg_match('#^/article/(\d+)$#', $currentUri, $matches)) {
                 <li<?php echo $isActive ? ' class="active"' : ''; ?>><a href="<?php echo htmlspecialchars($catUri); ?>"><?php echo htmlspecialchars($cat['name']); ?></a></li>
                 <?php endforeach; ?>
             </ul>
+            <form class="navbar-form navbar-right" role="search" method="GET" action="/search">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" placeholder="搜索文章..." value="<?php echo htmlspecialchars($searchKeyword); ?>">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($isLoggedIn): ?>
                 <li<?php echo (strpos($currentUri, '/admin') === 0) ? ' class="active"' : ''; ?>><a href="/admin">管理</a></li>

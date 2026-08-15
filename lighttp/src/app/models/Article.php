@@ -8,6 +8,34 @@ use App\core\Application;
 class Article
 {
     private string $table = 'articles';
+    
+public function search(string $keyword, int $page = 1, int $perPage = 10): array
+{
+    $db = Application::getInstance()->getDb();
+    if (!$db) {
+        return ['data' => [], 'total' => 0, 'page' => $page, 'perPage' => $perPage, 'totalPages' => 0, 'keyword' => $keyword];
+    }
+    $offset = ($page - 1) * $perPage;
+    $searchTerm = '%' . $keyword . '%';
+    $where = "WHERE a.status = 1 AND (a.title LIKE ? OR a.content LIKE ? OR a.excerpt LIKE ?)";
+    $params = [$searchTerm, $searchTerm, $searchTerm];
+    $countSql = "SELECT COUNT(*) as total FROM {$this->table} a {$where}";
+    $totalResult = $db->queryOne($countSql, $params);
+    $total = $totalResult['total'] ?? 0;
+    $dataSql = "SELECT a.*, c.name as category_name, u.username as author_name, COALESCE(u.nickname, u.username) as author_display FROM {$this->table} a LEFT JOIN categories c ON a.category_id = c.id LEFT JOIN users u ON a.author_id = u.id {$where} ORDER BY a.is_top DESC, a.published_at DESC LIMIT ? OFFSET ?";
+    $dataParams = $params;
+    $dataParams[] = $perPage;
+    $dataParams[] = $offset;
+    $data = $db->query($dataSql, $dataParams);
+    return [
+        'data' => $data,
+        'total' => $total,
+        'page' => $page,
+        'perPage' => $perPage,
+        'totalPages' => ceil($total / $perPage),
+        'keyword' => $keyword
+    ];
+}
 
     public function getAll(?int $status = null): array
     {

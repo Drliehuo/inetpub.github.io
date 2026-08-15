@@ -24,4 +24,5 @@ return [
     '/admin/profile' => 'AdminController@profile',
     '/admin/profile/update' => 'AdminController@updateProfile',
     '/admin/profile/password' => 'AdminController@updatePassword',
+    '/search' => 'SearchController@index',
 ];

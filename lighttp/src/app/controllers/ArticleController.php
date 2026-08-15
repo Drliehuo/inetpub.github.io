@@ -56,6 +56,8 @@ class ArticleController extends BaseController
         $articleMetaTitle = $article['meta_title'] ?? '';
         $articleMetaDescription = $article['meta_description'] ?? '';
         $articlePublishedAt = $article['published_at'] ?? $article['created_at'] ?? '';
+        // 修复: 单独提取文章ID，避免 Undefined index 错误
+        $articleId = $article['id'] ?? 0;
         ob_start();
         ?>
 <!doctype html>
@@ -98,7 +100,7 @@ class ArticleController extends BaseController
                 <div class="footer-actions" style="margin-top:30px;padding-top:15px;border-top:1px solid #eee;">
                     <a href="/" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> 返回首页</a>
                     <?php if ($this->isLoggedIn()): ?>
-                    <a href="/admin/article/edit/<?php echo $article['id']; ?>" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span> 编辑</a>
+                    <a href="/admin/article/edit/<?php echo $articleId; ?>" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span> 编辑</a>
                     <a href="/admin/articles" class="btn btn-default"><span class="glyphicon glyphicon-list"></span> 管理</a>
                     <?php endif; ?>
                 </div>
