@@ -292,3 +292,21 @@
 @media (max-width: 480px) {
     .pagination-wrap { flex-direction: column; text-align: center; }
 }
+/* ============================================================
+   12. 移动端搜索框并排显示
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .navbar-form { display: flex; flex-wrap: nowrap; gap: 6px; padding: 0 15px; margin: 6px 0; border-top: none; border-bottom: none; }
+    .navbar-form .form-group { display: flex; flex: 1; margin-bottom: 0; }
+    .navbar-form .form-group input { flex: 1; height: 34px; font-size: 14px; }
+    .navbar-form .btn { flex-shrink: 0; height: 34px; padding: 0 16px; font-size: 14px; line-height: 1.4; }
+    .navbar-collapse { padding: 0; }
+    .navbar-nav { margin: 0; }
+}
+/* 小屏手机 */
+@media (max-width: 480px) {
+    .navbar-form { padding: 0 10px; gap: 4px; }
+    .navbar-form .form-group input { height: 32px; font-size: 13px; padding: 4px 8px; }
+    .navbar-form .btn { height: 32px; font-size: 13px; padding: 0 12px; }
+}
