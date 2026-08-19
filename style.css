@@ -1,0 +1,37 @@
+/* ============================================
+   Inetpub 全局样式
+   ============================================ */
+
+/* ---------- 卡片布局 ---------- */
+.card-deck {display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px;}
+.card {flex: 1 0 auto; margin: 15px; min-width: calc(50% - 30px); max-width: calc(50% - 30px); display: flex; flex-direction: column; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: box-shadow 0.3s ease, transform 0.2s ease;}
+.card:hover {box-shadow: 0 4px 20px rgba(0,0,0,0.12); transform: translateY(-2px);}
+.card-body {flex: 1 1 auto; display: flex; flex-direction: column; padding: 20px;}
+.card-title {margin-top: 0; margin-bottom: 12px; font-size: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.card-text {display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; flex: 1 1 auto; color: #555; line-height: 1.6; margin-bottom: 16px;}
+.card .btn {align-self: flex-start; margin-top: 4px;}
+@media (min-width: 992px) {.card {min-width: calc(25% - 30px); max-width: calc(25% - 30px);}}
+
+/* ---------- 页脚 ---------- */
+.footer .text-muted a {color: #777;}
+.footer .text-muted a:hover {color: #333;}
+
+/* ---------- 文章内容页 ---------- */
+.article-content {font-size: 16px; line-height: 1.8; color: #333;}
+.article-content p {text-indent: 2em; margin-bottom: 1.2em;}
+.article-content h2 {margin-top: 1.5em; margin-bottom: 0.8em; font-weight: bold; font-size: 22px; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+.article-content h3 {margin-top: 1.2em; margin-bottom: 0.6em; font-weight: bold; font-size: 18px;}
+.article-meta {color: #999; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 25px;}
+.article-meta span {margin-right: 20px;}
+.back-link {margin: 30px 0 20px;}
+
+/* ---------- 页面头部 ---------- */
+.page-header .lead {margin-bottom: 0;}
+
+/* ---------- 目录页返回按钮 ---------- */
+.dir-back {margin: 30px 0 40px;}  /* 上边距30px，下边距40px，与页脚保持距离 */
+.dir-back .btn {margin-right: 10px;}
+
+/* ---------- 文章内容页返回按钮 ---------- */
+.back-link {margin: 30px 0 40px;}
+.back-link .btn {margin-right: 10px;}
