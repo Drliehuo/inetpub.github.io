@@ -297,170 +297,38 @@ public function articles(): string
     }
     return $this->renderAdminLayout('文章管理', $content);
 }
-    public function createArticle(): string
-    {
-        $this->checkAuth();
-        $user = $this->getCurrentUser();
-        if ($user['role'] === 'subscriber') {
-            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限创建文章。</div>');
-        }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!$this->verifyCsrf()) {
-                return $this->renderAdminLayout('错误', '<div class="alert alert-danger">CSRF 令牌验证失败</div>');
-            }
-            $status = (int)($_POST['status'] ?? 1);
-            if ($user['role'] === 'author') {
-                $status = 2;
-            }
-            $data = [
-                'title' => trim($_POST['title'] ?? ''),
-                'content' => trim($_POST['content'] ?? ''),
-                'excerpt' => trim($_POST['excerpt'] ?? ''),
-                'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
-                'author_id' => $user['id'] ?? null,
-                'status' => $status,
-                'is_top' => isset($_POST['is_top']) ? 1 : 0,
-                'is_recommend' => isset($_POST['is_recommend']) ? 1 : 0,
-            ];
-            if (empty($data['title']) || empty($data['content'])) {
-                return $this->renderArticleForm('标题和内容不能为空', []);
-            }
-            $articleModel = new Article();
-            $id = $articleModel->create($data);
-            if ($id) {
-                $cache = $this->getCache();
-                if ($cache) {
-                    $cache->clearModule('home');
-                    $cache->clearModule('page');
-                }
-                $this->redirect('/admin/articles');
-            }
-        }
-        $categoryModel = new Category();
-        $categories = $categoryModel->findAll();
-        return $this->renderArticleForm('', $categories);
+public function createArticle(): string
+{
+    $this->checkAuth();
+    $user = $this->getCurrentUser();
+    if ($user['role'] === 'subscriber') {
+        return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限创建文章。</div>');
     }
-    private function renderArticleForm(string $error = '', array $categories = [], ?array $article = null): string
-    {
-        $isEdit = $article !== null;
-        $user = $this->getCurrentUser();
-        $statusOptions = [0 => '草稿', 1 => '已发布', 2 => '待审核'];
-        $content = $article ? ($article['content'] ?? '') : '';
-        $title = $article ? ($article['title'] ?? '') : '';
-        $excerpt = $article ? ($article['excerpt'] ?? '') : '';
-        $isAuthor = ($user['role'] === 'author');
-        $html = '<div class="page-title">' . ($isEdit ? '编辑文章' : '新建文章') . '</div>';
-        if ($error) {
-            $html .= '<div class="alert alert-danger">' . htmlspecialchars($error) . '</div>';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!$this->verifyCsrf()) {
+            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">CSRF 令牌验证失败</div>');
         }
-        $html .= '<div class="admin-form">
-            <form method="POST">
-                ' . $this->csrfField() . '
-                <div class="form-group">
-                    <label for="title">标题 *</label>
-                    <input type="text" class="form-control" id="title" name="title" value="' . htmlspecialchars($title) . '" required>
-                </div>
-                <div class="form-group">
-                    <label for="excerpt">摘要</label>
-                    <input type="text" class="form-control" id="excerpt" name="excerpt" value="' . htmlspecialchars($excerpt) . '">
-                </div>
-                <div class="form-group">
-                    <label for="category_id">分类</label>
-                    <select class="form-control" id="category_id" name="category_id">
-                        <option value="">无分类</option>';
-        foreach ($categories as $cat) {
-            $selected = ($article && $article['category_id'] == $cat['id']) ? 'selected' : '';
-            $html .= '<option value="' . $cat['id'] . '" ' . $selected . '>' . htmlspecialchars($cat['name']) . '</option>';
+        $status = (int)($_POST['status'] ?? 1);
+        if ($user['role'] === 'author') {
+            $status = 2;
         }
-        $html .= '</select></div>
-                <div class="form-group">
-                    <label for="editor">内容 *</label>
-                    <div style="margin-bottom:8px;">
-                        <span class="text-muted small">支持 HTML 标签：h1, p, a, img, ul, ol, table, pre, code</span>
-                        <button type="button" id="previewBtn" class="btn btn-default btn-sm" style="margin-left:8px;">预览</button>
-                    </div>
-                    <textarea class="form-control" id="editor" name="content" rows="12" required>' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '</textarea>
-                    <div id="preview" style="display:none;border:1px solid #ddd;padding:16px;margin-top:8px;background:#fff;max-height:400px;overflow-y:auto;"></div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="status">状态</label>
-                            <select class="form-control" id="status" name="status" ' . ($isAuthor && !$isEdit ? 'disabled' : '') . '>';
-        foreach ($statusOptions as $k => $v) {
-            $selected = ($article && $article['status'] == $k) ? 'selected' : '';
-            $disabled = ($isAuthor && !$isEdit && $k !== 2) ? 'disabled' : '';
-            $html .= '<option value="' . $k . '" ' . $selected . ' ' . $disabled . '>' . $v . '</option>';
-        }
-        $html .= '</select>';
-        if ($isAuthor && !$isEdit) {
-            $html .= '<span class="help-block">作者角色：新建文章自动设为待审核状态。</span>';
-        }
-        if ($isEdit && $isAuthor && $article && $article['status'] == 2) {
-            $html .= '<span class="help-block">此文章正在审核中，您可以编辑但无法发布。</span>';
-        }
-        $html .= '</div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group" style="padding-top:25px;">
-                            <div class="checkbox">
-                                <label><input type="checkbox" name="is_top" ' . ($article && $article['is_top'] ? 'checked' : '') . '> 置顶</label>
-                            </div>
-                            <div class="checkbox">
-                                <label><input type="checkbox" name="is_recommend" ' . ($article && $article['is_recommend'] ? 'checked' : '') . '> 推荐</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">' . ($isEdit ? '更新' : '发布') . '</button>
-                    <a href="/admin/articles" class="btn btn-default">取消</a>
-                </div>
-            </form>
-        </div>';
-        return $this->renderAdminLayout($isEdit ? '编辑文章' : '新建文章', $html);
-    }
-    public function editArticle(string $id): string
-    {
-        $this->checkAuth();
-        $user = $this->getCurrentUser();
-        if ($user['role'] === 'subscriber') {
-            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限编辑文章。</div>');
+        $data = [
+            'title' => trim($_POST['title'] ?? ''),
+            'content' => trim($_POST['content'] ?? ''),
+            'excerpt' => trim($_POST['excerpt'] ?? ''),
+            'meta_keywords' => trim($_POST['meta_keywords'] ?? ''),
+            'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
+            'author_id' => $user['id'] ?? null,
+            'status' => $status,
+            'is_top' => isset($_POST['is_top']) ? 1 : 0,
+            'is_recommend' => isset($_POST['is_recommend']) ? 1 : 0,
+        ];
+        if (empty($data['title']) || empty($data['content'])) {
+            return $this->renderArticleForm('标题和内容不能为空', []);
         }
         $articleModel = new Article();
-        $article = $articleModel->find((int)$id);
-        if (!$article) {
-            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">文章不存在。</div>');
-        }
-        if ($user['role'] === 'author' && $user['id'] !== $article['author_id']) {
-            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限编辑此文章。</div>');
-        }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!$this->verifyCsrf()) {
-                return $this->renderAdminLayout('错误', '<div class="alert alert-danger">CSRF 令牌验证失败</div>');
-            }
-            $status = (int)($_POST['status'] ?? 1);
-            if ($user['role'] === 'author') {
-                $currentStatus = $article['status'];
-                if ($status === 1) {
-                    if ($currentStatus === 2 || $currentStatus === 0) {
-                        $status = $currentStatus === 2 ? 2 : 0;
-                    }
-                }
-            }
-            $data = [
-                'title' => trim($_POST['title'] ?? ''),
-                'content' => trim($_POST['content'] ?? ''),
-                'excerpt' => trim($_POST['excerpt'] ?? ''),
-                'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
-                'status' => $status,
-                'is_top' => isset($_POST['is_top']) ? 1 : 0,
-                'is_recommend' => isset($_POST['is_recommend']) ? 1 : 0,
-            ];
-            if (empty($data['title']) || empty($data['content'])) {
-                return $this->renderArticleForm('标题和内容不能为空', [], $article);
-            }
-            $articleModel->update((int)$id, $data);
+        $id = $articleModel->create($data);
+        if ($id) {
             $cache = $this->getCache();
             if ($cache) {
                 $cache->clearModule('home');
@@ -468,10 +336,150 @@ public function articles(): string
             }
             $this->redirect('/admin/articles');
         }
-        $categoryModel = new Category();
-        $categories = $categoryModel->findAll();
-        return $this->renderArticleForm('', $categories, $article);
     }
+    $categoryModel = new Category();
+    $categories = $categoryModel->findAll();
+    return $this->renderArticleForm('', $categories);
+}
+private function renderArticleForm(string $error = '', array $categories = [], ?array $article = null): string
+{
+    $isEdit = $article !== null;
+    $user = $this->getCurrentUser();
+    $statusOptions = [0 => '草稿', 1 => '已发布', 2 => '待审核'];
+    $content = $article ? ($article['content'] ?? '') : '';
+    $title = $article ? ($article['title'] ?? '') : '';
+    $excerpt = $article ? ($article['excerpt'] ?? '') : '';
+    $metaKeywords = $article ? ($article['meta_keywords'] ?? '') : '';
+    $isAuthor = ($user['role'] === 'author');
+    $html = '<div class="page-title">' . ($isEdit ? '编辑文章' : '新建文章') . '</div>';
+    if ($error) {
+        $html .= '<div class="alert alert-danger">' . htmlspecialchars($error) . '</div>';
+    }
+    $html .= '<div class="admin-form">
+        <form method="POST">
+            ' . $this->csrfField() . '
+            <div class="form-group">
+                <label for="title">标题 *</label>
+                <input type="text" class="form-control" id="title" name="title" value="' . htmlspecialchars($title) . '" required>
+            </div>
+            <div class="form-group">
+                <label for="excerpt">摘要</label>
+                <input type="text" class="form-control" id="excerpt" name="excerpt" value="' . htmlspecialchars($excerpt) . '">
+            </div>
+            <div class="form-group">
+                <label for="meta_keywords">关键词</label>
+                <input type="text" class="form-control" id="meta_keywords" name="meta_keywords" value="' . htmlspecialchars($metaKeywords) . '" placeholder="用英文逗号分隔，如：PHP, MySQL, CMS">
+                <span class="help-block">留空则自动从文章中提取频率最高的 3 个词作为关键词</span>
+            </div>
+            <div class="form-group">
+                <label for="category_id">分类</label>
+                <select class="form-control" id="category_id" name="category_id">
+                    <option value="">无分类</option>';
+    foreach ($categories as $cat) {
+        $selected = ($article && $article['category_id'] == $cat['id']) ? 'selected' : '';
+        $html .= '<option value="' . $cat['id'] . '" ' . $selected . '>' . htmlspecialchars($cat['name']) . '</option>';
+    }
+    $html .= '</select></div>
+            <div class="form-group">
+                <label for="editor">内容 *</label>
+                <div style="margin-bottom:8px;">
+                    <span class="text-muted small">支持 HTML 标签：h1, p, a, img, ul, ol, table, pre, code</span>
+                    <button type="button" id="previewBtn" class="btn btn-default btn-sm" style="margin-left:8px;">预览</button>
+                </div>
+                <textarea class="form-control" id="editor" name="content" rows="12" required>' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '</textarea>
+                <div id="preview" style="display:none;border:1px solid #ddd;padding:16px;margin-top:8px;background:#fff;max-height:400px;overflow-y:auto;"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="status">状态</label>
+                        <select class="form-control" id="status" name="status" ' . ($isAuthor && !$isEdit ? 'disabled' : '') . '>';
+    foreach ($statusOptions as $k => $v) {
+        $selected = ($article && $article['status'] == $k) ? 'selected' : '';
+        $disabled = ($isAuthor && !$isEdit && $k !== 2) ? 'disabled' : '';
+        $html .= '<option value="' . $k . '" ' . $selected . ' ' . $disabled . '>' . $v . '</option>';
+    }
+    $html .= '</select>';
+    if ($isAuthor && !$isEdit) {
+        $html .= '<span class="help-block">作者角色：新建文章自动设为待审核状态。</span>';
+    }
+    if ($isEdit && $isAuthor && $article && $article['status'] == 2) {
+        $html .= '<span class="help-block">此文章正在审核中，您可以编辑但无法发布。</span>';
+    }
+    $html .= '</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" style="padding-top:25px;">
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="is_top" ' . ($article && $article['is_top'] ? 'checked' : '') . '> 置顶</label>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="is_recommend" ' . ($article && $article['is_recommend'] ? 'checked' : '') . '> 推荐</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">' . ($isEdit ? '更新' : '发布') . '</button>
+                <a href="/admin/articles" class="btn btn-default">取消</a>
+            </div>
+        </form>
+    </div>';
+    return $this->renderAdminLayout($isEdit ? '编辑文章' : '新建文章', $html);
+}
+public function editArticle(string $id): string
+{
+    $this->checkAuth();
+    $user = $this->getCurrentUser();
+    if ($user['role'] === 'subscriber') {
+        return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限编辑文章。</div>');
+    }
+    $articleModel = new Article();
+    $article = $articleModel->find((int)$id);
+    if (!$article) {
+        return $this->renderAdminLayout('错误', '<div class="alert alert-danger">文章不存在。</div>');
+    }
+    if ($user['role'] === 'author' && $user['id'] !== $article['author_id']) {
+        return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限编辑此文章。</div>');
+    }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!$this->verifyCsrf()) {
+            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">CSRF 令牌验证失败</div>');
+        }
+        $status = (int)($_POST['status'] ?? 1);
+        if ($user['role'] === 'author') {
+            $currentStatus = $article['status'];
+            if ($status === 1) {
+                if ($currentStatus === 2 || $currentStatus === 0) {
+                    $status = $currentStatus === 2 ? 2 : 0;
+                }
+            }
+        }
+        $data = [
+            'title' => trim($_POST['title'] ?? ''),
+            'content' => trim($_POST['content'] ?? ''),
+            'excerpt' => trim($_POST['excerpt'] ?? ''),
+            'meta_keywords' => trim($_POST['meta_keywords'] ?? ''),
+            'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
+            'status' => $status,
+            'is_top' => isset($_POST['is_top']) ? 1 : 0,
+            'is_recommend' => isset($_POST['is_recommend']) ? 1 : 0,
+        ];
+        if (empty($data['title']) || empty($data['content'])) {
+            return $this->renderArticleForm('标题和内容不能为空', [], $article);
+        }
+        $articleModel->update((int)$id, $data);
+        $cache = $this->getCache();
+        if ($cache) {
+            $cache->clearModule('home');
+            $cache->clearModule('page');
+        }
+        $this->redirect('/admin/articles');
+    }
+    $categoryModel = new Category();
+    $categories = $categoryModel->findAll();
+    return $this->renderArticleForm('', $categories, $article);
+}
     public function deleteArticle(string $id): void
     {
         $this->checkAuth();
@@ -758,67 +766,73 @@ public function articles(): string
         $userModel->update($targetId, ['role' => $newRole]);
         $this->redirect('/admin/users');
     }
-    public function settings(): string
-    {
-        $this->checkAuth();
-        $user = $this->getCurrentUser();
-        if ($user['role'] !== 'admin') {
-            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限访问系统设置。</div>');
-        }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!$this->verifyCsrf()) {
-                return $this->renderAdminLayout('错误', '<div class="alert alert-danger">CSRF 令牌验证失败</div>');
-            }
-            $settingModel = new Setting();
-            $excludeKeys = ['submit', 'lig_csrf_token'];
-            foreach ($_POST as $key => $value) {
-                if (!in_array($key, $excludeKeys)) {
-                    $settingModel->set($key, trim($value));
-                }
-            }
-            $cache = $this->getCache();
-            if ($cache) {
-                $cache->clearModule('home');
-                $cache->clearModule('page');
-            }
-            $success = true;
+public function settings(): string
+{
+    $this->checkAuth();
+    $user = $this->getCurrentUser();
+    if ($user['role'] !== 'admin') {
+        return $this->renderAdminLayout('错误', '<div class="alert alert-danger">您没有权限访问系统设置。</div>');
+    }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!$this->verifyCsrf()) {
+            return $this->renderAdminLayout('错误', '<div class="alert alert-danger">CSRF 令牌验证失败</div>');
         }
         $settingModel = new Setting();
-        $siteName = $settingModel->get('site_name') ?? '我的 CMS';
-        $siteDesc = $settingModel->get('site_description') ?? '基于 PHP + MySQL + Redis 的轻量级 CMS';
-        $siteFooter = $settingModel->get('site_footer') ?? '保留所有权利。';
-        $perPage = $settingModel->get('per_page') ?? 10;
-        $content = '<div class="page-title">系统设置</div>';
-        if (isset($success)) {
-            $content .= '<div class="alert alert-success">设置已保存！</div>';
+        $excludeKeys = ['submit', 'lig_csrf_token'];
+        foreach ($_POST as $key => $value) {
+            if (!in_array($key, $excludeKeys)) {
+                $settingModel->set($key, trim($value));
+            }
         }
-        $content .= '<div class="admin-form">
-            <form method="POST">
-                ' . $this->csrfField() . '
-                <div class="form-group">
-                    <label for="site_name">网站名称</label>
-                    <input type="text" class="form-control" id="site_name" name="site_name" value="' . htmlspecialchars($siteName) . '">
-                </div>
-                <div class="form-group">
-                    <label for="site_description">网站描述</label>
-                    <input type="text" class="form-control" id="site_description" name="site_description" value="' . htmlspecialchars($siteDesc) . '">
-                </div>
-                <div class="form-group">
-                    <label for="site_footer">页脚文字 <span class="text-muted small">（"Powered by Lighttp" 会自动追加）</span></label>
-                    <input type="text" class="form-control" id="site_footer" name="site_footer" value="' . htmlspecialchars($siteFooter) . '">
-                    <span class="help-block">此文字显示在 "Powered by Lighttp" 之前。</span>
-                </div>
-                <div class="form-group">
-                    <label for="per_page">每页文章数</label>
-                    <input type="number" class="form-control" id="per_page" name="per_page" value="' . htmlspecialchars($perPage) . '">
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">保存</button>
-                </div>
-            </form>
-        </div>';
-        return $this->renderAdminLayout('系统设置', $content);
+        $cache = $this->getCache();
+        if ($cache) {
+            $cache->clearModule('home');
+            $cache->clearModule('page');
+        }
+        $success = true;
     }
+    $settingModel = new Setting();
+    $siteName = $settingModel->get('site_name') ?? '我的 CMS';
+    $siteDesc = $settingModel->get('site_description') ?? '基于 PHP + MySQL + Redis 的轻量级 CMS';
+    $siteKeywords = $settingModel->get('site_keywords') ?? 'CMS, PHP, MySQL, Redis, 内容管理';
+    $siteFooter = $settingModel->get('site_footer') ?? '保留所有权利。';
+    $perPage = $settingModel->get('per_page') ?? 10;
+    $content = '<div class="page-title">系统设置</div>';
+    if (isset($success)) {
+        $content .= '<div class="alert alert-success">设置已保存！</div>';
+    }
+    $content .= '<div class="admin-form">
+        <form method="POST">
+            ' . $this->csrfField() . '
+            <div class="form-group">
+                <label for="site_name">网站名称</label>
+                <input type="text" class="form-control" id="site_name" name="site_name" value="' . htmlspecialchars($siteName) . '">
+            </div>
+            <div class="form-group">
+                <label for="site_description">网站描述</label>
+                <input type="text" class="form-control" id="site_description" name="site_description" value="' . htmlspecialchars($siteDesc) . '">
+            </div>
+            <div class="form-group">
+                <label for="site_keywords">网站关键词</label>
+                <input type="text" class="form-control" id="site_keywords" name="site_keywords" value="' . htmlspecialchars($siteKeywords) . '">
+                <span class="help-block">全局 SEO 关键词，用英文逗号分隔，如：CMS, PHP, 内容管理</span>
+            </div>
+            <div class="form-group">
+                <label for="site_footer">页脚文字 <span class="text-muted small">（"Powered by Lighttp" 会自动追加）</span></label>
+                <input type="text" class="form-control" id="site_footer" name="site_footer" value="' . htmlspecialchars($siteFooter) . '">
+                <span class="help-block">此文字显示在 "Powered by Lighttp" 之前。</span>
+            </div>
+            <div class="form-group">
+                <label for="per_page">每页文章数</label>
+                <input type="number" class="form-control" id="per_page" name="per_page" value="' . htmlspecialchars($perPage) . '">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>';
+    return $this->renderAdminLayout('系统设置', $content);
+}
     public function clearCache(): void
     {
         $this->checkAuth();

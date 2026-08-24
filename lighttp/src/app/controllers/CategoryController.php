@@ -43,6 +43,8 @@ class CategoryController extends BaseController
         if ($page < 1) $page = 1;
         $settingModel = new Setting();
         $siteName = $settingModel->get('site_name') ?? 'Lighttp';
+        $siteKeywords = $settingModel->get('site_keywords') ?? 'CMS, PHP, MySQL, Redis';
+        $categoryKeywords = $category['name'] . ', ' . $siteKeywords;
         $siteDesc = $settingModel->get('site_description') ?? 'Modern content management system';
         $perPage = (int)($settingModel->get('per_page') ?? 10);
         $articleModel = new Article();
@@ -58,6 +60,7 @@ class CategoryController extends BaseController
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?php echo htmlspecialchars($category['description'] ?? ''); ?>">
     <title><?php echo htmlspecialchars($category['name']); ?> · <?php echo htmlspecialchars($siteName); ?></title>
+    <meta name="keywords" content="<?php echo htmlspecialchars($categoryKeywords); ?>">
     <link rel="stylesheet" href="/css/lighttp-bootstrap.css">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/examples/offcanvas/offcanvas.css">

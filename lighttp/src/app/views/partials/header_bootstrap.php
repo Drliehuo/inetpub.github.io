@@ -3,6 +3,7 @@ $app = \App\core\Application::getInstance();
 $isLoggedIn = $app->isLoggedIn();
 $settingModel = new \App\models\Setting();
 $siteName = $settingModel->get('site_name') ?? 'Lighttp';
+$siteKeywords = $settingModel->get('site_keywords') ?? 'CMS, PHP, MySQL, Redis, 内容管理';
 $categoryModel = new \App\models\Category();
 $categories = $categoryModel->findAll();
 $currentUri = $_SERVER['REQUEST_URI'] ?? '/';

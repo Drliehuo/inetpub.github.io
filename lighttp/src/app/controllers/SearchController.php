@@ -61,6 +61,7 @@ class SearchController extends BaseController
     <meta name="description" content="搜索 <?php echo htmlspecialchars($data['keyword']); ?> - <?php echo htmlspecialchars($data['site_name']); ?>">
     <meta name="robots" content="noindex, follow">
     <title>搜索: <?php echo htmlspecialchars($data['keyword']); ?> · <?php echo htmlspecialchars($data['site_name']); ?></title>
+    <meta name="keywords" content="搜索, <?php echo htmlspecialchars($data['keyword']); ?>, <?php echo htmlspecialchars($siteKeywords); ?>">
     <link rel="stylesheet" href="/css/lighttp-bootstrap.css">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/examples/offcanvas/offcanvas.css">

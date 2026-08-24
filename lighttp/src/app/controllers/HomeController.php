@@ -22,6 +22,7 @@ class HomeController extends BaseController
         $categories = $categoryModel->findAll();
         $siteName = $settingModel->get('site_name') ?? 'Lighttp';
         $siteDesc = $settingModel->get('site_description') ?? 'Modern content management system';
+        $siteKeywords = $settingModel->get('site_keywords') ?? 'CMS, PHP, MySQL, Redis, 内容管理';
         $siteFooter = $settingModel->get('site_footer') ?? '';
         $data = [
             'articles' => $result['data'],
@@ -32,6 +33,7 @@ class HomeController extends BaseController
             'totalPages' => $result['totalPages'],
             'site_name' => $siteName,
             'site_description' => $siteDesc,
+            'site_keywords' => $siteKeywords,
             'site_footer' => $siteFooter
         ];
         if ($cachedBody === null) {
@@ -56,6 +58,7 @@ class HomeController extends BaseController
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?php echo htmlspecialchars($data['site_description'] ?? ''); ?>">
+    <meta name="keywords" content="<?php echo htmlspecialchars($data['site_keywords'] ?? ''); ?>">
     <meta name="author" content="Lighttp">
     <title><?php echo htmlspecialchars($data['site_name']); ?></title>
     <link rel="stylesheet" href="/css/lighttp-bootstrap.css">
@@ -88,6 +91,12 @@ class HomeController extends BaseController
                 <li><a href="/category/<?php echo htmlspecialchars($cat['slug']); ?>"><?php echo htmlspecialchars($cat['name']); ?></a></li>
                 <?php endforeach; ?>
             </ul>
+            <form class="navbar-form navbar-right" role="search" method="GET" action="/search">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" placeholder="搜索文章...">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($this->isLoggedIn()): ?>
                 <li><a href="/admin">管理</a></li>

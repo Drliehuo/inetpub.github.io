@@ -42,6 +42,7 @@ class ArticleController extends BaseController
         $settingModel = new Setting();
         $siteName = $settingModel->get('site_name') ?? 'Lighttp';
         $siteDesc = $settingModel->get('site_description') ?? 'Modern content management system';
+        $siteKeywords = $settingModel->get('site_keywords') ?? 'CMS, PHP, MySQL, Redis, 内容管理';
         $categoryModel = new Category();
         $categories = $categoryModel->findAll();
         $authorDisplay = $article['author_display'] ?? $article['author_name'] ?? '未知作者';
@@ -56,7 +57,12 @@ class ArticleController extends BaseController
         $articleMetaTitle = $article['meta_title'] ?? '';
         $articleMetaDescription = $article['meta_description'] ?? '';
         $articlePublishedAt = $article['published_at'] ?? $article['created_at'] ?? '';
-        // 修复: 单独提取文章ID，避免 Undefined index 错误
+        // 获取文章关键词（用户设置 or 自动提取）
+        $articleMetaKeywords = $articleModel->getMetaKeywords($article);
+        // 如果文章没有独立关键词，使用全局关键词作为补充
+        if (empty($articleMetaKeywords)) {
+            $articleMetaKeywords = $siteKeywords;
+        }
         $articleId = $article['id'] ?? 0;
         ob_start();
         ?>
@@ -67,6 +73,7 @@ class ArticleController extends BaseController
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?php echo htmlspecialchars($articleMetaDescription ?: $articleExcerpt); ?>">
+    <meta name="keywords" content="<?php echo htmlspecialchars($articleMetaKeywords); ?>">
     <meta name="author" content="<?php echo htmlspecialchars($authorDisplay); ?>">
     <title><?php echo htmlspecialchars($articleMetaTitle ?: $articleTitle); ?> · <?php echo htmlspecialchars($siteName); ?></title>
     <link rel="stylesheet" href="/css/lighttp-bootstrap.css">
