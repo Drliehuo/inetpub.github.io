@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace App\core;
+
 class Application
 {
     private static ?Application $instance = null;
@@ -8,6 +9,7 @@ class Application
     private ?RedisCache $cache = null;
     private ?Database $db = null;
     private ?array $currentUser = null;
+
     private function __construct()
     {
         $this->config = require APP_PATH . '/config/config.php';
@@ -15,6 +17,7 @@ class Application
         $this->initDatabase();
         $this->initSession();
     }
+
     public static function getInstance(): self
     {
         if (self::$instance === null) {
@@ -22,6 +25,7 @@ class Application
         }
         return self::$instance;
     }
+
     private function initCache(): void
     {
         if ($this->config['cache']['enabled'] && class_exists('Redis')) {
@@ -41,6 +45,7 @@ class Application
             }
         }
     }
+
     private function initDatabase(): void
     {
         try {
@@ -52,6 +57,7 @@ class Application
             }
         }
     }
+
     private function initSession(): void
     {
         if (php_sapi_name() === 'cli') {
@@ -96,14 +102,17 @@ class Application
             }
         }
     }
+
     public function getCache(): ?RedisCache
     {
         return $this->cache;
     }
+
     public function getDb(): ?Database
     {
         return $this->db;
     }
+
     public function getConfig(?string $key = null)
     {
         if ($key === null) {
@@ -119,6 +128,7 @@ class Application
         }
         return $value;
     }
+
     public function setCurrentUser(?array $user): void
     {
         $this->currentUser = $user;
@@ -132,6 +142,7 @@ class Application
             $this->currentUser = null;
         }
     }
+
     public function getCurrentUser(): ?array
     {
         if ($this->currentUser !== null) {
@@ -144,17 +155,18 @@ class Application
         }
         return null;
     }
+
     public function isLoggedIn(): bool
     {
         return $this->getCurrentUser() !== null;
     }
+
     public function run(): void
     {
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
         $uri = strtok($uri, '?');
         $uri = rtrim($uri, '/') ?: '/';
         $cache = $this->getCache();
-        // AVD-007 修复：使用统一缓存键 cms:page:{md5}
         $cacheKey = $cache ? $cache->key('page', md5($uri)) : 'cms:page:' . md5($uri);
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && !$this->isLoggedIn() && $cache && $cache->hasWithPrefix($cacheKey)) {
             $cachedContent = $cache->getWithPrefix($cacheKey);
@@ -179,6 +191,7 @@ class Application
             echo '<h1>404 - Page Not Found</h1>';
         }
     }
+
     private function dispatch(string $handler, array $params): void
     {
         list($controllerClass, $method) = explode('@', $handler);
@@ -196,5 +209,73 @@ class Application
         }
         $content = $controller->$method(...$params);
         echo $content;
+    }
+
+    /**
+     * 获取客户端真实 IP
+     */
+    public function getClientIp(): string
+    {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ip = trim($ips[0]);
+        } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            $ip = $_SERVER['HTTP_X_REAL_IP'];
+        }
+        return $ip;
+    }
+
+    /**
+     * 检查 IP 是否在 CIDR 白名单中
+     */
+    public function isIpInCidrList(string $ip, array $cidrList): bool
+    {
+        foreach ($cidrList as $cidr) {
+            if ($this->ipInCidr($ip, $cidr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 检查单个 IP 是否在单个 CIDR 范围内
+     */
+    public function ipInCidr(string $ip, string $cidr): bool
+    {
+        if (strpos($cidr, '/') === false) {
+            return $ip === $cidr;
+        }
+        list($subnet, $mask) = explode('/', $cidr);
+        $mask = (int)$mask;
+        if ($mask < 0 || $mask > 32) {
+            return false;
+        }
+        $ipLong = ip2long($ip);
+        if ($ipLong === false) {
+            return false;
+        }
+        $subnetLong = ip2long($subnet);
+        if ($subnetLong === false) {
+            return false;
+        }
+        $maskLong = $mask == 0 ? 0 : (0xFFFFFFFF << (32 - $mask));
+        return ($ipLong & $maskLong) === ($subnetLong & $maskLong);
+    }
+
+    /**
+     * 检查当前 IP 是否有权限访问受保护的路径（/login, /register）
+     */
+    public function checkIpAccess(): bool
+    {
+        $allowedCidrs = $this->config['security']['allowed_cidrs'] ?? [];
+        if (empty($allowedCidrs)) {
+            return true;
+        }
+        $clientIp = $this->getClientIp();
+        return $this->isIpInCidrList($clientIp, $allowedCidrs);
     }
 }

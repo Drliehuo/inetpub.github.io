@@ -3,10 +3,57 @@ declare(strict_types=1);
 namespace App\controllers;
 use App\models\User;
 use App\core\Application;
+
 class AuthController extends BaseController
 {
+    /**
+     * 检查 IP 访问权限
+     * 如果 IP 不在白名单中，返回 403 错误页面
+     */
+    private function checkIpAccess(): void
+    {
+        $app = Application::getInstance();
+        if (!$app->checkIpAccess()) {
+            http_response_code(403);
+            ob_start();
+            ?>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - 访问被拒绝</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .box { background: #fff; border: 3px solid #000; padding: 40px; max-width: 480px; width: 100%; text-align: center; }
+        .box h1 { font-size: 2rem; margin: 0 0 8px 0; color: #d13438; }
+        .box .code { font-size: 4rem; font-weight: 700; color: #d13438; margin: 0; line-height: 1; }
+        .box p { color: #666; margin: 16px 0; }
+        .box .ip { background: #f5f5f5; padding: 8px 16px; border-radius: 4px; font-family: monospace; display: inline-block; margin: 8px 0; }
+        .box .btn { display: inline-block; padding: 10px 32px; background: #000; color: #fff; text-decoration: none; border-radius: 4px; margin-top: 16px; }
+        .box .btn:hover { background: #333; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="code">403</div>
+        <h1>访问被拒绝</h1>
+        <p>您没有权限访问此页面。<br>请联系管理员申请访问权限。</p>
+        <div class="ip">您的 IP：<?php echo htmlspecialchars(Application::getInstance()->getClientIp()); ?></div>
+        <br>
+        <a href="/" class="btn">返回首页</a>
+    </div>
+</body>
+</html>
+<?php
+            echo ob_get_clean();
+            exit;
+        }
+    }
+
     public function login(): string
     {
+        $this->checkIpAccess();
         if ($this->isLoggedIn()) {
             $this->redirect('/');
         }
@@ -40,6 +87,7 @@ class AuthController extends BaseController
         }
         return $this->renderLogin();
     }
+
     private function renderLogin(string $error = ''): string
     {
         ob_start();
@@ -80,6 +128,7 @@ class AuthController extends BaseController
 <?php
         return ob_get_clean();
     }
+
     public function logout(): void
     {
         $config = Application::getInstance()->getConfig();
@@ -97,8 +146,10 @@ class AuthController extends BaseController
         session_destroy();
         $this->redirect('/');
     }
+
     public function register(): string
     {
+        $this->checkIpAccess();
         if ($this->isLoggedIn()) {
             $this->redirect('/');
         }
@@ -134,6 +185,7 @@ class AuthController extends BaseController
         }
         return $this->renderRegister();
     }
+
     private function renderRegister(string $error = ''): string
     {
         ob_start();
