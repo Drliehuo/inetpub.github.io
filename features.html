@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="结构化世界的底层叙事，从 JSON 到图谱，一切皆可衍生。">
     <meta name="author" content="烈火博士,Dr.liehuo">
-    <title>Features</title>
-    <meta name="keywords" content="元境">
+    <title>Features · 元境 · 烈火帝君列传</title>
+    <meta name="keywords" content="元境,烈火帝君,列传,结构化世界">
     <!-- Bootstrap core CSS -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -22,6 +22,73 @@
       <script src="html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+      /* 为九卷目录增加一点柔和的样式，保持cover风格 */
+      .volume-list {
+        margin-top: 2.5rem;
+        text-align: left;
+        display: inline-block;
+        max-width: 720px;
+        width: 100%;
+      }
+      .volume-list h3 {
+        color: #fff;
+        font-weight: 300;
+        letter-spacing: 2px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        padding-bottom: 0.6rem;
+        margin-bottom: 1.2rem;
+        font-size: 1.6rem;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      }
+      .volume-list ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+      }
+      .volume-list li {
+        margin-bottom: 0.65rem;
+        font-size: 1.2rem;
+        font-weight: 300;
+        line-height: 1.6;
+      }
+      .volume-list li a {
+        color: #fff;
+        text-decoration: none;
+        border-bottom: 1px dotted rgba(255, 255, 255, 0.4);
+        transition: all 0.2s ease;
+        padding-bottom: 2px;
+      }
+      .volume-list li a:hover,
+      .volume-list li a:focus {
+        color: #fff;
+        border-bottom-color: #fff;
+        text-decoration: none;
+        opacity: 0.9;
+      }
+      .volume-list .volume-num {
+        display: inline-block;
+        min-width: 3.2rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 400;
+        letter-spacing: 1px;
+      }
+      /* 保持原有cover-heading不冲突 */
+      .cover-heading {
+        margin-bottom: 0.8rem;
+      }
+      .lead {
+        margin-bottom: 0.6rem;
+      }
+      @media (max-width: 768px) {
+        .volume-list li {
+          font-size: 1.05rem;
+        }
+        .volume-list h3 {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="site-wrapper">
@@ -41,9 +108,54 @@
           </div>
           <div class="inner cover">
             <h1 class="cover-heading">元境</h1>
-              <p class="lead">元数据引擎</p>
-                <p>结构化世界的底层叙事，从 JSON 到图谱，一切皆可衍生。</p>
-              <p>build --universal</p>
+            <p class="lead">元数据引擎</p>
+            <p>结构化世界的底层叙事，从 JSON 到图谱，一切皆可衍生。</p>
+            <p>build --universal</p>
+
+            <!-- 九卷链接列表 · 烈火帝君列传 -->
+            <div class="volume-list">
+              <h3>📜 烈火帝君列传 · 九卷</h3>
+              <ul>
+                <li>
+                  <span class="volume-num">卷一</span>
+                  <a href="./liehuo/one.html">神火出世，威震洪荒</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷二</span>
+                  <a href="./liehuo/two.html">厌弃尘嚣，逆道造墟</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷三</span>
+                  <a href="./liehuo/three.html">云海桃源，朝夕安闲</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷四</span>
+                  <a href="./liehuo/four.html">云散人空，万古孤寂</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷五</span>
+                  <a href="./liehuo/five.html">云海归墟，再无同路人</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷六</span>
+                  <a href="./liehuo/six.html">正传续篇</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷七</span>
+                  <a href="./liehuo/seven.html">前传番外篇</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷八</span>
+                  <a href="./liehuo/eight.html">后传番外篇</a>
+                </li>
+                <li>
+                  <span class="volume-num">卷九</span>
+                  <a href="./liehuo/nine.html">正史终章</a>
+                </li>
+              </ul>
+            </div>
+            <!-- 九卷链接结束 -->
+
           </div>
           <div class="mastfoot">
             <div class="inner">
