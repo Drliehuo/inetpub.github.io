@@ -12,6 +12,7 @@ class SearchController extends BaseController
         $keyword = trim($_GET['q'] ?? '');
         if (empty($keyword)) {
             $this->redirect('/');
+            return '';
         }
         $page = (int)($_GET['page'] ?? 1);
         if ($page < 1) $page = 1;
@@ -19,13 +20,21 @@ class SearchController extends BaseController
         $perPage = (int)($settingModel->get('per_page') ?? 10);
         $cache = Application::getInstance()->getCache();
         $cacheKey = $cache ? $cache->key('search', md5($keyword . '_page_' . $page)) : 'cms:search:' . md5($keyword . '_page_' . $page);
-        $cachedBody = $cache && $cache->hasWithPrefix($cacheKey) ? $cache->getWithPrefix($cacheKey) : null;
+        $cachedBody = null;
+        if ($cache) {
+            try {
+                $cachedBody = $cache->hasWithPrefix($cacheKey) ? $cache->getWithPrefix($cacheKey) : null;
+            } catch (\Exception $e) {
+                $cachedBody = null;
+            }
+        }
         $articleModel = new Article();
         $categoryModel = new Category();
         $result = $articleModel->search($keyword, $page, $perPage);
         $categories = $categoryModel->findAll();
         $siteName = $settingModel->get('site_name') ?? 'Lighttp';
         $siteDesc = $settingModel->get('site_description') ?? 'Modern content management system';
+        $siteKeywords = $settingModel->get('site_keywords') ?? 'CMS, PHP, MySQL, Redis, 内容管理';
         $data = [
             'articles' => $result['data'],
             'categories' => $categories,
@@ -35,12 +44,17 @@ class SearchController extends BaseController
             'totalPages' => $result['totalPages'],
             'site_name' => $siteName,
             'site_description' => $siteDesc,
+            'site_keywords' => $siteKeywords,
             'keyword' => $keyword
         ];
-        if ($cachedBody === null) {
+        if ($cachedBody === null || !is_string($cachedBody)) {
             $cachedBody = $this->renderBody($data);
             if ($cache) {
-                $cache->setWithPrefix($cacheKey, $cachedBody, 300);
+                try {
+                    $cache->setWithPrefix($cacheKey, $cachedBody, 300);
+                } catch (\Exception $e) {
+                    // 缓存写入失败不影响页面输出
+                }
             }
         }
         $head = $this->renderHead($data);
@@ -59,9 +73,9 @@ class SearchController extends BaseController
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="搜索 <?php echo htmlspecialchars($data['keyword']); ?> - <?php echo htmlspecialchars($data['site_name']); ?>">
+    <meta name="keywords" content="搜索, <?php echo htmlspecialchars($data['keyword']); ?>, <?php echo htmlspecialchars($data['site_keywords']); ?>">
     <meta name="robots" content="noindex, follow">
     <title>搜索: <?php echo htmlspecialchars($data['keyword']); ?> · <?php echo htmlspecialchars($data['site_name']); ?></title>
-    <meta name="keywords" content="搜索, <?php echo htmlspecialchars($data['keyword']); ?>, <?php echo htmlspecialchars($siteKeywords); ?>">
     <link rel="stylesheet" href="/css/lighttp-bootstrap.css">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/examples/offcanvas/offcanvas.css">
@@ -136,7 +150,7 @@ class SearchController extends BaseController
             </div>
             <?php if (empty($data['articles'])): ?>
             <div style="text-align:center;padding:60px 0;color:#999;">
-                <p style="font-size:18px;">😅 没有找到与 <strong>"<?php echo htmlspecialchars($data['keyword']); ?>"</strong> 相关的文章</p>
+                <p style="font-size:18px;">没有找到与 <strong>"<?php echo htmlspecialchars($data['keyword']); ?>"</strong> 相关的文章</p>
                 <p style="font-size:14px;">建议：检查关键词是否有误，或尝试使用更通用的关键词</p>
                 <a href="/" class="btn btn-default" style="margin-top:16px;">返回首页</a>
             </div>
