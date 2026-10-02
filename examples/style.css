@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+*{box-sizing: border-box;}
+html, body{margin:0; padding:0;}
+a{color:#337ab7; text-decoration:underline; font-weight:bold;}
+a:hover {text-decoration:none;}
+a:active {text-decoration:none;}
+a:visited {color:#337ab7;}
+a:visited:hover {color:#337ab7; text-decoration: none;}
+img {max-width:100%; height:auto; display:block;}
+.txt {text-indent:2em; line-height:32px; font-size:16px;}
+.wrap {width:100%; max-width:720px; margin: 0 auto;}
+.site-footer{margin-top:48px; padding:20px 0 28px; border-top:1px solid #e8e8e8; text-align:center;}
+.site-footer p{margin:0; font-size:14px; line-height:1.8; color:#888;}
+.site-footer a{color:#888; text-decoration:none; font-weight:normal;}
+.site-footer a:hover{color:#337ab7; text-decoration:underline;}
