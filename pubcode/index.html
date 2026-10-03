@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>PubCode 说明书 · 烈火团队</title>
+  <style>
+    /* 全局重置与变量 - 扁平化设计 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --code-bg: #f1f5f9;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --radius: 10px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", "Consolas", monospace;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.65;
+      padding: 0 16px 48px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* 布局容器 */
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* 顶部标题区 */
+    .hero {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .hero .sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .hero .meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero .meta .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    /* 卡片 / 区块 */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .card:last-child {
+      margin-bottom: 0;
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      font-weight: 650;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--accent-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card h2 .num {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 20px 0 10px;
+    }
+
+    .card h3:first-of-type {
+      margin-top: 0;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .card ul, .card ol {
+      padding-left: 20px;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .card li {
+      margin-bottom: 6px;
+    }
+
+    .card strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* 表格 - 响应式包裹 */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 16px 0;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      min-width: 480px;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #fafbfc;
+    }
+
+    td {
+      color: var(--text-secondary);
+    }
+
+    td.num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    /* 代码块 */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: #1e293b;
+      margin: 12px 0;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #be123c;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+
+    /* 标签 */
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--accent-light);
+      color: var(--accent);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .tag-green {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .tag-amber {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .tag-gray {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    /* 版本卡片网格 */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    @media (min-width: 640px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .mini-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .mini-card .label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .mini-card .value {
+      font-size: 1.1rem;
+      font-weight: 650;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .mini-card .desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* 页脚 */
+    footer {
+      text-align: center;
+      padding: 32px 0 16px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
+
+    footer strong {
+      color: var(--text-secondary);
+    }
+
+    /* 回到顶部按钮 */
+    .top-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      transform: translateY(8px);
+      font-size: 1.2rem;
+      z-index: 100;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .top-btn.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .top-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* 移动端微调 */
+    @media (max-width: 480px) {
+      body {
+        padding: 0 12px 40px;
+      }
+
+      .hero {
+        padding: 32px 0 24px;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 8px;
+      }
+
+      .card h2 {
+        font-size: 1.1rem;
+      }
+
+      th, td {
+        padding: 8px 10px;
+        font-size: 0.82rem;
+      }
+
+      pre {
+        padding: 12px;
+        font-size: 0.78rem;
+      }
+
+      .top-btn {
+        right: 14px;
+        bottom: 14px;
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    /* 无障碍与打印 */
+    @media print {
+      body { background: #fff; padding: 0; }
+      .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+      .top-btn { display: none; }
+    }
+
+    ::selection {
+      background: var(--accent-light);
+      color: var(--text-primary);
+    }
+
+    /* 滚动条美化 */
+    .table-wrap::-webkit-scrollbar,
+    pre::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb,
+    pre::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track,
+    pre::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- 标题区 -->
+  <header class="hero">
+    <h1>PubCode 说明书</h1>
+    <p class="sub">烈火团队 · 视频编码器</p>
+    <div class="meta">
+      <span><span class="dot"></span>文档版本 1.0</span>
+      <span><span class="dot"></span>最后更新 2026 年 10 月 3 日</span>
+      <span><span class="dot"></span>开源项目</span>
+    </div>
+  </header>
+
+  <!-- 1. 简介 -->
+  <section class="card">
+    <h2><span class="num">01</span>简介</h2>
+    <p>PubCode 是烈火团队自主研发并开源的视频编码器。</p>
+    <p>名字来自 <code>inetpub</code> —— IIS 的默认网站根目录，那个"东西放进去就能被访问"的地方。用意很直白：<strong>编码完，直接就能在 Web 上播。</strong></p>
+    <p>PubCode 在 H.264 / HEVC 这条成熟、兼容性最好的编码路线上，做一件具体的事：</p>
+    <p><strong>把视频压得更小，同时在低码率下依然播得流畅、干净。</strong></p>
+    <p>这不是实验室里的指标，是浏览器和移动端能直接看到的结果。</p>
+  </section>
+
+  <!-- 2. 版本体系 -->
+  <section class="card">
+    <h2><span class="num">02</span>版本体系</h2>
+    <p>PubCode 目前有两条并行的编码链路，不是简单的新旧替代关系：</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>版本</th><th>定位</th><th>编码</th><th>音频</th><th>平台</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>v1</strong></td><td>通用 Web，高压缩效率</td><td>HEVC</td><td>HE-AACv2</td><td>通用</td></tr>
+          <tr><td><strong>v2</strong></td><td>平台兼容与通用输出</td><td>H.264</td><td>AAC LC</td><td>YouTube / 竖屏短视频</td></tr>
+          <tr><td><strong>v3</strong></td><td>快手平台兼容</td><td>H.264</td><td>HE-AAC / AAC LC</td><td>快手</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>重要说明：</strong>v2 与 v3 是并行链路。截至 2026-10-03，v2 链路仍在持续产出（见样本 8）。选型时按目标平台和编码需求决定，不是"越新越好"。</p>
+  </section>
+
+  <!-- 3. 核心能力 -->
+  <section class="card">
+    <h2><span class="num">03</span>核心能力</h2>
+
+    <h3>1. 体积小</h3>
+    <p>同样的画面内容，PubCode 编码输出的视频，文件体积明显小于常规编码器。省下来的不只是存储，还有分发带宽。</p>
+
+    <h3>2. 低码率下流畅播放</h3>
+    <p>低码率场景下依然保持流畅播放，帧间过渡自然，不卡、不顿。</p>
+
+    <h3>3. 无马赛克</h3>
+    <p>对块效应做了有效抑制。<strong>即使码率压得很低，画面依然干净，看不到明显马赛克。</strong></p>
+
+    <h3>4. 硬件卡编码加速</h3>
+    <p>v3 起支持物理硬件卡编码加速（输出标记 <code>Hw: 1</code>），编码任务可卸载到硬件卡执行，提升吞吐。无硬件卡时自动回退软件编码。</p>
+
+    <h3>5. 平台适配</h3>
+    <ul>
+      <li><strong>YouTube：</strong>输出参数对齐 YouTube 推荐规格，减少上传后二次转码损失</li>
+      <li><strong>快手：</strong>输出标记 <code>source_type: kuaishou.compatib</code>，适配竖屏短视频场景</li>
+    </ul>
+
+    <h3>6. 按场景动态选择音频</h3>
+    <p>PubCode 的音频编码不是固定值，按目标平台和场景动态选择：</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>配置</th><th>码率区间</th><th>适用场景</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>HE-AACv2</td><td class="num">51 ~ 54 kb/s</td><td>低码率优先（v1、1080p 竖屏）</td></tr>
+          <tr><td>HE-AAC</td><td class="num">63 kb/s</td><td>快手（v3）</td></tr>
+          <tr><td>AAC LC</td><td class="num">128 ~ 256 kb/s</td><td>兼容性优先（v2）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. 实测样本集 -->
+  <section class="card">
+    <h2><span class="num">04</span>实测样本集</h2>
+    <p>以下样本均通过 <code>ffprobe</code> / MediaInfo 分析获得，供开发、文档与发版参考。</p>
+
+    <h3>样本总览</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>日期</th><th>版本</th><th>源文件</th><th>分辨率</th><th>帧率</th><th>视频码率</th><th>音频</th><th>编码函数库</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>—</td><td>v1</td><td>All 4 One</td><td class="num">2160x3840</td><td class="num">60 CFR</td><td class="num">2 875 kb/s</td><td>HE-AACv2 54.3k</td><td>pubcode-v1.10.0.2</td></tr>
+          <tr><td>2</td><td>—</td><td>v2</td><td>Savage Garden</td><td class="num">854x480</td><td class="num">29.97 CFR</td><td class="num">440 kb/s</td><td>AAC LC 256k</td><td>x264 core 165</td></tr>
+          <tr><td>3</td><td>—</td><td>v2</td><td>麻吉弟弟</td><td class="num">1280x720</td><td class="num">30 CFR</td><td class="num">1 502 kb/s</td><td>AAC LC 128k</td><td>pubcodev2.2.1.3-20250220</td></tr>
+          <tr><td>4</td><td>—</td><td>v2</td><td>media-parser</td><td class="num">576x1024</td><td class="num">30 CFR</td><td class="num">1 142 kb/s</td><td>AAC LC 128k</td><td>未标注</td></tr>
+          <tr><td>5</td><td>—</td><td>v2</td><td>media-parser (2)</td><td class="num">720x1280</td><td class="num">30 CFR</td><td class="num">889 kb/s</td><td>AAC LC 128k</td><td>pubcodev2.2.1.3-20250220</td></tr>
+          <tr><td>6</td><td>10-01</td><td>v3</td><td>WqTcAS3Y...</td><td class="num">720x1280</td><td class="num">29.97 VFR</td><td class="num">1 000 kb/s</td><td>AAC LC 192k</td><td>pubcodev3 core 159</td></tr>
+          <tr><td>7</td><td>10-02</td><td>v3</td><td>yUVTFcXH...</td><td class="num">720x1280</td><td class="num">29.417 CFR</td><td class="num">1 000 kb/s</td><td>AAC LC 192k</td><td>pubcodev3 159</td></tr>
+          <tr><td>8</td><td>10-03</td><td>v2</td><td>V20261003132708</td><td class="num">1080x1920</td><td class="num">30 CFR</td><td class="num">1 076 kb/s</td><td>HE-AACv2 51.4k</td><td>pubcodev2.2.1.3-20250220</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>样本 1：v1（通用 Web）</h3>
+    <p><strong>源文件：</strong>All 4 One - I Can Love You Like That (Official Video).mp4.mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom/iso2/mp41)</td></tr>
+          <tr><td>文件大小</td><td class="num">3.83 MiB</td></tr>
+          <tr><td>时长</td><td class="num">10.9 秒</td></tr>
+          <tr><td>总码率</td><td class="num">2 939 kb/s</td></tr>
+          <tr><td>视频</td><td>HEVC，Main@L6.2@Main，2160x3840，60 FPS，2 875 kb/s</td></tr>
+          <tr><td>音频</td><td>HE-AACv2，54.3 kb/s，44.1 kHz，2 声道</td></tr>
+          <tr><td>编码函数库</td><td>pubcode-v1.10.0.2</td></tr>
+          <tr><td>information</td><td><code>{"com.pubcodev1.info": "{}"}</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>v1 走 HEVC 路线，用 H.265 换压缩效率。竖屏 4K@60，数据密度仅 0.006。</p>
+
+    <h3>样本 2：v2（YouTube 优化）</h3>
+    <p><strong>源文件：</strong>Savage Garden - I Knew I Loved You (Official Video).mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom/iso2/avc1/mp41)</td></tr>
+          <tr><td>文件大小</td><td class="num">19.3 MiB</td></tr>
+          <tr><td>时长</td><td class="num">3 分 49 秒</td></tr>
+          <tr><td>总码率</td><td class="num">704 kb/s</td></tr>
+          <tr><td>视频</td><td>AVC，Main@L3.1，CABAC / 3 Ref Frames，854x480，29.97 FPS，440 kb/s</td></tr>
+          <tr><td>音频</td><td>AAC LC，256 kb/s，44.1 kHz，2 声道</td></tr>
+          <tr><td>编码函数库</td><td>x264 core 165</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>480p 低码率样本，视频仅 440 kb/s。编码函数库标记为 <code>x264 core 165</code>，未标 PubCode 版本号，是标记较特殊的一份。</p>
+
+    <h3>样本 3：v2（YouTube 优化）</h3>
+    <p><strong>源文件：</strong>麻吉弟弟 - 甜蜜蜜.mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom/iso2/avc1/mp41)</td></tr>
+          <tr><td>文件大小</td><td class="num">13.5 MiB</td></tr>
+          <tr><td>时长</td><td class="num">1 分 9 秒</td></tr>
+          <tr><td>总码率</td><td class="num">1 639 kb/s</td></tr>
+          <tr><td>视频</td><td>AVC，High@L3.1，CABAC / 4 Ref Frames，1280x720，30 FPS，1 502 kb/s</td></tr>
+          <tr><td>音频</td><td>AAC LC，128 kb/s，44.1 kHz，2 声道</td></tr>
+          <tr><td>编码函数库</td><td>pubcodev2.2.1.3-20250220</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>720p 横屏，编码函数库标记规范，带日期戳。</p>
+
+    <h3>样本 4：v2（竖屏短视频）</h3>
+    <p><strong>源文件：</strong>media-parser-video.mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom/iso2/avc1/mp41)</td></tr>
+          <tr><td>文件大小</td><td class="num">2.34 MiB</td></tr>
+          <tr><td>时长</td><td class="num">15.3 秒</td></tr>
+          <tr><td>总码率</td><td class="num">1 279 kb/s</td></tr>
+          <tr><td>视频</td><td>AVC，High@L3.1，CABAC / 5 Ref Frames，576x1024，30 FPS，1 142 kb/s</td></tr>
+          <tr><td>视频最大码率</td><td class="num">4 000 kb/s</td></tr>
+          <tr><td>音频</td><td>AAC LC，128 kb/s，44.1 kHz，2 声道</td></tr>
+          <tr><td>编码函数库</td><td>未标注（ffprobe 报告）</td></tr>
+          <tr><td>information</td><td><code>{"com.pubcodev2.info": "{}"}</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>竖屏 576x1024，唯一标注最大码率 4 000 kb/s 的样本。视频流层缺 <code>编码函数库</code> 标记。</p>
+
+    <h3>样本 5：v2（竖屏短视频）</h3>
+    <p><strong>源文件：</strong>media-parser-video (2).mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom/iso2/avc1/mp41)</td></tr>
+          <tr><td>文件大小</td><td class="num">2.51 MiB</td></tr>
+          <tr><td>时长</td><td class="num">20.5 秒</td></tr>
+          <tr><td>总码率</td><td class="num">1 026 kb/s</td></tr>
+          <tr><td>视频</td><td>AVC，High@L3.1，CABAC / 4 Ref Frames，720x1280，30 FPS，889 kb/s</td></tr>
+          <tr><td>音频</td><td>AAC LC，128 kb/s，44.1 kHz，2 声道</td></tr>
+          <tr><td>编码函数库</td><td>pubcodev2.2.1.3-20250220</td></tr>
+          <tr><td>information</td><td><code>{"com.pubcodev2.info": "{}"}</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>竖屏 720x1280，数据密度 0.032，是样本中最低的之一。</p>
+
+    <h3>样本 6：v3（快手）</h3>
+    <p><strong>源文件：</strong>WqTcAS3YhVJaPuxyMVVn9YnP8RCHLTup.mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom)</td></tr>
+          <tr><td>文件大小</td><td class="num">5.13 MiB</td></tr>
+          <tr><td>时长</td><td class="num">35.9 秒</td></tr>
+          <tr><td>总码率</td><td class="num">1 200 kb/s（VBR）</td></tr>
+          <tr><td>编码日期</td><td>UTC 2026-10-01 15:32:25</td></tr>
+          <tr><td>视频</td><td>AVC，High@L3.1，CABAC / 5 Ref Frames，720x1280，29.97 FPS VFR（13.888 ~ 30），1 000 kb/s，最大 1 496 kb/s</td></tr>
+          <tr><td>音频</td><td>AAC LC，192 kb/s VBR（最大 211 kb/s）</td></tr>
+          <tr><td>编码函数库</td><td>pubcodev3 core 159</td></tr>
+          <tr><td>编码设置</td><td>rc=2pass / ref=5 / bframes=3 / keyint=250 / bitrate=1000 / aq=1:1.00 等完整 x264 参数</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>首份带完整 x264 编码设置的样本，版本标记规范。帧率模式为 VFR。</p>
+
+    <h3>样本 7：v3（快手）</h3>
+    <p><strong>源文件：</strong>yUVTFcXH9H99mhj8cMU7tDVQ9ihWnXw6.mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom)</td></tr>
+          <tr><td>文件大小</td><td class="num">2.30 MiB</td></tr>
+          <tr><td>时长</td><td class="num">15.8 秒</td></tr>
+          <tr><td>总码率</td><td class="num">1 222 kb/s（VBR）</td></tr>
+          <tr><td>编码日期</td><td>UTC 2026-10-02 12:25:51</td></tr>
+          <tr><td>视频</td><td>AVC，High@L3.1，CABAC / 5 Ref Frames，720x1280，29.417 FPS CFR，1 000 kb/s，最大 1 582 kb/s</td></tr>
+          <tr><td>数据密度</td><td class="num">0.037</td></tr>
+          <tr><td>视频流大小</td><td class="num">1.92 MiB（84%）</td></tr>
+          <tr><td>音频</td><td>AAC LC，192 kb/s VBR（最大 221 kb/s），375 KiB（16%）</td></tr>
+          <tr><td>编码函数库</td><td>pubcodev3 159</td></tr>
+          <tr><td>编码设置</td><td>rc=2pass / ref=5 / bframes=3 / keyint=250 / bitrate=1000 / aq=1:1.00 等完整 x264 参数</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>与样本 6 同为 v3，但帧率为 CFR。版本标记写法略有不同（<code>pubcodev3 159</code> vs <code>pubcodev3 core 159</code>）。</p>
+
+    <h3>样本 8：v2（竖屏 1080p，2026-10-03）</h3>
+    <p><strong>源文件：</strong>V20261003132708.mp4</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>格式</td><td>MPEG-4，isom (isom)</td></tr>
+          <tr><td>文件大小</td><td class="num">15.6 MiB</td></tr>
+          <tr><td>时长</td><td class="num">1 分 55 秒</td></tr>
+          <tr><td>总码率</td><td class="num">1 131 kb/s（VBR）</td></tr>
+          <tr><td>编码日期</td><td>UTC 2026-10-03 05:42:39</td></tr>
+          <tr><td>视频</td><td>AVC，High@L5，CABAC / 5 Ref Frames，1080x1920，30.000 FPS CFR，1 076 kb/s，最大 3 652 kb/s</td></tr>
+          <tr><td>数据密度</td><td class="num">0.017</td></tr>
+          <tr><td>视频流大小</td><td class="num">14.9 MiB（95%）</td></tr>
+          <tr><td>音频</td><td>HE-AACv2，51.4 kb/s VBR（最大 60.3 / 64.0 kb/s），727 KiB（5%）</td></tr>
+          <tr><td>编码函数库</td><td>pubcodev2.2.1.3-20250220</td></tr>
+          <tr><td>色彩</td><td>BT.709，Limited</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>观察：</strong>分辨率首次到 1080x1920，Level 升到 5。编码函数库标的是 <strong>v2</strong>，不是 v3——说明 10-03 走的是 v2 链路。音频码率 51.4 kb/s，为所有样本中最低。</p>
+  </section>
+
+  <!-- 5. 横向对照 -->
+  <section class="card">
+    <h2><span class="num">05</span>横向对照</h2>
+
+    <h3>全样本总表</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>指标</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>版本</td><td>v1</td><td>v2</td><td>v2</td><td>v2</td><td>v2</td><td>v3</td><td>v3</td><td>v2</td></tr>
+          <tr><td>视频编码</td><td>HEVC</td><td>AVC</td><td>AVC</td><td>AVC</td><td>AVC</td><td>AVC</td><td>AVC</td><td>AVC</td></tr>
+          <tr><td>Profile</td><td>Main@L6.2</td><td>Main@L3.1</td><td>High@L3.1</td><td>High@L3.1</td><td>High@L3.1</td><td>High@L3.1</td><td>High@L3.1</td><td>High@L5</td></tr>
+          <tr><td>参考帧</td><td>—</td><td>3</td><td>4</td><td>5</td><td>4</td><td>5</td><td>5</td><td>5</td></tr>
+          <tr><td>分辨率</td><td>2160x3840</td><td>854x480</td><td>1280x720</td><td>576x1024</td><td>720x1280</td><td>720x1280</td><td>720x1280</td><td>1080x1920</td></tr>
+          <tr><td>帧率模式</td><td>CFR</td><td>CFR</td><td>CFR</td><td>CFR</td><td>CFR</td><td>VFR</td><td>CFR</td><td>CFR</td></tr>
+          <tr><td>帧率</td><td>60</td><td>29.97</td><td>30</td><td>30</td><td>30</td><td>29.97</td><td>29.417</td><td>30</td></tr>
+          <tr><td>视频码率</td><td>2 875</td><td>440</td><td>1 502</td><td>1 142</td><td>889</td><td>1 000</td><td>1 000</td><td>1 076</td></tr>
+          <tr><td>最大码率</td><td>—</td><td>502</td><td>—</td><td>4 000</td><td>—</td><td>1 496</td><td>1 582</td><td>3 652</td></tr>
+          <tr><td>数据密度</td><td>0.006</td><td>0.036</td><td>0.054</td><td>0.065</td><td>0.032</td><td>0.036</td><td>0.037</td><td>0.017</td></tr>
+          <tr><td>音频编码</td><td>HE-AACv2</td><td>AAC LC</td><td>AAC LC</td><td>AAC LC</td><td>AAC LC</td><td>AAC LC</td><td>AAC LC</td><td>HE-AACv2</td></tr>
+          <tr><td>音频码率</td><td>54.3</td><td>256</td><td>128</td><td>128</td><td>128</td><td>192</td><td>192</td><td>51.4</td></tr>
+          <tr><td>总码率</td><td>2 939</td><td>704</td><td>1 639</td><td>1 279</td><td>1 026</td><td>1 200</td><td>1 222</td><td>1 131</td></tr>
+          <tr><td>文件大小</td><td>3.83 MiB</td><td>19.3 MiB</td><td>13.5 MiB</td><td>2.34 MiB</td><td>2.51 MiB</td><td>5.13 MiB</td><td>2.30 MiB</td><td>15.6 MiB</td></tr>
+          <tr><td>编码函数库</td><td>v1.10.0.2</td><td>x264 165</td><td>v2.2.1.3</td><td>未标注</td><td>v2.2.1.3</td><td>v3 core 159</td><td>v3 159</td><td>v2.2.1.3</td></tr>
+          <tr><td>硬件加速</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>未标注</td><td>未标注</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><em>码率单位：kb/s</em></p>
+
+    <h3>按平台分组</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>平台</th><th>样本</th><th>典型规格</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>通用 Web（v1）</td><td>1</td><td>HEVC，竖屏 4K@60，HE-AACv2</td></tr>
+          <tr><td>YouTube（v2）</td><td>2、3</td><td>H.264，480p ~ 720p，AAC LC</td></tr>
+          <tr><td>竖屏短视频（v2）</td><td>4、5、8</td><td>H.264，576x1024 ~ 1080x1920，AAC LC / HE-AACv2</td></tr>
+          <tr><td>快手（v3）</td><td>6、7</td><td>H.264，720x1280，AAC LC 192k，VBR</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6. 观察与结论 -->
+  <section class="card">
+    <h2><span class="num">06</span>观察与结论</h2>
+
+    <h3>编码路线</h3>
+    <ol>
+      <li><strong>v1 用 HEVC，v2/v3 用 H.264。</strong>v1 追求压缩效率，v2/v3 为平台兼容性回归 H.264。</li>
+      <li><strong>Profile / Level 随分辨率自适应：</strong>480p ~ 720p 用 L3.1，1080p 用 L5。</li>
+      <li><strong>参考帧 3 ~ 5 帧浮动</strong>，按内容自适应，5 帧居多。</li>
+      <li><strong>帧率模式有 CFR 也有 VFR：</strong>样本 6 为 VFR（13.888 ~ 30 FPS），保留源素材不恒定帧率；其余为 CFR。</li>
+    </ol>
+
+    <h3>音频策略</h3>
+    <p>八份样本出现 <strong>四种音频配置</strong>：</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>配置</th><th>出现样本</th><th>码率</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>HE-AACv2</td><td>1、8</td><td class="num">51 ~ 54 kb/s</td></tr>
+          <tr><td>HE-AAC</td><td>v3 链路</td><td class="num">63 kb/s</td></tr>
+          <tr><td>AAC LC</td><td>2</td><td class="num">256 kb/s</td></tr>
+          <tr><td>AAC LC</td><td>3、4、5、6、7</td><td class="num">128 ~ 192 kb/s</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>结论：</strong>音频按目标平台动态选择。低码率优先场景（v1、1080p 竖屏）用 HE-AACv2；兼容性优先场景（v2 YouTube、v3）用 AAC LC。</p>
+
+    <h3>码率控制</h3>
+    <ul>
+      <li>样本 6、7、8 明确为 <strong>VBR</strong>。</li>
+      <li>样本 6、7 走 <strong>2pass</strong>（<code>rc=2pass</code>），画质/码率控制更精细。</li>
+      <li>最大码率策略不一：样本 4 设 4 000 kb/s，样本 8 设 3 652 kb/s，样本 2 设 502 kb/s，其余未标。</li>
+      <li>目标码率与实际码率吻合度高（如样本 6/7 设 <code>bitrate=1000</code>，实际 1 000 kb/s）。</li>
+    </ul>
+
+    <h3>版本标记现状</h3>
+    <p>目前出现 <strong>多种编码器标记写法</strong>：</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>写法</th><th>出现样本</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>pubcode-v1.10.0.2</code></td><td>1</td></tr>
+          <tr><td><code>x264 core 165</code></td><td>2</td></tr>
+          <tr><td><code>pubcodev2.2.1.3-20250220</code></td><td>3、5、8</td></tr>
+          <tr><td>未标注（ffprobe）</td><td>4</td></tr>
+          <tr><td><code>pubcodev3 core 159</code></td><td>6</td></tr>
+          <tr><td><code>pubcodev3 159</code></td><td>7</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>另有 <code>com.pubcodev1.info</code> / <code>com.pubcodev2.info</code> 两套概览层标记。</p>
+    <p><strong>建议：</strong>统一为 <code>pubcode-vX.Y.Z</code> 格式，保留日期戳，并统一写入概览层 <code>info</code> 字段。</p>
+
+    <h3>工具差异提示</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>字段</th><th>ffprobe</th><th>MediaInfo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>编码函数库</td><td><strong>不输出</strong></td><td><strong>输出</strong></td></tr>
+          <tr><td>编码设置（x264 参数）</td><td>不输出</td><td>输出</td></tr>
+          <tr><td>最大码率</td><td>常为 N/A</td><td>输出</td></tr>
+          <tr><td>数据密度</td><td>不输出</td><td>输出</td></tr>
+          <tr><td>流大小 / 占比</td><td>不输出</td><td>输出</td></tr>
+          <tr><td>MIME 字符串</td><td>输出</td><td>不输出</td></tr>
+          <tr><td>容器 brand / extradata</td><td>输出</td><td>不输出</td></tr>
+          <tr><td>DISPOSITION 全量</td><td>输出（25 项）</td><td>部分</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>采集样本时建议 ffprobe + MediaInfo 各跑一次</strong>，避免因工具差异误判为"字段缺失"。样本 8 即为典型：ffprobe 读不到 <code>编码函数库</code>，MediaInfo 读出 <code>pubcodev2.2.1.3-20250220</code>。</p>
+
+    <h3>封装库版本</h3>
+    <p><code>encoder</code> 字段出现两种：<code>Lavf58.76.100</code>（多数）与 <code>Lavf62.12.100</code>（样本 2）。建议排查样本 2 链路的封装库版本差异。</p>
+  </section>
+
+  <!-- 7. 快速开始 -->
+  <section class="card">
+    <h2><span class="num">07</span>快速开始</h2>
+    <pre><code># 克隆仓库
+git clone https://&lt;your-domain&gt;/pubcode.git
+
+# 查看用法
+pubcode --help</code></pre>
+  </section>
+
+  <!-- 8. 版本历史 -->
+  <section class="card">
+    <h2><span class="num">08</span>版本历史</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>版本</th><th>定位</th><th>主要能力</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>v1</strong></td><td>通用 Web</td><td>HEVC，高压缩效率，HE-AACv2</td></tr>
+          <tr><td><strong>v2</strong></td><td>平台兼容 / 通用输出</td><td>H.264，YouTube 优化，硬件卡加速</td></tr>
+          <tr><td><strong>v3</strong></td><td>快手平台兼容</td><td>H.264 + HE-AAC，硬件加速，VBR，2pass</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 9. 已知限制 -->
+  <section class="card">
+    <h2><span class="num">09</span>已知限制</h2>
+    <ul>
+      <li>v3 快手兼容目前主要覆盖 H.264 + HE-AAC / AAC LC 组合</li>
+      <li>硬件卡加速支持的型号列表见项目文档</li>
+      <li>编码器版本标记格式尚未统一，后续版本将收敛</li>
+      <li>音频码率策略按场景动态变化，文档将持续补充</li>
+    </ul>
+  </section>
+
+  <!-- 10. 关于 -->
+  <section class="card">
+    <h2><span class="num">10</span>关于</h2>
+    <p>PubCode 由<strong>烈火团队</strong>自主研发并开源。</p>
+    <p>仓库地址：<code>inetpub</code>（详见项目主页）。</p>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <p><strong>PubCode 说明书</strong> · 文档版本 1.0 · 最后更新 2026 年 10 月 3 日</p>
+    <p>烈火团队 · 开源项目</p>
+  </footer>
+
+</div>
+
+<!-- 回到顶部按钮 -->
+<button class="top-btn" id="topBtn" aria-label="回到顶部" title="回到顶部">↑</button>
+
+<script>
+  (function () {
+    'use strict';
+
+    var topBtn = document.getElementById('topBtn');
+    var scrollThreshold = 400;
+
+    function toggleTopButton() {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > scrollThreshold) {
+        topBtn.classList.add('show');
+      } else {
+        topBtn.classList.remove('show');
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // 节流滚动事件
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          toggleTopButton();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    topBtn.addEventListener('click', scrollToTop);
+
+    // 初始检查
+    toggleTopButton();
+  })();
+</script>
+
+</body>
+</html>
