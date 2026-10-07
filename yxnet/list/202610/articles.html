@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>文章合辑 · 总结与一览</title>
+  <style>
+    /* Bootstrap v3 风格 · 本地化实现 · 统一模板 · 增强过渡 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bs-blue: #337ab7;
+      --bs-blue-dark: #286090;
+      --bs-blue-light: #d9edf7;
+      --bs-green: #5cb85c;
+      --bs-green-light: #dff0d8;
+      --bs-info: #5bc0de;
+      --bs-info-light: #d9edf7;
+      --bs-warning: #f0ad4e;
+      --bs-warning-light: #fcf8e3;
+      --bs-danger: #d9534f;
+      --bs-danger-light: #f2dede;
+      --bs-gray-dark: #333333;
+      --bs-gray: #555555;
+      --bs-gray-light: #777777;
+      --bs-gray-lighter: #999999;
+      --bs-border: #dddddd;
+      --bs-bg: #ffffff;
+      --bs-bg-alt: #f5f5f5;
+      --bs-bg-well: #f5f5f5;
+      --radius: 4px;
+      --font: "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      --ease-out: cubic-bezier(0.25, 0.8, 0.25, 1);
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: var(--bs-gray-dark);
+      background-color: var(--bs-bg);
+      padding: 20px 15px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* 容器 */
+    .container {
+      max-width: 1170px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    /* 页面标题 */
+    .page-header {
+      padding-bottom: 9px;
+      margin: 40px 0 20px;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .page-header h1 {
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.1;
+      color: inherit;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .page-header h1 small {
+      font-size: 65%;
+      font-weight: normal;
+      line-height: 1;
+      color: var(--bs-gray-light);
+    }
+
+    /* 段落 */
+    p {
+      margin: 0 0 10px;
+    }
+
+    .lead {
+      margin-bottom: 20px;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.4;
+      color: var(--bs-gray);
+    }
+
+    /* 栅格 */
+    .row {
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+
+    .row::before,
+    .row::after {
+      content: " ";
+      display: table;
+    }
+
+    .row::after {
+      clear: both;
+    }
+
+    .col-md-3, .col-sm-6, .col-xs-12,
+    .col-md-6, .col-md-12 {
+      position: relative;
+      min-height: 1px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .col-xs-12 {
+      float: left;
+      width: 100%;
+    }
+
+    /* panel 面板 —— 增强悬停过渡 */
+    .panel {
+      margin-bottom: 20px;
+      background-color: #ffffff;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.3s var(--ease-out),
+                  transform 0.3s var(--ease-out),
+                  border-color 0.3s var(--ease-out);
+    }
+
+    /* 仅对普通面板添加悬停抬升（避免主面板过度动效） */
+    .panel-default {
+      border-color: var(--bs-border);
+    }
+
+    .panel-default:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+      border-color: #c9c9c9;
+    }
+
+    .panel-primary {
+      border-color: var(--bs-blue);
+    }
+
+    .panel-primary:hover {
+      box-shadow: 0 6px 16px rgba(51, 122, 183, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .panel-body {
+      padding: 15px;
+    }
+
+    .panel-body::before,
+    .panel-body::after {
+      content: " ";
+      display: table;
+    }
+
+    .panel-body::after {
+      clear: both;
+    }
+
+    .panel-heading {
+      padding: 10px 15px;
+      border-bottom: 1px solid transparent;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      transition: background-color 0.3s var(--ease-out);
+    }
+
+    .panel-heading > .panel-title {
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 16px;
+      color: inherit;
+      font-weight: 500;
+    }
+
+    .panel-default > .panel-heading {
+      color: var(--bs-gray-dark);
+      background-color: var(--bs-bg-alt);
+      border-color: var(--bs-border);
+    }
+
+    .panel-default:hover > .panel-heading {
+      background-color: #ececec;
+    }
+
+    .panel-primary > .panel-heading {
+      color: #ffffff;
+      background-color: var(--bs-blue);
+      border-color: var(--bs-blue);
+    }
+
+    /* 按钮 —— 增强悬停过渡 */
+    .btn {
+      display: inline-block;
+      margin-bottom: 0;
+      font-weight: normal;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      touch-action: manipulation;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      border-radius: var(--radius);
+      user-select: none;
+      font-family: inherit;
+      transition: all 0.25s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:focus,
+    .btn:active:focus {
+      outline: thin dotted;
+      outline: 5px auto -webkit-focus-ring-color;
+      outline-offset: -2px;
+    }
+
+    .btn:hover,
+    .btn:focus {
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    }
+
+    .btn-default {
+      color: #333333;
+      background-color: #ffffff;
+      border-color: #cccccc;
+    }
+
+    .btn-default:hover,
+    .btn-default:focus {
+      color: #333333;
+      background-color: #e6e6e6;
+      border-color: #adadad;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-default.active {
+      color: #333333;
+      background-color: #e6e6e6;
+      border-color: #adadad;
+      box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    }
+
+    .btn-primary {
+      color: #ffffff;
+      background-color: var(--bs-blue);
+      border-color: var(--bs-blue-dark);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+      color: #ffffff;
+      background-color: var(--bs-blue-dark);
+      border-color: #204d74;
+      box-shadow: 0 3px 10px rgba(51, 122, 183, 0.4);
+    }
+
+    .btn-primary.active {
+      color: #ffffff;
+      background-color: var(--bs-blue-dark);
+      border-color: #204d74;
+      box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    }
+
+    /* 按钮组 */
+    .btn-group {
+      display: inline-block;
+      vertical-align: middle;
+      margin-bottom: 20px;
+    }
+
+    .btn-group::before,
+    .btn-group::after {
+      content: " ";
+      display: table;
+    }
+
+    .btn-group::after {
+      clear: both;
+    }
+
+    .btn-group > .btn {
+      position: relative;
+      float: left;
+      margin-left: -1px;
+    }
+
+    .btn-group > .btn:first-child {
+      margin-left: 0;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .btn-group > .btn:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .btn-group > .btn:not(:first-child):not(:last-child) {
+      border-radius: 0;
+    }
+
+    /* 统计数值 */
+    .stat-value {
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--bs-blue);
+      margin-bottom: 4px;
+      transition: transform 0.3s var(--ease-out), color 0.3s var(--ease-out);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--bs-gray-light);
+      transition: color 0.3s var(--ease-out);
+    }
+
+    /* 统计面板悬停时数值放大 */
+    .panel:hover .stat-value {
+      transform: scale(1.08);
+    }
+
+    .panel:hover .stat-label {
+      color: var(--bs-gray);
+    }
+
+    /* 进度条 —— 增强过渡 */
+    .progress {
+      height: 20px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      background-color: var(--bs-bg-alt);
+      border-radius: var(--radius);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s var(--ease-out);
+    }
+
+    .progress:hover {
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(51, 122, 183, 0.1);
+    }
+
+    .progress-bar {
+      float: left;
+      width: 0;
+      height: 100%;
+      font-size: 12px;
+      line-height: 20px;
+      color: #ffffff;
+      text-align: center;
+      background-color: var(--bs-blue);
+      box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+      transition: width 0.8s var(--ease-out), filter 0.3s var(--ease-out);
+    }
+
+    .progress:hover .progress-bar {
+      filter: brightness(1.08);
+    }
+
+    .progress-bar-success {
+      background-color: var(--bs-green);
+    }
+
+    .progress-bar-info {
+      background-color: var(--bs-info);
+    }
+
+    .progress-bar-warning {
+      background-color: var(--bs-warning);
+    }
+
+    .progress-bar-danger {
+      background-color: var(--bs-danger);
+    }
+
+    .progress-bar-striped {
+      background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 40px 40px;
+      animation: progress-bar-stripes 2s linear infinite;
+    }
+
+    @keyframes progress-bar-stripes {
+      0%   { background-position: 40px 0; }
+      100% { background-position: 0 0; }
+    }
+
+    /* 作者行 */
+    .author-row {
+      margin-bottom: 15px;
+      transition: padding-left 0.3s var(--ease-out);
+    }
+
+    .author-row:hover {
+      padding-left: 5px;
+    }
+
+    .author-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .author-row .author-name {
+      font-weight: bold;
+      color: var(--bs-gray-dark);
+      display: inline-block;
+      min-width: 100px;
+      transition: color 0.3s var(--ease-out);
+    }
+
+    .author-row:hover .author-name {
+      color: var(--bs-blue);
+    }
+
+    /* 标签 label */
+    .label {
+      display: inline-block;
+      padding: 0.2em 0.6em 0.3em;
+      font-size: 75%;
+      font-weight: bold;
+      line-height: 1;
+      color: #ffffff;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 0.25em;
+      margin-left: 5px;
+      transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+    }
+
+    .author-row:hover .label {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .label-default { background-color: var(--bs-gray-light); }
+    .label-primary { background-color: var(--bs-blue); }
+    .label-success { background-color: var(--bs-green); }
+    .label-info    { background-color: var(--bs-info); }
+    .label-warning { background-color: var(--bs-warning); }
+    .label-danger  { background-color: var(--bs-danger); }
+
+    /* well 容器 */
+    .well {
+      min-height: 20px;
+      padding: 19px;
+      margin-bottom: 20px;
+      background-color: var(--bs-bg-well);
+      border: 1px solid #e3e3e3;
+      border-radius: var(--radius);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+      transition: background-color 0.35s var(--ease-out),
+                  box-shadow 0.35s var(--ease-out),
+                  transform 0.35s var(--ease-out);
+    }
+
+    .well:hover {
+      background-color: #eef4fa;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(51, 122, 183, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .well-lg {
+      padding: 24px;
+      border-radius: 6px;
+    }
+
+    /* list-group —— 增强悬停过渡 */
+    .list-group {
+      padding-left: 0;
+      margin-bottom: 20px;
+    }
+
+    .list-group-item {
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #ffffff;
+      border: 1px solid var(--bs-border);
+      transition: background-color 0.25s var(--ease-out),
+                  border-color 0.25s var(--ease-out),
+                  padding-left 0.25s var(--ease-out),
+                  box-shadow 0.25s var(--ease-out);
+    }
+
+    .list-group-item:first-child {
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+    }
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+      border-bottom-right-radius: var(--radius);
+      border-bottom-left-radius: var(--radius);
+    }
+
+    .list-group-item:hover {
+      background-color: #f7fbff;
+      padding-left: 22px;
+      border-color: #c2d9ec;
+      box-shadow: inset 3px 0 0 var(--bs-blue);
+      z-index: 2;
+    }
+
+    .list-group-item .badge {
+      float: right;
+      background-color: var(--bs-blue);
+      transition: transform 0.25s var(--ease-out), background-color 0.25s var(--ease-out);
+    }
+
+    .list-group-item:hover .badge {
+      transform: scale(1.1);
+      background-color: var(--bs-blue-dark);
+    }
+
+    /* 徽章 */
+    .badge {
+      display: inline-block;
+      min-width: 10px;
+      padding: 3px 7px;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1;
+      color: #ffffff;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      background-color: var(--bs-gray-lighter);
+      border-radius: 10px;
+      transition: background-color 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+    }
+
+    /* 时间线 —— 增强节点过渡 */
+    .timeline {
+      list-style: none;
+      padding-left: 0;
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--bs-border);
+    }
+
+    .timeline li {
+      position: relative;
+      margin-bottom: 20px;
+      transition: padding-left 0.3s var(--ease-out);
+    }
+
+    .timeline li:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: -30px;
+      top: 6px;
+      width: 16px;
+      height: 16px;
+      background: var(--bs-bg);
+      border: 2px solid var(--bs-blue);
+      border-radius: 50%;
+      transition: background-color 0.3s var(--ease-out),
+                  border-color 0.3s var(--ease-out),
+                  transform 0.3s var(--ease-out),
+                  box-shadow 0.3s var(--ease-out);
+    }
+
+    .timeline li:hover {
+      padding-left: 6px;
+    }
+
+    .timeline li:hover::before {
+      background: var(--bs-blue);
+      border-color: var(--bs-blue-dark);
+      transform: scale(1.2);
+      box-shadow: 0 0 0 4px rgba(51, 122, 183, 0.15);
+    }
+
+    .timeline .timeline-date {
+      font-weight: bold;
+      color: var(--bs-blue);
+      font-size: 14px;
+      margin-bottom: 4px;
+      transition: color 0.3s var(--ease-out);
+    }
+
+    .timeline li:hover .timeline-date {
+      color: var(--bs-blue-dark);
+    }
+
+    .timeline .timeline-text {
+      color: var(--bs-gray);
+      font-size: 14px;
+      transition: color 0.3s var(--ease-out);
+    }
+
+    .timeline li:hover .timeline-text {
+      color: var(--bs-gray-dark);
+    }
+
+    /* 文本工具 */
+    .text-primary { color: var(--bs-blue); }
+    .text-success { color: var(--bs-green); }
+    .text-info    { color: var(--bs-info); }
+    .text-warning { color: var(--bs-warning); }
+    .text-danger  { color: var(--bs-danger); }
+    .text-muted   { color: var(--bs-gray-light); }
+    .text-center  { text-align: center; }
+    .text-right   { text-align: right; }
+
+    /* 日期分组 */
+    .date-group {
+      margin-bottom: 20px;
+    }
+
+    .date-group .panel-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .date-group .panel-title {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 文章条目 */
+    .article-title {
+      font-size: 14px;
+      color: var(--bs-gray-dark);
+      word-break: break-word;
+      line-height: 1.5;
+      display: inline-block;
+      max-width: 100%;
+      transition: color 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+    }
+
+    .list-group-item:hover .article-title {
+      color: var(--bs-blue-dark);
+    }
+
+    .article-author {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-weight: normal;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+      float: right;
+      margin-left: 10px;
+      transition: transform 0.25s var(--ease-out),
+                  box-shadow 0.25s var(--ease-out),
+                  background-color 0.25s var(--ease-out),
+                  color 0.25s var(--ease-out);
+    }
+
+    .list-group-item:hover .article-author {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .article-author[data-author="烈火帝君"] {
+      color: #1a4c8c;
+      background-color: #e8f0fe;
+    }
+
+    .list-group-item:hover .article-author[data-author="烈火帝君"] {
+      background-color: #d6e4f7;
+    }
+
+    .article-author[data-author="李佳"] {
+      color: #6240a0;
+      background-color: #f2ecfa;
+    }
+
+    .list-group-item:hover .article-author[data-author="李佳"] {
+      background-color: #e8dcf5;
+    }
+
+    .article-author[data-author="黄健"] {
+      color: #1e6b3b;
+      background-color: #e6f4ea;
+    }
+
+    .list-group-item:hover .article-author[data-author="黄健"] {
+      background-color: #d4ecda;
+    }
+
+    /* 无结果 */
+    .no-result {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--bs-gray-light);
+      font-size: 16px;
+      background-color: var(--bs-bg-alt);
+      border-radius: var(--radius);
+      margin-top: 20px;
+    }
+
+    /* 分隔线 */
+    .section-divider {
+      margin: 40px 0 30px;
+      border-top: 1px solid #eeeeee;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-divider::before {
+      content: "文章一览";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bs-bg);
+      padding: 0 20px;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--bs-gray);
+      letter-spacing: 2px;
+      transition: color 0.3s var(--ease-out);
+    }
+
+    .section-divider:hover::before {
+      color: var(--bs-blue);
+    }
+
+    /* 页脚 */
+    .footer {
+      padding-top: 19px;
+      margin-top: 40px;
+      color: var(--bs-gray-light);
+      border-top: 1px solid #eeeeee;
+      font-size: 13px;
+      text-align: center;
+      transition: color 0.3s var(--ease-out);
+    }
+
+    .footer:hover {
+      color: var(--bs-gray);
+    }
+
+    /* 响应式 */
+    @media (min-width: 768px) {
+      .col-sm-6 {
+        float: left;
+        width: 50%;
+      }
+    }
+
+    @media (min-width: 992px) {
+      .col-md-3 {
+        float: left;
+        width: 25%;
+      }
+      .col-md-6 {
+        float: left;
+        width: 50%;
+      }
+      .col-md-12 {
+        float: left;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 767px) {
+      body {
+        padding: 10px 8px;
+      }
+
+      .container {
+        padding: 0 8px;
+      }
+
+      .page-header h1 {
+        font-size: 24px;
+      }
+
+      .lead {
+        font-size: 15px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+      }
+
+      .panel-body {
+        padding: 12px;
+      }
+
+      .author-row .author-name {
+        min-width: 76px;
+        font-size: 13px;
+      }
+
+      .timeline {
+        padding-left: 26px;
+      }
+
+      .timeline li::before {
+        left: -26px;
+        width: 14px;
+        height: 14px;
+      }
+
+      .well {
+        padding: 14px;
+      }
+
+      .well-lg {
+        padding: 16px;
+      }
+
+      .btn {
+        padding: 5px 10px;
+        font-size: 13px;
+      }
+
+      .article-author {
+        float: none;
+        margin-left: 0;
+        margin-top: 5px;
+        display: inline-block;
+      }
+
+      .list-group-item {
+        padding: 10px 12px;
+      }
+
+      .date-group .panel-heading {
+        padding: 8px 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 22px;
+      }
+
+      .stat-value {
+        font-size: 22px;
+      }
+
+      .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .btn-group > .btn {
+        float: none;
+        border-radius: var(--radius) !important;
+        margin-left: 0;
+        flex: 1 1 auto;
+      }
+
+      .article-title {
+        font-size: 13px;
+      }
+    }
+
+    /* 清除浮动 */
+    .clearfix::before,
+    .clearfix::after {
+      content: " ";
+      display: table;
+    }
+
+    .clearfix::after {
+      clear: both;
+    }
+
+    /* 打印 */
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0.4in;
+      }
+
+      .btn-group,
+      .filter-bar {
+        display: none;
+      }
+
+      .panel {
+        box-shadow: none;
+        border: 1px solid #cccccc;
+      }
+
+      .panel,
+      .list-group-item,
+      .well,
+      .timeline li {
+        transition: none;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ========== 第一部分：总结报告 ========== -->
+
+    <div class="page-header">
+      <h1>文章合辑 · 总结报告 <small>三人协作内容库</small></h1>
+    </div>
+
+    <p class="lead">
+      烈火帝君 · 李佳 · 黄健 &nbsp;|&nbsp; 数据全景 &nbsp;|&nbsp; 2026 年 6 月 - 10 月
+    </p>
+
+    <!-- 核心数据 -->
+    <div class="row">
+      <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="panel panel-primary">
+          <div class="panel-body text-center">
+            <div class="stat-value">290</div>
+            <div class="stat-label">文章总数</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="panel panel-info">
+          <div class="panel-body text-center">
+            <div class="stat-value" style="color: var(--bs-info);">103</div>
+            <div class="stat-label">跨度天数</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="panel panel-success">
+          <div class="panel-body text-center">
+            <div class="stat-value" style="color: var(--bs-green);">3</div>
+            <div class="stat-label">作者人数</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="panel panel-warning">
+          <div class="panel-body text-center">
+            <div class="stat-value" style="color: var(--bs-warning);">18</div>
+            <div class="stat-label">单日峰值</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 作者贡献 -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">作者贡献</h3>
+      </div>
+      <div class="panel-body">
+        <div class="author-row clearfix">
+          <span class="author-name">烈火帝君</span>
+          <span class="label label-primary">76%</span>
+          <div class="progress" style="margin-top: 8px;">
+            <div class="progress-bar progress-bar-primary progress-bar-striped"
+                 role="progressbar"
+                 aria-valuenow="76" aria-valuemin="0" aria-valuemax="100"
+                 style="width: 76%;">76%</div>
+          </div>
+        </div>
+        <div class="author-row clearfix">
+          <span class="author-name">李佳</span>
+          <span class="label label-info">19%</span>
+          <div class="progress" style="margin-top: 8px;">
+            <div class="progress-bar progress-bar-info progress-bar-striped"
+                 role="progressbar"
+                 aria-valuenow="19" aria-valuemin="0" aria-valuemax="100"
+                 style="width: 19%;">19%</div>
+          </div>
+        </div>
+        <div class="author-row clearfix">
+          <span class="author-name">黄健</span>
+          <span class="label label-success">5%</span>
+          <div class="progress" style="margin-top: 8px;">
+            <div class="progress-bar progress-bar-success progress-bar-striped"
+                 role="progressbar"
+                 aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"
+                 style="width: 5%;">5%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主题分布 -->
+    <div class="row">
+      <div class="col-md-6 col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">主题分布</h3>
+          </div>
+          <ul class="list-group">
+            <li class="list-group-item">技术教程 <span class="badge">~160</span></li>
+            <li class="list-group-item">时尚娱乐 <span class="badge">~58</span></li>
+            <li class="list-group-item">舞蹈写真 <span class="badge">~29</span></li>
+            <li class="list-group-item">美食生活 <span class="badge">~23</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">更多分类</h3>
+          </div>
+          <ul class="list-group">
+            <li class="list-group-item">影视动漫 <span class="badge">~15</span></li>
+            <li class="list-group-item">科技前沿 <span class="badge">~14</span></li>
+            <li class="list-group-item">文艺随笔 <span class="badge">~6</span></li>
+            <li class="list-group-item">其他 <span class="badge">~5</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 时间线亮点 -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">时间线亮点</h3>
+      </div>
+      <div class="panel-body">
+        <ul class="timeline">
+          <li>
+            <div class="timeline-date">2026-06-27 至 06-30</div>
+            <div class="timeline-text">JW Player 系列与 Windows Server 教程密集开局</div>
+          </li>
+          <li>
+            <div class="timeline-date">2026-07-01 至 07-31</div>
+            <div class="timeline-text">FFmpeg 转码系列爆发，Lighttp 项目更新频繁</div>
+          </li>
+          <li>
+            <div class="timeline-date">2026-08-01 至 08-31</div>
+            <div class="timeline-text">烈火帝君列传连载（卷一至卷九），GnuPG 安全专题</div>
+          </li>
+          <li>
+            <div class="timeline-date">2026-09-01 至 09-30</div>
+            <div class="timeline-text">AI 与芯片资讯激增，美食与时尚内容并行</div>
+          </li>
+          <li>
+            <div class="timeline-date">2026-10-01 至 10-07</div>
+            <div class="timeline-text">PubCode 编码器 v1-v4 集中发布，FFmpeg HDR 实战收尾</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 总结 -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">总结</h3>
+      </div>
+      <div class="panel-body">
+        <div class="well well-lg" style="margin-bottom: 0;">
+          <p>
+            <strong>烈火帝君</strong> 是绝对主力，贡献约
+            <span class="text-primary"><strong>75%</strong></span> 的内容，
+            技术极客与生活记录者双重身份，一手写 FFmpeg 参数，一手写深夜食堂与列传。
+          </p>
+          <p>
+            <strong>李佳</strong> 专注女性向内容，明星穿搭、舞蹈写真、时尚资讯，风格轻松活泼。
+          </p>
+          <p>
+            <strong>黄健</strong> 偏工具向技术分享，JW Player、FFmpeg、GnuPG，数量少但垂直。
+          </p>
+          <p style="margin-bottom: 0;">
+            整体呈现
+            <span class="text-primary"><strong>以技术教程为骨架、时尚娱乐为血肉、生活随笔为点缀</strong></span>
+            的三人协作内容库，更新频率高、覆盖面广。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 分隔：文章一览 ========== -->
+    <div class="section-divider"></div>
+
+    <!-- ========== 第二部分：文章一览 ========== -->
+
+    <p class="lead">
+      共 290 篇 &nbsp;|&nbsp; 按日期分组 &nbsp;|&nbsp; 点击下方按钮筛选作者
+    </p>
+
+    <!-- 作者筛选按钮组 -->
+    <div class="btn-group" id="filterBar">
+      <button type="button" class="btn btn-primary active" data-author="全部">全部</button>
+      <button type="button" class="btn btn-default" data-author="烈火帝君">烈火帝君</button>
+      <button type="button" class="btn btn-default" data-author="李佳">李佳</button>
+      <button type="button" class="btn btn-default" data-author="黄健">黄健</button>
+    </div>
+
+    <!-- 文章列表容器 -->
+    <div id="articleContainer"></div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+      数据总结与一览 · 2026.10.07 · Bootstrap v3 Style
+    </div>
+
+  </div>
+
+  <script>
+    (function() {
+      // 原始数据
+      const rawText = `('土狗 - 2026-06-27 - 烈火帝君'),
+('杨幂穿搭专访 - 2026-06-28 - 李佳'),
+('韧姿 - 2026-06-28 - 烈火帝君'),
+('acme.sh 客户端申请 IP 地址证书 - 2026-06-29 - 烈火帝君'),
+('小李飞刀 - 2026-06-30 - 李佳'),
+('港隅 - 2026-06-30 - 李佳'),
+('JW Player 7 单个mp4播放引用代码 - 2026-06-30 - 烈火帝君'),
+('JW Player 8 单个mp4播放引用代码 - 2026-06-30 - 烈火帝君'),
+('JW Player 7 mp4播放playlist代码 - 2026-06-30 - 烈火帝君'),
+('JW Player 8 mp4播放playlist代码 - 2026-06-30 - 烈火帝君'),
+('CentOS 7 安装 GnuPG 并创建一个密钥对 - 2026-06-30 - 烈火帝君'),
+('给 mp4 视频添加内嵌封面图 - 2026-06-30 - 烈火帝君'),
+('德政怪物 - 2026-06-30 - 烈火帝君'),
+('OpenVPN 快速安装脚本使用说明文档 - 2026-06-30 - 烈火帝君'),
+('画图3D - 2026-06-30 - 烈火帝君'),
+('Windows系统IE浏览器自动跳转Edge问题解决方案 - 2026-06-30 - 烈火帝君'),
+('使用KMS方式在线激活Windows 11 Pro - 2026-07-01 - 烈火帝君'),
+('.gitignore 规则生成 - 2026-07-01 - 烈火帝君'),
+('数据库DDL完整导出教程 - 2026-07-01 - 烈火帝君'),
+('修改Redis密码后phpMyAdmin无法登录问题解决方案 - 2026-07-02 - 烈火帝君'),
+('通过deepseek快速创建LCC系统文章 - 2026-07-02 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 项目报告 v2.0.1 - 2026-07-02 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 项目更新 v2.0.1 - 2026-07-02 - 烈火帝君'),
+('LCC系统 v2.0.1 网站目录文件权限安全设置教程 - 2026-07-02 - 烈火帝君'),
+('宋小睿棒棒舞蹈 - 2026-07-02 - 李佳'),
+('Lighttp Public Cloud 项目更新 v1.0.0 - 2026-07-02 - 烈火帝君'),
+('Viken Plan 映象淘宝品牌宣传片 - 2026-07-02 - 烈火帝君'),
+('Repomix 使用教程 - 2026-07-02 - 黄健'),
+('宋小睿棒棒写真 - 2026-07-02 - 李佳'),
+('橹橹和恒恒六月写真花絮 - 2026-07-02 - 烈火帝君'),
+('JW Player 7 添加广告 - 2026-07-03 - 烈火帝君'),
+('JW Player 8 添加广告 - 2026-07-03 - 烈火帝君'),
+('山池记 - 2026-07-04 - 烈火帝君'),
+('优优姐姐 - 2026-07-04 - 烈火帝君'),
+('朋友李佳 - 2026-07-04 - 烈火帝君'),
+('巍巍姐姐 - 2026-07-04 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 项目更新 v2.0.2 - 2026-07-04 - 烈火帝君'),
+('Windows Server 2008 对于目标 FTP 服务无法访问的解决方案 - 2026-07-05 - 烈火帝君'),
+('Windows Server 2008 R2 安装IIS - 2026-07-05 - 烈火帝君'),
+('Windows Server 2008 R2 IIS + Perl 配置教程 - 2026-07-05 - 烈火帝君'),
+('Windows Server 2008 R2 安装 VMware Tools 驱动失败解决方案 - 2026-07-05 - 烈火帝君'),
+('Windows Server 2008 R2 (IIS 7.5) 上部署 AWStats 7.9 - 2026-07-05 - 烈火帝君'),
+('Windows Server 2008 R2 企业级 FTP 服务部署与权限配置指南 - 2026-07-05 - 烈火帝君'),
+('技嘉B760M H DDR4主板蓝屏0xE6深度排查实录 - 2026-07-05 - 烈火帝君'),
+('羊坝底的天空 - 2026-07-05 - 烈火帝君'),
+('Windows11 25H2升级后Edge自然人声消失？ - 2026-07-06 - 烈火帝君'),
+('U盘初始化命令 - 2026-07-06 - 烈火帝君'),
+('Windows Server 2012 R2 系统下载与部署指南 - 2026-07-07 - 烈火帝君'),
+('Windows Server 2012 R2 环境下的 IIS 安装与配置指南 - 2026-07-07 - 烈火帝君'),
+('Windows Server 2012 R2 + IIS 环境下 Strawberry Perl 安装与配置指南 - 2026-07-07 - 烈火帝君'),
+('Windows Server 2012 R2 的 IE 关闭默认增强配置保护 - 2026-07-07 - 烈火帝君'),
+('Windows Server 2012 R2 下 AWStats 8.0 的完整安装配置指南 - 2026-07-07 - 烈火帝君'),
+('Windows Server 2012 R2 下更换与其连接的RDP证书 - 2026-07-08 - 烈火帝君'),
+('在Windows客户端环境中部署GnuPG（Gpg4win）的技术指南 - 2026-07-08 - 黄健'),
+('蓝池 - 2026-07-09 - 烈火帝君'),
+('JW Player 最新版本获取与自托管部署完全指南 - 2026-07-09 - 黄健'),
+('金发liz - 2026-07-09 - 李佳'),
+('梦回平潭 - 2026-07-10 - 烈火帝君'),
+('Windows Server 2008 R2 系统 PHP 7.2 环境部署完整教程 - 2026-07-10 - 烈火帝君'),
+('Windows Server 2012 R2 系统 PHP 7.4 环境部署 - 2026-07-10 - 黄健'),
+('东川二海 - 2026-07-11 - 烈火帝君'),
+('JW Player 7 添加视频字幕完整教程 - 2026-07-11 - 黄健'),
+('360星图Web日志分析系统 - 2026-07-11 - 黄健'),
+('毒液 - 2026-07-12 - 烈火帝君'),
+('ffmpeg 多个mp4视频片段合并 - 2026-07-12 - 黄健'),
+('小汐的秋季舞蹈(2026合集) - 2026-07-12 - 李佳'),
+('Lighttp Customer/Private Cloud 项目更新 v2.0.5 - 2026-07-12 - 烈火帝君'),
+('曈宝 - 2026-07-13 - 烈火帝君'),
+('JW Player 8 添加视频字幕完整教程 - 2026-07-13 - 黄健'),
+('云姐健身(母女版) - 2026-07-14 - 李佳'),
+('ffmpeg 常用视频处理命令 - 2026-07-14 - 黄健'),
+('重庆大足 - 2026-07-14 - 烈火帝君'),
+('CentOS 8 安装宝塔面板卡住的解决方案 - 2026-07-14 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.1 - 2026-07-15 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.2 - 2026-07-15 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.3 - 2026-07-16 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.4 - 2026-07-16 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.5 - 2026-07-16 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.6 - 2026-07-17 - 烈火帝君'),
+('穿丝袜的季节到咯 - 2026-07-18 - 李佳'),
+('Linux tar 打包命令详解 - 2026-07-18 - 烈火帝君'),
+('杨幂与Bella Hadid共启MISS SIXTY 2026秋季深海探险新篇章 - 2026-07-19 - 烈火帝君'),
+('Windows 11 兼容机稳定性排查与修复技术日志 - 2026-07-20 - 烈火帝君'),
+('中国的一小男孩模仿迈克尔杰克逊走红 - 2026-07-20 - 烈火帝君'),
+('长桥海畔 - 2026-07-20 - 烈火帝君'),
+('文淇and兰西雅 - 2026-07-20 - 李佳'),
+('舞家小帅 - 2026-07-21 - 烈火帝君'),
+('《杀戮都市（GANTZ）》全篇章主线 BOSS 整理 - 2026-07-21 - 烈火帝君'),
+('《杀戮都市（GANTZ:O）》 全维度深度解析 - 2026-07-21 - 烈火帝君'),
+('《杀戮都市（GANTZ）》不只是杀戮，而是生存哲学 - 2026-07-21 - 烈火帝君'),
+('《杀戮都市（GANTZ）》人物弧光与人性万花筒 - 2026-07-21 - 烈火帝君'),
+('《杀戮都市（GANTZ）》主题探讨与哲学思辨 - 2026-07-21 - 烈火帝君'),
+('《杀戮都市（GANTZ）》评价、影响与创作背景 - 2026-07-21 - 烈火帝君'),
+('《杀戮都市（GANTZ）》关上黑球房间的门 - 2026-07-21 - 烈火帝君'),
+('宝塔面板稳定版安装指南 - 2026-07-21 - 黄健'),
+('FFmpeg与MP4Box对比 - 2026-07-21 - 黄健'),
+('JW Player 7 添加分享功能 - 2026-07-22 - 烈火帝君'),
+('JW Player 8 添加分享功能 - 2026-07-22 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.7 - 2026-07-22 - 烈火帝君'),
+('天津小姐姐舞蹈走红 - 2026-07-22 - 李佳'),
+('今日快乐分享 - 2026-07-22 - 李佳'),
+('杨幂白西装搭配菱格丝袜 - 2026-07-22 - 李佳'),
+('入手达尔优 VX6 鼠标 - 2026-07-22 - 烈火帝君'),
+('FFmpeg 重新编码为 MP4 的完全指南 - 2026-07-22 - 烈火帝君'),
+('收藏秋的每一片落叶 - 2026-07-23 - 烈火帝君'),
+('我彻底被 2026 世界杯的哈兰德圈粉 - 2026-07-24 - 烈火帝君'),
+('舞家帅气少年国风舞蹈 - 2026-07-24 - 李佳'),
+('宋小睿俏皮的甜美风 - 2026-07-24 - 李佳'),
+('赛里木湖 - 2026-07-24 - 烈火帝君'),
+('新装机 Windows 11 再次频繁卡顿无故重启 - 2026-07-25 - 烈火帝君'),
+('杨幂姐的秋冬时尚穿搭秘籍 - 2026-07-25 - 李佳'),
+('德古拉 Dracula (2025) - 2026-07-25 - 烈火帝君'),
+('FFmpeg 视频转码实战：4K HDR - 2026-07-25 - 烈火帝君'),
+('Samsung 4k HDR demo redbull see the unexpected - 2026-07-25 - 烈火帝君'),
+('个旧的天 - 2026-07-26 - 烈火帝君'),
+('FFmpeg 转码实战：让视频完美兼容所有版本 Windows Media Player - 2026-07-26 - 烈火帝君'),
+('彻底告别小丸工具箱：用 FFmpeg 实现更强大的视频压缩 - 2026-07-26 - 烈火帝君'),
+('视频编码码率完全指南 - 2026-07-26 - 烈火帝君'),
+('为什么854×480的分辨率会能成为标准 - 2026-07-27 - 烈火帝君'),
+('我有一个90后不靠谱的妈 - 2026-07-27 - 李佳'),
+('FFmpeg 实战：h264&HDR压制 - 2026-07-27 - 烈火帝君'),
+('FFmpeg 批量转码实战：CRF 与 2-Pass VBR 方案详解 - 2026-07-28 - 烈火帝君'),
+('Windows下批量重命名MP4文件：按修改时间顺序命名 - 2026-07-28 - 烈火帝君'),
+('FFmpeg实战：10个视频重命名并转码再合并方案 - 2026-07-28 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.0.8 - 2026-07-29 - 烈火帝君'),
+('小汐的秋季舞蹈(2026合集) part 2 - 2026-07-30 - 李佳'),
+('Lighttp Public Cloud 项目更新 v1.0.9 - 2026-07-30 - 烈火帝君'),
+('华为MateBook Pro S解锁全能美学新体验 - 2026-07-30 - 烈火帝君'),
+('杨幂姐的咖啡色连裤袜 - 2026-07-30 - 李佳'),
+('Lighttp Public Cloud 项目更新 v1.1.0 - 2026-07-31 - 烈火帝君'),
+('一只不赶时间的钟 - 2026-07-31 - 烈火帝君'),
+('晚风轻拂岁岁无忧 - 2026-08-01 - 李佳'),
+('TCL在ChinaJoy上放了几个大招 - 2026-08-01 - 烈火帝君'),
+('JW Player 7 播放列表添加图片实现自动轮播 - 2026-08-02 - 烈火帝君'),
+('JW Player 8 播放列表添加图片实现自动轮播 - 2026-08-02 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.1.1 - 2026-08-03 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 安全漏洞 v2.0.5 - 2026-08-04 - 烈火帝君'),
+('Lighttp Public Cloud 安全漏洞 v1.1.4 - 2026-08-04 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.1.5 - 2026-08-04 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 更改后台内容管理标题宽度 - 2026-08-04 - 烈火帝君'),
+('宋小睿的秋季舞蹈2 - 2026-08-05 - 李佳'),
+('JW Player 7 更换播放器皮肤 - 2026-08-06 - 烈火帝君'),
+('JW Player 8 更换播放器皮肤 - 2026-08-06 - 烈火帝君'),
+('GnuPG 账户有效期更新的一次记录 - 2026-08-06 - 烈火帝君'),
+('JW Player 7 单个或多个 m3u8 实例 - 2026-08-06 - 烈火帝君'),
+('JW Player 8 单个或多个 m3u8 实例 - 2026-08-06 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 项目更新 v2.0.6 - 2026-08-06 - 烈火帝君'),
+('ZParse 短视频解析工具 - 2026-08-06 - 烈火帝君'),
+('GnuPG CentOS 7 部署方案 - 2026-08-07 - 烈火帝君'),
+('小小练习生 - 2026-08-07 - 烈火帝君'),
+('Windows 11 新U盘BitLocker加密 - 2026-08-07 - 烈火帝君'),
+('CentOS 7 GnuPG 密钥续期 - 2026-08-07 - 烈火帝君'),
+('烈火帝君列传之卷一 神火出世，威震洪荒 - 2026-08-08 - 烈火帝君'),
+('周末美食德式意面日记 - 2026-08-08 - 烈火帝君'),
+('JW Player 7 搭建直播流播放教程 - 2026-08-09 - 烈火帝君'),
+('烈火帝君列传之卷二 厌弃尘嚣，逆道造墟 - 2026-08-09 - 烈火帝君'),
+('JW Player 8 搭建直播流播放教程 - 2026-08-10 - 烈火帝君'),
+('烈火帝君列传之卷三 云海桃源，朝夕安闲 - 2026-08-10 - 烈火帝君'),
+('nginx 反向代理缓存配置与清除功能实战 - 2026-08-10 - 黄健'),
+('烈火帝君列传之卷四 云散人空，万古孤寂 - 2026-08-11 - 烈火帝君'),
+('CentOS 8 部署 Docker 完整指南 - 2026-08-11 - 烈火帝君'),
+('CentOS 8 更换安装源为Aliyun - 2026-08-11 - 烈火帝君'),
+('耶耶耶的商务套装 - 2026-08-11 - 李佳'),
+('大爷瞬变落水狗 - 2026-08-12 - 李佳'),
+('瑶瑶姐姐的爱拼才会赢 - 2026-08-12 - 李佳'),
+('烈火帝君列传之卷五 云海归墟，再无同路人 - 2026-08-12 - 烈火帝君'),
+('JW Player 7 支持哪些格式 - 2026-08-12 - 烈火帝君'),
+('JW Player 8 支持哪些格式 - 2026-08-12 - 烈火帝君'),
+('宋小睿的秋季舞蹈3 - 2026-08-13 - 李佳'),
+('烈火帝君列传之卷六 正传续篇 - 2026-08-13 - 烈火帝君'),
+('烈火帝君列传之卷七 前传番外篇 - 2026-08-14 - 烈火帝君'),
+('BD涤弟弟的首登舞蹈 - 2026-08-15 - 李佳'),
+('烈火帝君列传之卷八 后传番外篇 - 2026-08-15 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.1.6 - 2026-08-15 - 烈火帝君'),
+('Sebastián Yatra - Tacones Rojos With John Legend (Official Video) - 2026-08-15 - 李佳'),
+('烈火帝君列传之卷九 正史终章 - 2026-08-16 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.1.7 - 2026-08-16 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.1.8 - 2026-08-16 - 烈火帝君'),
+('PowerShell 一键激活 Windows 与 Office - 2026-08-16 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 插入系统已包含的超链接 - 2026-08-16 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.1.9 - 2026-08-17 - 烈火帝君'),
+('智己 L6 × Prof. Jimmy Choo（周仰杰）高定限量版 - 2026-08-17 - 烈火帝君'),
+('榴莲蛋糕 - 2026-08-18 - 烈火帝君'),
+('ChatGPT for Teens（青少年版ChatGPT）详细介绍 - 2026-08-19 - 烈火帝君'),
+('可爱的Tomboy - 2026-08-20 - 李佳'),
+('情人眼里出西施 - 2026-08-20 - 李佳'),
+('不逐虚名，方得从容：读懂分享与炫耀的分寸 - 2026-08-21 - 烈火帝君'),
+('Cameo - Word Up (1986) - 2026-08-21 - 烈火帝君'),
+('蓝莓蛋糕 - 2026-08-22 - 烈火帝君'),
+('Lighttp Public Cloud 安全漏洞 v1.1.9 - 2026-08-22 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 安全漏洞 v2.0.6 - 2026-08-22 - 烈火帝君'),
+('Isley, Jasper, Isley - Caravan of Love - Cover by RoneyBoys - 2026-08-23 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.2.0 - 2026-08-24 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 批量关闭文章严格鉴权模式 - 2026-08-24 - 烈火帝君'),
+('Ox-Alpha（代号：牛来） - 2026-08-25 - 烈火帝君'),
+('软件下载：PDFgear v2.1.19 (Windows版) - 2026-08-25 - 烈火帝君'),
+('青柠蛋糕 - 2026-08-25 - 烈火帝君'),
+('天马微电子天工屏 2.0问世 - 2026-08-26 - 烈火帝君'),
+('今日份美食缤纷蛋糕 - 2026-08-27 - 烈火帝君'),
+('苹果新款iPhone介绍（2026秋季新机） - 2026-08-27 - 烈火帝君'),
+('清汤水饺 - 2026-08-28 - 烈火帝君'),
+('周末一餐清爽轻食 - 2026-08-29 - 烈火帝君'),
+('逍遥游·溟锡器壶具 - 2026-08-30 - 烈火帝君'),
+('滴滴自动驾驶Robotaxi-R2 无人载客试行 - 2026-08-31 - 烈火帝君'),
+('手机专业模式参数详解 - 2026-09-01 - 烈火帝君'),
+('量子-经典混合工作流新药研发演示成功 - 2026-09-02 - 烈火帝君'),
+('深夜食堂｜一碗弥勒卤鸡米线，抚慰疲惫味蕾 - 2026-09-02 - 烈火帝君'),
+('橹橹弟弟学PS - 2026-09-03 - 烈火帝君'),
+('旅途奇遇 - 2026-09-04 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 项目更新 v2.0.7 - 2026-09-05 - 烈火帝君'),
+('杨幂姐的2026秋季穿搭 - 2026-09-05 - 烈火帝君'),
+('深夜食堂之鸡脚和肉皮 - 2026-09-06 - 烈火帝君'),
+('联想小新笔记本鼠标消失问题解决 - 2026-09-07 - 烈火帝君'),
+('又一块青柠小蛋糕 - 2026-09-07 - 烈火帝君'),
+('I2C HID设备 代码10（触控板失灵）驱动问题解决方案 - 2026-09-08 - 烈火帝君'),
+('联想出品Windows自动更新开关工具 - 2026-09-09 - 烈火帝君'),
+('PDF24 Creator - 2026-09-09 - 烈火帝君'),
+('阿达随机恭喜俩小朋友 - 2026-09-09 - 李佳'),
+('Lighttp Public Cloud 项目更新 v1.2.1 - 2026-09-10 - 烈火帝君'),
+('手工斑斓糯米糕 - 2026-09-10 - 烈火帝君'),
+('OtoDock 自托管企业AI智能体操作系统 - 2026-09-11 - 烈火帝君'),
+('阿里云香港服务器对云南移动网络质量测试日记 - 2026-09-12 - 烈火帝君'),
+('慵懒午后卧室里的小时光 - 2026-09-12 - 烈火帝君'),
+('云南移动宽带 HTTPS 连接频繁被重置问题排查实录 - 2026-09-12 - 烈火帝君'),
+('宸宸弟弟的舞蹈感慨 - 2026-09-13 - 李佳'),
+('Runway 发布 Solaris 界面世界模型 - 2026-09-13 - 烈火帝君'),
+('今晚的夜宵又吃烧烤了 - 2026-09-14 - 烈火帝君'),
+('今日份晌午（奶油蛋糕） - 2026-09-14 - 烈火帝君'),
+('Lighttp Public Cloud 项目更新 v1.2.2 - 2026-09-14 - 烈火帝君'),
+('网络空间安全学科智能平台 - 2026-09-15 - 烈火帝君'),
+('杨幂 × Stuart Weitzman - 2026-09-15 - 烈火帝君'),
+('联发科天玑9600系列新品发布会 - 2026-09-15 - 烈火帝君'),
+('豆包 Seed 2.1 Pro（0915新版） - 2026-09-16 - 烈火帝君'),
+('acme.sh客户端的一次let\'s encrypt证书的自动更新失败解决方案 - 2026-09-16 - 烈火帝君'),
+('ColorOS 17 在 2026 OPPO 开发者大会上正式发布 - 2026-09-17 - 烈火帝君'),
+('拉克松「古格·见」中国国际时装周主题大秀 - 2026-09-18 - 李佳'),
+('青岛时装周第13届CCFMC少儿时装模特大赛 - 2026-09-19 - 烈火帝君'),
+('pubcode视频编码器 - 2026-09-19 - 烈火帝君'),
+('袁梦琪 mmookjiboa - 2026-09-19 - 烈火帝君'),
+('格格巫反乌托邦舞蹈 - 2026-09-19 - 烈火帝君'),
+('黑风关古镇偶遇格格巫 & 慕慕 - 2026-09-19 - 烈火帝君'),
+('袁梦琪BAR BAR BAR舞蹈 - 2026-09-20 - 烈火帝君'),
+('Maroon 5 - All Night (Official Video) - 2026-09-20 - 烈火帝君'),
+('pubcode视频编码器 v2 - 2026-09-20 - 烈火帝君'),
+('履历 - 2026-09-21 - 烈火帝君'),
+('旧时光里的锡矿烟火 - 2026-09-22 - 烈火帝君'),
+('平板显示防眩性能技术规范 - 2026-09-23 - 烈火帝君'),
+('杜克大学量子模拟器复现高能物理\"弦断裂\"现象 - 2026-09-24 - 烈火帝君'),
+('Demna入主Gucci首双运动鞋 - 2026-09-25 - 烈火帝君'),
+('中国自研AR-E800 重载eVTOL飞行器 - 2026-09-26 - 烈火帝君'),
+('杨幂 2026米兰时装周Prada大秀新闻 - 2026-09-26 - 烈火帝君'),
+('荒野猎人 The Revenant (2015) - 2026-09-27 - 烈火帝君'),
+('pubcode视频编码器 v3 - 2026-09-27 - 烈火帝君'),
+('香煎鲈鱼 - 2026-09-27 - 烈火帝君'),
+('野人之爱 - 2026-09-27 - 烈火帝君'),
+('苹果 iPhone 18 Pro 存在系统漏洞 - 2026-09-28 - 烈火帝君'),
+('复旦华山《自然-神经科学》言语脑机接口成果详解 - 2026-09-29 - 烈火帝君'),
+('华为智慧屏 MateTV 2 发布 - 2026-09-30 - 烈火帝君'),
+('NASA更新波音Starliner（星际客机）载人飞船计划 - 2026-10-01 - 烈火帝君'),
+('小汐的秋季舞蹈(2026合集) part 3 - 2026-10-01 - 李佳'),
+('王一博LOEWE罗意威2027春夏巴黎大秀 - 2026-10-02 - 烈火帝君'),
+('老汉下公交社死名场面 - 2026-10-02 - 烈火帝君'),
+('2026杨幂姐维密品牌采访 - 2026-10-03 - 烈火帝君'),
+('pubcode 说明书 - 2026-10-03 - 烈火帝君'),
+('程潇的VOGUE+现场专访 - 2026-10-03 - 烈火帝君'),
+('零落成泥，兰香如故——观《兰香如故》有感 - 2026-10-04 - 烈火帝君'),
+('宇宙にきらめくエメラルド - 2026-10-04 - 烈火帝君'),
+('Big Buck Bunny （大雄兔） - 2026-10-05 - 烈火帝君'),
+('PubCode v4 浏览器兼容性实测报告 - 2026-10-05 - 烈火帝君'),
+('PubCode v4 正式发布 - 2026-10-05 - 烈火帝君'),
+('FFmpeg 实战：将 HDR H265 视频转为 1080p H.265 并保留 HDR 效果 - 2026-10-05 - 烈火帝君'),
+('FFmpeg 实操：SDR 视频转 1080p H265 - 2026-10-05 - 烈火帝君'),
+('理查德克莱德曼《梁祝》钢琴演奏曲 - 2026-10-06 - 烈火帝君'),
+('宋小睿H2H进行曲舞蹈 - 2026-10-06 - 烈火帝君'),
+('Miu Miu 2027春夏「Here and Now（此时此地）」 - 2026-10-06 - 烈火帝君'),
+('H265 视频能切片成 m3u8 的 ts 文件播放吗 - 2026-10-06 - 烈火帝君'),
+('2026年行业内有成熟的H265的方案吗 - 2026-10-06 - 烈火帝君'),
+('饕餮五公子 - 2026-10-06 - 烈火帝君'),
+('ffmpeg 实战：先切割目标为多块，再把碎块合并。 - 2026-10-06 - 烈火帝君'),
+('高家轩靓丽写真曝光 - 2026-10-06 - 烈火帝君'),
+('Lighttp Customer/Private Cloud 项目更新 v2.0.8 - 2026-10-06 - 烈火帝君'),
+('pubcode v1.1说明书 - 2026-10-06 - 烈火帝君'),
+('OpenAI ChatGPT文本隐形水印（textGrain） - 2026-10-06 - 烈火帝君'),
+('JW Player 8 播放 MP3 音频并显示静态背景 - 2026-10-06 - 烈火帝君'),
+('逐光而行的少年网红：宋小睿成长与履历全解析 - 2026-10-06 - 烈火帝君'),
+('高家轩（高闽）人物介绍 - 2026-10-06 - 烈火帝君'),
+('六世古宅 - 2026-10-06 - 烈火帝君'),
+('深夜食堂之小丸子加鸡翅尖 - 2026-10-07 - 烈火帝君'),
+('九层妖塔 (2015) - 2026-10-07 - 烈火帝君'),
+('地球海洋最深海域界定与勘探现状研究（2026） - 2026-10-07 - 烈火帝君'),
+('可观测宇宙边界与全域宇宙尺度探测研究综述（2026） - 2026-10-07 - 烈火帝君'),
+('某妍可爱くてごめん舞蹈 - 2026-10-07 - 李佳'),
+('雨萱巴提巴提舞蹈 - 2026-10-07 - 李佳')`;
+
+      // 解析原始数据
+      function parseRawData(text) {
+        const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+        const articles = [];
+        for (let line of lines) {
+          let trimmed = line.trim();
+          if (trimmed.endsWith(',')) trimmed = trimmed.slice(0, -1);
+          if (trimmed.startsWith("('") && trimmed.endsWith("')")) {
+            const inner = trimmed.slice(2, -2);
+            const parts = inner.split(' - ');
+            if (parts.length >= 3) {
+              const author = parts[parts.length - 1].trim();
+              const date = parts[parts.length - 2].trim();
+              const title = parts.slice(0, parts.length - 2).join(' - ').trim();
+              if (title && date && author) {
+                articles.push({ title, date, author });
+              }
+            }
+          }
+        }
+        return articles;
+      }
+
+      const articles = parseRawData(rawText);
+
+      // 按日期分组
+      const groupedByDate = new Map();
+      articles.forEach(art => {
+        if (!groupedByDate.has(art.date)) {
+          groupedByDate.set(art.date, []);
+        }
+        groupedByDate.get(art.date).push(art);
+      });
+
+      const sortedDates = Array.from(groupedByDate.keys()).sort();
+
+      const container = document.getElementById('articleContainer');
+
+      function render(filterAuthor = '全部') {
+        container.innerHTML = '';
+        let totalVisible = 0;
+
+        sortedDates.forEach(date => {
+          const dateArticles = groupedByDate.get(date);
+          const visibleArticles = filterAuthor === '全部'
+            ? dateArticles
+            : dateArticles.filter(art => art.author === filterAuthor);
+
+          if (visibleArticles.length === 0) return;
+
+          totalVisible += visibleArticles.length;
+
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'date-group';
+
+          const panelDiv = document.createElement('div');
+          panelDiv.className = 'panel panel-default';
+
+          const headingDiv = document.createElement('div');
+          headingDiv.className = 'panel-heading';
+
+          const titleH3 = document.createElement('h3');
+          titleH3.className = 'panel-title';
+          titleH3.textContent = date;
+
+          const badgeSpan = document.createElement('span');
+          badgeSpan.className = 'badge';
+          badgeSpan.textContent = visibleArticles.length + ' 篇';
+
+          headingDiv.appendChild(titleH3);
+          headingDiv.appendChild(badgeSpan);
+          panelDiv.appendChild(headingDiv);
+
+          const bodyDiv = document.createElement('div');
+          bodyDiv.className = 'panel-body';
+          bodyDiv.style.padding = '0';
+
+          const listDiv = document.createElement('div');
+          listDiv.className = 'list-group';
+
+          visibleArticles.forEach(art => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'list-group-item clearfix';
+
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'article-title';
+            titleSpan.textContent = art.title;
+
+            const authorSpan = document.createElement('span');
+            authorSpan.className = 'article-author';
+            authorSpan.textContent = art.author;
+            authorSpan.setAttribute('data-author', art.author);
+
+            itemDiv.appendChild(titleSpan);
+            itemDiv.appendChild(authorSpan);
+            listDiv.appendChild(itemDiv);
+          });
+
+          bodyDiv.appendChild(listDiv);
+          panelDiv.appendChild(bodyDiv);
+          groupDiv.appendChild(panelDiv);
+          container.appendChild(groupDiv);
+        });
+
+        if (totalVisible === 0) {
+          const noDiv = document.createElement('div');
+          noDiv.className = 'no-result';
+          noDiv.textContent = '没有匹配的文章';
+          container.appendChild(noDiv);
+        }
+      }
+
+      // 初始化渲染
+      render('全部');
+
+      // 筛选按钮交互
+      const filterBtns = document.querySelectorAll('#filterBar .btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => {
+            b.classList.remove('btn-primary', 'active');
+            b.classList.add('btn-default');
+          });
+          this.classList.remove('btn-default');
+          this.classList.add('btn-primary', 'active');
+
+          const author = this.getAttribute('data-author');
+          render(author);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
